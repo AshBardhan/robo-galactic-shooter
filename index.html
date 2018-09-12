@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <style id="webmakerstyle">
+        body {
+            background: linear-gradient(to bottom, #3C0B4D, #9F0B5A, #CA0A32, #DC542D, #DC8A25);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        #myCanvas {
+            border-width: 60px 40px 80px;
+            border-style: solid;
+            border-radius: 10px;
+        }
+
+        @media screen and (max-width: 1440px) {
+            #myCanvas {
+                transform: scale(0.75);
+            }
+        }
+
+        @media screen and (max-width: 1280px) {
+            #myCanvas {
+                transform: scale(0.65);
+            }
+        }
+
+        @media screen and (max-width: 1024px) {
+            #myCanvas {
+                transform: scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="1000" height="700"></canvas>
+
+<script src="core.js"></script>
+<script src="sprite.js"></script>
+<script src="gameLoop.js"></script>
+<script src="pointer.js"></script>
+<script src="keyboard.js"></script>
+<script src="pixel.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
