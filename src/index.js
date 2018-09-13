@@ -114,17 +114,21 @@
 		'#798495'
 	];
 
-// Stars
+	// Stars
 	let ss = [];
 	let bsz = 100;
 
-// Bullets
+	// Bullets
 	let bs = [];
 
-// Levels
+	// Levels
 	let ls = [];
 	let ml = 50;
 	let l = 1;
+
+	// Flipping Scores
+	let fla = 99999;
+	let fls = 9999999999;
 
 	let lst = localStorage;
 
@@ -645,12 +649,23 @@
 				p.hs = p.s;
 			}
 
+			if (p.s >= fls) {
+				p.s = 0;
+				p.hs = fls;
+			}
+
 			if (p.la >= ls[l - 1].ta) {
-				l = (l === 50) ? 50 : ++l;
-				p.la = 0;
-				sx.lu.play();
-				usi();
-				si();
+				if (l < ml) {
+					l += 1;
+					p.la = 0;
+					sx.lu.play();
+					usi();
+					si();
+				} else {
+					if (p.la === fla) {
+						p.la = 0;
+					}
+				}
 			}
 
 			if (b.p <= 0) {
@@ -667,7 +682,7 @@
 
 
 			if (g.c.v) {
-				lst.setItem('hs', p.hs);
+				lst.setItem('hiScore', p.hs);
 				if (ri(g.c.t) >= 0) {
 					g.c.t -= 1 / 60;
 				} else {
