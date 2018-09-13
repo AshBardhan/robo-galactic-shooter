@@ -107,11 +107,11 @@ let l = 1;
 
 for (let i = 0; i < ml; i++) {
 	ls.push({
-		ti: Math.ceil((ml - i) / 5) * 200,
-		//fa: (i % 5) + 2,
+		ti: Math.ceil((ml - i) / 5) * 400,
+		fa: (i % 5) + 2,
 		ta: (i + 1) * 5,
 		ma: Math.ceil((i + 1) / 5) * 20,
-		//fs: (i % 5) + 1,
+		fs: (i % 5) + 1,
 		ms: i + 5
 	});
 }
@@ -445,8 +445,8 @@ function usi() {
 // Set Intervals
 function si() {
 	ii = im(ii, 1, ls[l - 1].ti, () => {
-		cst(1, 1);
-		cas(2);
+		cst(ls[l - 1].fs, 1);
+		cas(ls[l - 1].fa);
 	});
 }
 
@@ -466,7 +466,7 @@ function ri(val) {
 let g = {
 	h: {
 		v: 1,
-		m: ['Robo', 'Galacic', 'Shooter']
+		m: ['Robo', 'Galactic', 'Shooter']
 	},
 	m: {
 		v: 1,
