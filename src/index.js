@@ -1,3 +1,23 @@
+const sd = {
+	'sl' : '111114YA69VjV2TF883n6f74g6pdmvw94esjz2Fg9dVLMafmEXKsLhDNrqyMiHgYJLUFEU4BBbMM2fbPNNkEPnFr2gKqHzZest5dM9rcxKvMBfZaNVG7wsFV',
+	'rs' : '34T6PkuM9azcqQRP2uhqSKehYPVttMZPtXpjTTUjUwxb7py2H6TKgBffhrzZ7nPmKhP9JD3gEhifVkUezyWGSUnQyk8ogjYL61H2E9d5KhKMhhHhaxT3G4jR1',
+	'sh' : '111112tu2RTz4ZLfm6nwnmzVVYDerCJ1GUa66TYpw6EgKckrbkxXbT14CJiEqBnf3cjD3aFriqdKZs6A8QJB2AYqbmYX8qYaJRnwaipyeGThYFXGoKQKWwgB',
+	'lu' : '111119SowJUqZyfe4jLRUfMiWf8c8WYnkjRBJUL3ZZaCqfAeNPhf9rVc62kRS3jD3J63z77A6QF6Mhazdo7kb9hjbyQ3JUTCLeAmStvwTzmPMhnSREk4jzYP',
+	'pw': '34T6PksDM6sxLWXsKMV54x6nBYTVK2X82XguTcaNo2PNHaSYwAgcpjW5ZD5MLL4xexbsTeVEWu6cDStLHKr2ey2kqMcTGr9p7MYBp157yy7xG3Mhu9rpQWJqd',
+	'php' : '7BMHBGQKT6faneej8J2UfgXkv259Mh1u9B4bysSRxEYy7VtvWt4cdFK5MwuM5pAWp8rdGDfJai6329LzskzZkh9ipbXn4rDdD1YQjJYCzXxoV1JgQzadPpXfu',
+	'bhp' : '7BMHBGLmaZAt72j4pAcPAVnSrSTf2sb9NC6LKmg8cmfTtK5cFcHvPcUGnfH99T7EAeTwdLUYEMKEHKYm4VTVLuJywmfAAR3XthQc3v361s6Lq6UJQLBuW6a6b',
+	'bhc' : '7BMHBGGGKzwmnk2LXPSFk2ZR1UCBQV7GsbQ51LNWWc2ZJkkZBaLs1QbPoCe86BcCp69QnKH67dcF48hGfrriBi5Xdf4a8jnYma3QvDjHm5QQcR5cezjbEECBR'
+};
+
+function generateSound(c) {
+	return new SoundEffect(c).generate();
+}
+
+let sfx = {};
+for(const sid in sd){
+	sfx[sid] = generateSound(sd[sid]).getAudio();
+}
+
 const c = myCanvas.getContext('2d');
 const ar = (Math.PI / 180);
 const tp = ar * 360;
@@ -213,6 +233,7 @@ let p = s({
 					this.y += this.dy;
 				}
 				if (kp('space') && this.bdt > 0.25) {
+					sfx.sh.play();
 					this.bdt = 0;
 					cbt(this.x, this.y, this.width, this.height);
 				}
@@ -575,7 +596,9 @@ let lp = kn.gameLoop({
 				if (cd(bs[j], a[i])) {
 					if (!--a[i].p) {
 						p.la += 1;
-						//console.log(`hit - ${p.la}/${ls[l - 1].ta}`);
+						sfx.bhc.play();
+					} else {
+						sfx.bhp.play();
 					}
 					break;
 				}
@@ -589,6 +612,8 @@ let lp = kn.gameLoop({
 				b.p -= (a[i].p * 10);
 				p.x -= (a[i].p * 20);
 				a[i].p = 0;
+				sfx.php.play();
+				sfx.bhc.play();
 				break;
 			}
 		}
@@ -606,6 +631,7 @@ let lp = kn.gameLoop({
 
 		for (i = 0; i < sts.length; i++) {
 			if (p.collidesWith(sts[i]) && sts[i].p && b.p > 0) {
+				sfx.pw.play()
 				b.p += sts[i].s;
 				break;
 			}
@@ -619,7 +645,7 @@ let lp = kn.gameLoop({
 		if (p.la >= ls[l - 1].ta) {
 			l = (l === 50) ? 50 : ++l;
 			p.la = 0;
-			//console.log('level up!');
+			sfx.lu.play();
 			usi();
 			si();
 		}
@@ -647,6 +673,7 @@ let lp = kn.gameLoop({
 			}
 
 			if (kp('enter')) {
+				sfx.rs.play();
 				g.s.t = 3;
 				g.c.t = 9;
 				g.c.v = 0;
@@ -667,6 +694,7 @@ let lp = kn.gameLoop({
 		if (g.m.v) {
 			g.m.dt += 1 / 60;
 			if ((kp('up') || kp('down')) && g.m.dt > 0.25) {
+				sfx.sl.play();
 				g.m.l[0].s = !g.m.l[0].s;
 				g.m.l[1].s = !g.m.l[1].s;
 				g.m.dt = 0;

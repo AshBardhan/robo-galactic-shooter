@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 		},
 		concat: {
 			'js': {
-				src: ['src/core.js', 'src/sprite.js', 'src/gameLoop.js', 'src/pointer.js', 'src/keyboard.js', 'src/pixel.js', 'src/index.js'],
+				src: ['src/core.js', 'src/sprite.js', 'src/gameLoop.js', 'src/pointer.js', 'src/keyboard.js', 'src/pixel.js', 'src/riffwave.js', 'src/sfxr.js', 'src/index.js'],
 				dest: 'src/game.js',
 			}
 		},
