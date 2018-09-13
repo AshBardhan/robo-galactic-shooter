@@ -134,7 +134,7 @@
 
 	for (let i = 0; i < ml; i++) {
 		ls.push({
-			ti: Math.ceil((ml - i) / 5) * 400,
+			ti: Math.ceil((ml - i) / 5) * 250,
 			fa: (i % 5) + 2,
 			ta: (i + 1) * 5,
 			ma: Math.ceil((i + 1) / 5) * 20,
@@ -615,7 +615,7 @@
 					p.s += 50;
 					break;
 				}
-				if (p.collidesWith(a[i])) {
+				if (p.collidesWith(a[i]) && !g.s.v) {
 					b.p -= (a[i].p * 10);
 					p.x -= (a[i].p * 20);
 					a[i].p = 0;
