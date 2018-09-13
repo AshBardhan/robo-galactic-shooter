@@ -1,4 +1,4 @@
-let letters = {
+let chrs = {
 	'A': [
 		[, 1],
 		[1, , 1],
@@ -287,51 +287,3 @@ let letters = {
 		[1,]
 	]
 };
-
-// let canvas = document.getElementById('canvas');
-// let ctx = canvas.getContext('2d');
-//
-// let input = document.getElementById('input');
-
-// input.addEventListener('change', function () {
-// 	let size = 1000 / (input.value.length * 4.8);
-// 	size -= size % 4;
-// 	draw(input.value, Math.min(24, size));
-// });
-
-function drawPixel(ctx, string, dx = 0, dy = 0, size = 3, fs = "#fff") {
-	// ctx.clearRect(0, 0, ctx.width, ctx.height); // not required as we're refreshing on gameloop render
-	let needed = [];
-	let i, x, y, letter;
-	string = string.toUpperCase(); // because I only did uppercase letters
-	for (i = 0; i < string.length; i++) {
-		letter = letters[string.charAt(i)];
-		if (letter) { // because there's letters I didn't do
-			needed.push(letter);
-		}
-	}
-
-	ctx.translate(dx, dy);
-	ctx.beginPath();
-	ctx.fillStyle = fs;
-	let currX = 0;
-	for (i = 0; i < needed.length; i++) {
-		letter = needed[i];
-		let currY = 0;
-		let addX = 0;
-		for (y = 0; y < letter.length; y++) {
-			let row = letter[y];
-			for (x = 0; x < row.length; x++) {
-				if (row[x]) {
-					ctx.fillRect(currX + x * size, currY, size, size);
-				}
-			}
-			addX = Math.max(addX, row.length * size);
-			currY += size;
-		}
-		currX += size + addX;
-	}
-	ctx.closePath();
-	ctx.resetTransform();
-	//console.log('Drew ' + string + ' at ' + size);
-}
