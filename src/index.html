@@ -86,7 +86,7 @@
             }
         }
         #cv {
-            border-width: 60px 40px 80px;
+            border-width: 60px 100px;
             border-style: solid;
             border-radius: 10px;
             position: absolute;
@@ -95,8 +95,9 @@
             -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
             z-index: 1;
-            -webkit-animation: show-up 1s ease-in 1s;
-            animation: show-up 1s ease-in 1s;
+            -webkit-animation: show-up 1s ease-in 1s forwards;
+            animation: show-up 1s ease-in 1s forwards;
+            opacity: 0;
         }
         @-webkit-keyframes show-up {
             0% {
