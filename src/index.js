@@ -143,7 +143,7 @@
 		});
 	}
 
-// Battery
+	// Battery
 	let b = s({
 		x: w - 100,
 		y: 15,
@@ -179,7 +179,7 @@
 		}
 	});
 
-// Bullets
+	// Bullets
 	function cbt(x, y, w, h) {
 		let bt = s({
 			x: x + w,
@@ -208,7 +208,7 @@
 		bs.push(bt);
 	}
 
-// Player
+	// Player
 	let p = s({
 		x: -w,
 		y: 80,
@@ -227,10 +227,10 @@
 			if (!g.m.v) {
 				if (this.a) {
 					this.bdt += 1 / 60;
-					if (kp('left') && this.x >= 0) {
+					if (kp('left') && this.x >= 0 && !g.s.v) {
 						this.x -= this.dx;
 					}
-					if (kp('right') && this.x + this.width <= 2 * w / 2) {
+					if (kp('right') && this.x + this.width <= 2 * w / 3 && !g.s.v) {
 						this.x += this.dx;
 					}
 					if (kp('up') && this.y >= 50) {
@@ -409,7 +409,7 @@
 		cas(sz - 1);
 	}
 
-// Stars
+	// Stars
 	function cst(sz, p = 0) {
 		if (sz === 0 || ss.length === ls[l - 1].ms + bsz) {
 			return;
@@ -465,12 +465,12 @@
 		cst(sz - 1);
 	}
 
-// Unset Intervals
+	// Unset Intervals
 	function usi() {
 		im(ii, 0);
 	}
 
-// Set Intervals
+	// Set Intervals
 	function si() {
 		ii = im(ii, 1, ls[l - 1].ti, () => {
 			cst(ls[l - 1].fs, 1);
@@ -478,7 +478,7 @@
 		});
 	}
 
-// End Game
+	// End Game
 	function edg() {
 		p.a = 0;
 		g.c.v = 1;
@@ -490,13 +490,13 @@
 		return Math.ceil(val);
 	}
 
-// Game Play Titles
+	// Game Play Titles
 	let g = {
-		h: {
+		h: {	// Heading
 			v: 1,
 			m: ['Robo', 'Galactic', 'Shooter']
 		},
-		m: {
+		m: {	// Menu
 			v: 1,
 			dt: 0,
 			l: [
@@ -510,20 +510,20 @@
 				}
 			]
 		},
-		i: {
+		i: {	// Instructions
 			v: 0,
 		},
-		s: {
+		s: {	// Game Start
 			v: 0,
 			t: 3,
 			m: 'start game'
 		},
-		c: {
+		c: {	// Continue Game
 			v: 0,
 			t: 9,
 			m: 'continue'
 		},
-		o: {
+		o: {	// Game Over
 			v: 0,
 			t: 3,
 			m: 'game over'
@@ -668,7 +668,7 @@
 				}
 			}
 
-			if (b.p <= 0) {
+			if (b.p <= 0 && p.a) {
 				edg();
 			}
 

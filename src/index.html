@@ -54,8 +54,8 @@
             -webkit-transform: rotateX(60deg);
             transform: rotateX(60deg);
             background-size: 42px 42px;
-            -webkit-animation: move-up 5s linear infinite;
-            animation: move-up 5s linear infinite;
+        //-webkit-animation: move-up 15s linear infinite;
+        //animation: move-up 15s linear infinite;
         }
         .gs-s {
             background: linear-gradient(to bottom, #FFFF05 0%, #FF4700 50%);
@@ -100,6 +100,14 @@
             opacity: 0;
         }
         @-webkit-keyframes show-up {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes show-up {
             0% {
                 opacity: 0;
             }
