@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 240 120">
+    <g transform="rotate(80 101.1 114.6)">
+        <path fill="#1B7851" d="M45 0h30l3 10H42zm0 10h30v15H45zM5 15h20v60H5zm20 10h70v40H25zm5 50h60v20H30zm15 50h30v60H45zm-5 60h50v15H40z"/>
+        <path fill="#DDDEE2" d="M35 65h50v10H35zm15 30h20v30H50zm15-85h10l-3 5z"/>
+        <circle cx="60" cy="17" r="5" fill="#F7912E"/>
+        <circle cx="60" cy="17" r="3" fill="rgba(0,0,0,0.25)"/>
+        <g transform="rotate(-110 60 45)">
+            <circle cx="60" cy="45" r="18" fill="rgba(0,0,0,0.25)"/>
+            <path fill="#DDDEE2" d="M50 45h20v45H50z"/>
+            <circle cx="60" cy="45" r="13" fill="#1B7851"/>
+            <path fill="#1B7851" d="M43.8 93l15-26 30.4 17.5-15 26zm40.5 19.9l12-20.8 13 7.5-12 20.8z"/>
+            <path fill="#F7912E" d="M74.2 110.5l15-26 8.6 5-15 26z"/>
+        </g>
+    </g>
+</svg>
