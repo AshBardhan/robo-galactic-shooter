@@ -182,8 +182,8 @@
 				x: x + w,
 				y: y + h / 2,
 				dx: 10,
-				width: 80,
-				height: 30,
+				width: 120,
+				height: 45,
 				image: bti,
 				update() {
 					this.x += this.dx;
@@ -229,7 +229,7 @@
 						if (kp('down') && this.y + this.height <= h) {
 							this.y += this.dy;
 						}
-						if (kp('space') && this.bdt > 0.25) {
+						if (kp('space') && this.bdt > 0.1) {
 							sx.sh.play();
 							this.bdt = 0;
 							cbt(this.x, this.y, this.width, this.height);
