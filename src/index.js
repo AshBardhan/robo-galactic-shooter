@@ -106,13 +106,6 @@
 
 // Asteroids
 	let a = [];
-	const ac = [
-		'#F3C099',
-		'#AEA2D1',
-		'#DBD272',
-		'#DBC098',
-		'#798495'
-	];
 
 	// Stars
 	let ss = [];
@@ -258,76 +251,54 @@
 		if (sz === 0 || a.length === ls[l - 1].ma) {
 			return;
 		}
-		let as = s({
-			x: 2 * w,
-			y: rv(440, 100),
-			dg: 0,
-			sa: rv(5, 1), // Spin Angle
-			s: rv(3, 1, 30),
-			crs: 6,	// Craters
-			dx: rv(5, 2, 2),
-			cc: rv(ac.length),
-			get p() {
-				return this.s / 30;
-			},
-			get width() {
-				return this.s;
-			},
-			get height() {
-				return this.s;
-			},
-			update() {
-				//this.advance();
-				this.x -= this.dx;
 
-				if (this.x <= -this.s) {
-					this.x = w;
-				}
+		let as;
+		let ai = new Image();
+		ai.src = '../assets/asteroid.svg';
+		ai.onload = function () {
+			as = s({
+				x: 2 * w,
+				y: rv(440, 100),
+				dg: 0,
+				sa: rv(5, 1), // Spin Angle
+				s: rv(4, 1, 25),
+				dx: rv(5, 2, 2),
+				cc: rv(12, 1, 30),
+				image: ai,
+				get p() {
+					return this.s / 25;
+				},
+				get width() {
+					return this.s;
+				},
+				get height() {
+					return this.s;
+				},
+				update() {
+					this.x -= this.dx;
 
-				this.dg -= this.sa;
-			},
-			render() {
-				//this.draw();
-
-				// c.strokeStyle = 'yellow';
-				// c.lineWidth = 2;
-				// c.strokeRect(this.x, this.y, this.s, this.s);
-
-				ct(this.x, this.y);
-				ct(this.s / 2, this.s / 2);
-				cr(this.dg * ar);
-				let sz = 30 * this.p / this.s;
-				c.scale(sz, sz);
-				ct(-this.s / 2, -this.s / 2);
-
-				cb();
-				c.fillStyle = ac[this.cc];
-				ca(this.s / 2, this.s / 2, this.s / 2, 0, tp);
-				cf();
-				cc();
-
-				for (let i = 1; i <= this.crs; i++) {
-					ct(this.s / 2, this.s / 2);
-					cr(360 / this.crs * ar);
-					ct(-this.s / 2, -this.s / 2);
-					cb();
-					c.fillStyle = ac[this.cc];
-					ca(this.s / 8, this.s / 8, this.s / 10, 0, tp);
-					cf();
-					cc();
-					if (i % 2 === 0) {
-						cb();
-						c.fillStyle = 'rgba(0,0,0,0.35)';
-						ca(this.s / 4, this.s / 2, this.s / 8, 0, tp);
-						cf();
-						cc();
+					if (this.x <= -this.s) {
+						this.x = w;
 					}
-				}
-				crt();
-			}
-		});
 
-		a.push(as);
+					this.dg -= this.sa;
+				},
+				render() {
+					ct(this.x + this.width/2, this.y + this.height/2);
+					cr(this.dg * ar);
+					let sz = this.p * 25 / 100;
+					c.scale(sz, sz);
+					ct(-(this.x + this.width/2), -(this.y + this.height/2));
+					cb();
+					c.filter = `hue-rotate(${this.cc}deg)`;
+					this.draw();
+					c.filter = "none";
+					crt();
+				}
+			});
+			a.push(as);
+		}
+
 		cas(sz - 1);
 	}
 
