@@ -143,9 +143,13 @@
 		w: 50,
 		h: 30,
 		p: 100, // Percent Left
-		ccs: ['#05A84E', '#F7C808', '#FE251D'],
+		ccs: ['#05A84E', '#FE251D', '#F7C808'],
+		t: 1,
+		gcl() {	// Battery Level that will determine its color and blinking
+			return this.p <= 20 ? 1 : this.p <= 60 ? 2 : 0;
+		},
 		gcc() {
-			return this.ccs[this.p <= 25 ? 2 : this.p <= 75 ? 1 : 0];
+			return this.ccs[this.gcl()];
 		},
 		update() {
 			if (this.p >= 100) {
@@ -154,21 +158,30 @@
 			if (this.p <= 0) {
 				this.p = 0;
 			}
+
+			if (this.gcl()) {
+				this.t -= 1 / (10 * this.gcl());
+				if (ri(this.t) < -1) {
+					this.t = 1;
+				}
+			}
 		},
 		render() {
-			ct(this.x, this.y);
-			cb();
-			c.strokeStyle = '#fff';
-			c.fillStyle = '#fff';
-			c.lineWidth = 4;
-			c.strokeRect(0, 0, this.w, this.h);
-			cfr(this.w + 4, this.h / 2 - 10, 4, 20);
-			cc();
-			cb();
-			c.fillStyle = this.gcc();
-			cfr(2, 2, this.p / 100 * (this.w - 4), this.h - 4);
-			cc();
-			crt();
+			if(ri(this.t) >= 0) {
+				ct(this.x, this.y);
+				cb();
+				c.strokeStyle = '#fff';
+				c.fillStyle = '#fff';
+				c.lineWidth = 4;
+				c.strokeRect(0, 0, this.w, this.h);
+				cfr(this.w + 4, this.h / 2 - 10, 4, 20);
+				cc();
+				cb();
+				c.fillStyle = this.gcc();
+				cfr(2, 2, this.p / 100 * (this.w - 4), this.h - 4);
+				cc();
+				crt();
+			}
 		}
 	});
 
