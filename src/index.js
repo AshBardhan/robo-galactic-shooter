@@ -421,15 +421,14 @@
 			t: 3,
 			m: 'start game'
 		},
-		axb: {
+		t: {
 			v: 0,
 			t: 2,
-			m: 'boom'
-		},
-		axp: {
-			v: 0,
-			t: 2,
-			m: 'ouch'
+			i: 0,
+			m: [
+				'boom',
+				'ouch'
+			]
 		},
 		c: {	// Continue Game
 			v: 0,
@@ -501,12 +500,8 @@
 			dp(`${g.o.m}`, (w - `${g.o.m}`.length * 64) / 2, 275, 15);
 		}
 
-		if(g.axb.v) {
-			dp(`${g.axb.m}`, 85, 15, 5);
-		}
-
-		if(g.axp.v) {
-			dp(`${g.axp.m}`, 85, 15, 5);
+		if(g.t.v) {
+			dp(`${g.t.m[g.t.i]}`, 85, 15, 5);
 		}
 	}
 
@@ -527,9 +522,9 @@
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
-							g.axb.v = 1;
-							g.axp.v = 0;
-							g.axb.t = 2;
+							g.t.i = 0;
+							g.t.v = 1;
+							g.t.t = 2;
 						}
 						break;
 					}
@@ -545,9 +540,9 @@
 					a[i].p = 0;
 					sx.php.play();
 					sx.bhc.play();
-					g.axp.v = 1;
-					g.axb.v = 0;
-					g.axp.t = 2;
+					g.t.i = 1;
+					g.t.v = 1;
+					g.t.t = 2;
 					break;
 				}
 			}
@@ -665,17 +660,10 @@
 				}
 			}
 
-			if(g.axb.v){
-				g.axb.t -= 1/60;
-				if(ri(g.axb.t) <= 0) {
-					g.axb.v = 0;
-				}
-			}
-
-			if(g.axp.v){
-				g.axp.t -= 1/60;
-				if(ri(g.axp.t) <= 0) {
-					g.axp.v = 0;
+			if(g.t.v){
+				g.t.t -= 1/60;
+				if(ri(g.t.t) <= 0) {
+					g.t.v = 0;
 				}
 			}
 
