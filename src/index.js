@@ -421,6 +421,16 @@
 			t: 3,
 			m: 'start game'
 		},
+		axb: {
+			v: 0,
+			t: 2,
+			m: 'boom'
+		},
+		axp: {
+			v: 0,
+			t: 2,
+			m: 'ouch'
+		},
 		c: {	// Continue Game
 			v: 0,
 			t: 9,
@@ -490,6 +500,14 @@
 		if (g.o.v) {
 			dp(`${g.o.m}`, (w - `${g.o.m}`.length * 64) / 2, 275, 15);
 		}
+
+		if(g.axb.v) {
+			dp(`${g.axb.m}`, 60, 15, 5);
+		}
+
+		if(g.axp.v) {
+			dp(`${g.axp.m}`, 60, 15, 5);
+		}
 	}
 
 	let lp = kn.gameLoop({
@@ -509,6 +527,9 @@
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
+							g.axb.v = 1;
+							g.axp.v = 0;
+							g.axb.t = 2;
 						}
 						break;
 					}
@@ -524,6 +545,9 @@
 					a[i].p = 0;
 					sx.php.play();
 					sx.bhc.play();
+					g.axp.v = 1;
+					g.axb.v = 0;
+					g.axp.t = 2;
 					break;
 				}
 			}
@@ -638,6 +662,20 @@
 					g.i.v = 0;
 					g.m.v = 1;
 					g.m.dt = 0;
+				}
+			}
+
+			if(g.axb.v){
+				g.axb.t -= 1/60;
+				if(ri(g.axb.t) <= 0) {
+					g.axb.v = 0;
+				}
+			}
+
+			if(g.axp.v){
+				g.axp.t -= 1/60;
+				if(ri(g.axp.t) <= 0) {
+					g.axp.v = 0;
 				}
 			}
 
