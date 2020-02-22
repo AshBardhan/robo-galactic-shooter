@@ -427,7 +427,8 @@
 			i: 0,
 			m: [
 				'boom',
-				'ouch'
+				'ouch',
+				'level up'
 			]
 		},
 		c: {	// Continue Game
@@ -501,7 +502,7 @@
 		}
 
 		if(g.t.v) {
-			dp(`${g.t.m[g.t.i]}`, 85, 15, 5);
+			dp(`${g.t.m[g.t.i]}`, 130 - (`${g.t.m[g.t.i]}`.length * 20 /2), 15, 5);
 		}
 	}
 
@@ -580,6 +581,9 @@
 				if (l < ml) {
 					l += 1;
 					p.la = 0;
+					g.t.i = 2;
+					g.t.v = 1;
+					g.t.t = 2;
 					sx.lu.play();
 					usi();
 					si();
