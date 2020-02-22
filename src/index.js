@@ -310,7 +310,7 @@
 		let st = s({
 			x: w + rv(55, 0, 20),
 			y: rv(25, 3, 25),
-			s: 12, // Size
+			s: 20, // Size
 			a: 0, // Alpha/Opacity
 			da: 2,
 			p: p,
@@ -329,9 +329,6 @@
 				}
 			},
 			render() {
-				//c.strokeStyle = 'yellow';
-				//c.lineWidth = 2;
-				//c.strokeRect(this.x, this.y, this.s, this.s);
 				let sz = this.p ? this.s : this.s / 2;
 
 				ct(this.x, this.y);
@@ -573,7 +570,6 @@
 				}
 			}
 
-
 			if (g.c.v) {
 				lst.setItem('hiScore', p.hs);
 				if (ri(g.c.t) >= 0) {
@@ -630,6 +626,10 @@
 					g.m.v = 1;
 					g.m.dt = 0;
 				}
+			}
+
+			if(!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
+				b.p -= 1/120;
 			}
 		},
 		render() {
