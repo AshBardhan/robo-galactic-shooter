@@ -1,6 +1,31 @@
+# IDE specific templates
 .idea/
+*.iml
+.vs/
 
+## macOS template
+*.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# SublimeText project files
+*.sublime-*
+
+## vim related
+*.swp
+*.swo
+
+## File dependencies
+bower_components
+node_modules
+*.log
+.grunt
+
+## Deployment
 dist/
-node_modules/
 *.zip
 src/game.js
