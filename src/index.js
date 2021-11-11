@@ -106,13 +106,6 @@
 
 // Asteroids
 	let a = [];
-	const ac = [
-		'#F3C099',
-		'#AEA2D1',
-		'#DBD272',
-		'#DBC098',
-		'#798495'
-	];
 
 	// Stars
 	let ss = [];
@@ -150,9 +143,13 @@
 		w: 50,
 		h: 30,
 		p: 100, // Percent Left
-		ccs: ['#05A84E', '#F7C808', '#FE251D'],
+		ccs: ['#05A84E', '#FE251D', '#F7C808'],
+		t: 1,
+		gcl() {	// Battery Level that will determine its color and blinking
+			return this.p <= 20 ? 1 : this.p <= 60 ? 2 : 0;
+		},
 		gcc() {
-			return this.ccs[this.p <= 25 ? 2 : this.p <= 75 ? 1 : 0];
+			return this.ccs[this.gcl()];
 		},
 		update() {
 			if (this.p >= 100) {
@@ -161,251 +158,160 @@
 			if (this.p <= 0) {
 				this.p = 0;
 			}
+
+			if (this.gcl()) {
+				this.t -= 1 / (10 * this.gcl());
+				if (ri(this.t) < -1) {
+					this.t = 1;
+				}
+			}
 		},
 		render() {
-			ct(this.x, this.y);
-			cb();
-			c.strokeStyle = '#fff';
-			c.fillStyle = '#fff';
-			c.lineWidth = 4;
-			c.strokeRect(0, 0, this.w, this.h);
-			cfr(this.w + 4, this.h / 2 - 10, 4, 20);
-			cc();
-			cb();
-			c.fillStyle = this.gcc();
-			cfr(2, 2, this.p / 100 * (this.w - 4), this.h - 4);
-			cc();
-			crt();
+			if(ri(this.t) >= 0) {
+				ct(this.x, this.y);
+				cb();
+				c.strokeStyle = '#fff';
+				c.fillStyle = '#fff';
+				c.lineWidth = 4;
+				c.strokeRect(0, 0, this.w, this.h);
+				cfr(this.w + 4, this.h / 2 - 10, 4, 20);
+				cc();
+				cb();
+				c.fillStyle = this.gcc();
+				cfr(2, 2, this.p / 100 * (this.w - 4), this.h - 4);
+				cc();
+				crt();
+			}
 		}
 	});
 
 	// Bullets
 	function cbt(x, y, w, h) {
-		let bt = s({
-			x: x + w,
-			y: y + h / 2,
-			dx: 10,
-			s: 10, // Size
-			get width() {
-				return this.s;
-			},
-			get height() {
-				return this.s;
-			},
-			update() {
-				this.x += this.dx;
-			},
-			render() {
-				ct(this.x, this.y);
-				cb();
-				c.fillStyle = '#fff';
-				ca(this.s / 2, this.s / 2, this.s / 2, 0, tp);
-				cf();
-				cc();
-				crt();
-			}
-		});
-		bs.push(bt);
+		let bt;
+		let bti = new Image();
+		bti.src = '../assets/bullet.svg';
+		bti.onload = function () {
+			bt = s({
+				x: x + w,
+				y: y + h / 2,
+				dx: 10,
+				width: 120,
+				height: 45,
+				image: bti,
+				update() {
+					this.x += this.dx;
+				}
+			});
+			bs.push(bt);
+		}
 	}
 
 	// Player
-	let p = s({
-		x: -w,
-		y: 80,
-		width: 240,
-		height: 80,
-		a: 0,	// Alive
-		dx: 5,
-		dy: 2,
-		dt: 0,
-		bdt: 0,
-		la: 0,
-		s: 0,
-		hs: lst.getItem('hiScore') || 0,
-		update() {
-			//this.advance();
-			if (!g.m.v) {
-				if (this.a) {
-					this.bdt += 1 / 60;
-					if (kp('left') && this.x >= 0 && !g.s.v) {
-						this.x -= this.dx;
-					}
-					if (kp('right') && this.x + this.width <= 2 * w / 3 && !g.s.v) {
-						this.x += this.dx;
-					}
-					if (kp('up') && this.y >= 50) {
-						this.y -= this.dy;
-					}
-					if (kp('down') && this.y + this.height <= h) {
-						this.y += this.dy;
-					}
-					if (kp('space') && this.bdt > 0.25) {
-						sx.sh.play();
+	let p;
+	let pi = new Image();
+	pi.src = '../assets/player.svg';
+	pi.onload = function () {
+		p = s({
+			x: -w,
+			y: 80,
+			width: 120,
+			height: 60,
+			image: pi,
+			a: 0,	// Alive
+			dx: 5,
+			dy: 2,
+			dt: 0,
+			bdt: 0,
+			la: 0,
+			s: 0,
+			hs: lst.getItem('hiScore') || 0,
+			update() {
+				//this.advance();
+				if (!g.m.v) {
+					if (this.a) {
+						this.bdt += 1 / 60;
+						if (kp('left') && this.x >= 0 && !g.s.v) {
+							this.x -= this.dx;
+						}
+						if (kp('right') && this.x + this.width <= 2 * w / 3 && !g.s.v) {
+							this.x += this.dx;
+						}
+						if (kp('up') && this.y >= 50) {
+							this.y -= this.dy;
+						}
+						if (kp('down') && this.y + this.height <= h) {
+							this.y += this.dy;
+						}
+						if (kp('space') && this.bdt > 0.1) {
+							sx.sh.play();
+							this.bdt = 0;
+							cbt(this.x, this.y, this.width, this.height);
+						}
+					} else {
 						this.bdt = 0;
-						cbt(this.x, this.y, this.width, this.height);
+						this.y += 10;
 					}
-				} else {
-					this.bdt = 0;
-					this.y += 10;
+				}
+				if (g.s.v) {
+					this.x += this.dx;
 				}
 			}
-			if (g.s.v) {
-				this.x += this.dx;
-			}
-		},
-		render() {
-			// c.strokeStyle = 'yellow';
-			// c.lineWidth = 2;
-			// c.strokeRect(this.x, this.y, this.width, this.height);
+		});
+	}
 
-			ct(this.x + 35, this.y + 70);
-			ct(this.width / 2, this.height / 2);
-			cr(80 * ar);
-			ct(-this.width / 2, -this.height / 2);
-			cb();
-			c.fillStyle = '#1B7851';
-			c.moveTo(35, -5);
-			clt(65, -5);
-			clt(67, 5);
-			clt(33, 5);
-			cf();
-			cfr(35, 5, 30, 15);
-			cfr(15, 20, 70, 40);
-			cfr(-5, 10, 20, 60);
-			cfr(20, 70, 60, 20);
-			cfr(35, 120, 30, 60);
-			cfr(30, 160, 50, 20);
-			cc();
-			if (this.a) {
-				//flame
-				cb();
-				c.fillStyle = '#FEDA94';
-				cfr(-5, 70, 20, w);
-				cfr(40, 180, 25, w);
-				cc();
-				cb();
-				c.fillStyle = '#FECE5F';
-				cfr(0, 70, 10, w);
-				cfr(45, 180, 15, w);
-				cc();
-				cb();
-			}
-			c.fillStyle = '#DDDEE2';
-			cfr(25, 60, 50, 10);
-			cfr(40, 90, 20, 30);
-			cc();
-			cb();
-			c.fillStyle = '#f7912e';
-			ca(50, 13, 5, 0, tp);
-			cf();
-			cc();
-			cb();
-			c.fillStyle = 'rgba(0,0,0,0.15)';
-			ca(50, 13, 3, 0, tp);
-			cf();
-			cc();
-			//arm
-			cb();
-			ct(50, 40);
-			cr(-170 * ar);
-			ct(-50, -40);
-			c.fillStyle = 'rgba(0,0,0,0.25)';
-			ca(50, 40, 18, 0, tp);
-			cf();
-			cc();
-			cb();
-			c.fillStyle = '#DDDEE2';
-			cfr(40, 40, 20, 35);
-			cc();
-			cb();
-			c.fillStyle = '#1B7851';
-			ca(50, 40, 13, 0, tp);
-			cf();
-			cfr(35, 75, 30, 35);
-			cfr(39, 120, 22, 15);
-			cc();
-			cb();
-			c.fillStyle = '#f7912e';
-			cfr(35, 110, 30, 10);
-			cc();
-			crt();
-		}
-	});
-
+	// Asteroid
 	function cas(sz) {
 		if (sz === 0 || a.length === ls[l - 1].ma) {
 			return;
 		}
-		let as = s({
-			x: 2 * w,
-			y: rv(440, 100),
-			dg: 0,
-			sa: rv(5, 1), // Spin Angle
-			s: rv(3, 1, 30),
-			crs: 6,	// Craters
-			dx: rv(5, 2, 2),
-			cc: rv(ac.length),
-			get p() {
-				return this.s / 30;
-			},
-			get width() {
-				return this.s;
-			},
-			get height() {
-				return this.s;
-			},
-			update() {
-				//this.advance();
-				this.x -= this.dx;
 
-				if (this.x <= -this.s) {
-					this.x = w;
-				}
+		let as;
+		let ai = new Image();
+		ai.src = '../assets/asteroid.svg';
+		ai.onload = function () {
+			as = s({
+				x: 2 * w,
+				y: rv(440, 100),
+				dg: 0,
+				sa: rv(5, 1), // Spin Angle
+				s: rv(4, 1, 25),
+				dx: rv(5, 2, 2),
+				cc: rv(12, 1, 30),
+				image: ai,
+				get p() {
+					return this.s / 25;
+				},
+				get width() {
+					return this.s;
+				},
+				get height() {
+					return this.s;
+				},
+				update() {
+					this.x -= this.dx;
 
-				this.dg -= this.sa;
-			},
-			render() {
-				//this.draw();
-
-				// c.strokeStyle = 'yellow';
-				// c.lineWidth = 2;
-				// c.strokeRect(this.x, this.y, this.s, this.s);
-
-				ct(this.x, this.y);
-				ct(this.s / 2, this.s / 2);
-				cr(this.dg * ar);
-				let sz = 30 * this.p / this.s;
-				c.scale(sz, sz);
-				ct(-this.s / 2, -this.s / 2);
-
-				cb();
-				c.fillStyle = ac[this.cc];
-				ca(this.s / 2, this.s / 2, this.s / 2, 0, tp);
-				cf();
-				cc();
-
-				for (let i = 1; i <= this.crs; i++) {
-					ct(this.s / 2, this.s / 2);
-					cr(360 / this.crs * ar);
-					ct(-this.s / 2, -this.s / 2);
-					cb();
-					c.fillStyle = ac[this.cc];
-					ca(this.s / 8, this.s / 8, this.s / 10, 0, tp);
-					cf();
-					cc();
-					if (i % 2 === 0) {
-						cb();
-						c.fillStyle = 'rgba(0,0,0,0.35)';
-						ca(this.s / 4, this.s / 2, this.s / 8, 0, tp);
-						cf();
-						cc();
+					if (this.x <= -this.s) {
+						this.x = w;
 					}
-				}
-				crt();
-			}
-		});
 
-		a.push(as);
+					this.dg -= this.sa;
+				},
+				render() {
+					ct(this.x + this.width/2, this.y + this.height/2);
+					cr(this.dg * ar);
+					let sz = this.p * 25 / 100;
+					c.scale(sz, sz);
+					ct(-(this.x + this.width/2), -(this.y + this.height/2));
+					cb();
+					c.filter = `hue-rotate(${this.cc}deg)`;
+					this.draw();
+					c.filter = "none";
+					crt();
+				}
+			});
+			a.push(as);
+		}
+
 		cas(sz - 1);
 	}
 
@@ -417,7 +323,7 @@
 		let st = s({
 			x: w + rv(55, 0, 20),
 			y: rv(25, 3, 25),
-			s: 12, // Size
+			s: 20, // Size
 			a: 0, // Alpha/Opacity
 			da: 2,
 			p: p,
@@ -436,9 +342,6 @@
 				}
 			},
 			render() {
-				//c.strokeStyle = 'yellow';
-				//c.lineWidth = 2;
-				//c.strokeRect(this.x, this.y, this.s, this.s);
 				let sz = this.p ? this.s : this.s / 2;
 
 				ct(this.x, this.y);
@@ -518,6 +421,16 @@
 			t: 3,
 			m: 'start game'
 		},
+		t: {
+			v: 0,
+			t: 2,
+			i: 0,
+			m: [
+				'boom',
+				'ouch',
+				'level up'
+			]
+		},
 		c: {	// Continue Game
 			v: 0,
 			t: 9,
@@ -531,10 +444,10 @@
 	};
 
 	function rt() {
-		dp(`Level`, 250, 10);
-		dp(`${l}/${ml}`, 350, 10);
-		dp(`Target`, 250, 35);
-		dp(`${p.la}/${ls[l - 1].ta}`, 350, 35);
+		dp(`Level`, 280, 10);
+		dp(`${l}/${ml}`, 380, 10);
+		dp(`Target`, 280, 35);
+		dp(`${p.la}/${ls[l - 1].ta}`, 380, 35);
 
 		dp(`Score`, 550, 10);
 		dp(`${p.s}`, 680, 10);
@@ -587,6 +500,10 @@
 		if (g.o.v) {
 			dp(`${g.o.m}`, (w - `${g.o.m}`.length * 64) / 2, 275, 15);
 		}
+
+		if(g.t.v) {
+			dp(`${g.t.m[g.t.i]}`, 130 - (`${g.t.m[g.t.i]}`.length * 20 /2), 15, 5);
+		}
 	}
 
 	let lp = kn.gameLoop({
@@ -606,6 +523,9 @@
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
+							g.t.i = 0;
+							g.t.v = 1;
+							g.t.t = 2;
 						}
 						break;
 					}
@@ -621,6 +541,9 @@
 					a[i].p = 0;
 					sx.php.play();
 					sx.bhc.play();
+					g.t.i = 1;
+					g.t.v = 1;
+					g.t.t = 2;
 					break;
 				}
 			}
@@ -658,6 +581,9 @@
 				if (l < ml) {
 					l += 1;
 					p.la = 0;
+					g.t.i = 2;
+					g.t.v = 1;
+					g.t.t = 2;
 					sx.lu.play();
 					usi();
 					si();
@@ -679,7 +605,6 @@
 					g.s.v = 0;
 				}
 			}
-
 
 			if (g.c.v) {
 				lst.setItem('hiScore', p.hs);
@@ -737,6 +662,17 @@
 					g.m.v = 1;
 					g.m.dt = 0;
 				}
+			}
+
+			if(g.t.v){
+				g.t.t -= 1/60;
+				if(ri(g.t.t) <= 0) {
+					g.t.v = 0;
+				}
+			}
+
+			if(!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
+				b.p -= 1/120;
 			}
 		},
 		render() {
