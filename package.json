@@ -1,6 +1,6 @@
 {
   "name": "robo-galactic-shooter",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "HTML Canvas game developed under 13KB",
   "main": "index.js",
   "author": "AshBardhan <ashbardhan@gmail.com>",
