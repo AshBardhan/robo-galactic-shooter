@@ -1,0 +1,9 @@
+# default
+**/.git
+**/.svn
+**/.hg
+
+## Deployment
+dist/
+*.zip
+src/game.js
