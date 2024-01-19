@@ -1,13 +1,13 @@
 (function init() {
 	const sm = {
-		'sl': '111114YA69VjV2TF883n6f74g6pdmvw94esjz2Fg9dVLMafmEXKsLhDNrqyMiHgYJLUFEU4BBbMM2fbPNNkEPnFr2gKqHzZest5dM9rcxKvMBfZaNVG7wsFV',
-		'rs': '34T6PkuM9azcqQRP2uhqSKehYPVttMZPtXpjTTUjUwxb7py2H6TKgBffhrzZ7nPmKhP9JD3gEhifVkUezyWGSUnQyk8ogjYL61H2E9d5KhKMhhHhaxT3G4jR1',
-		'sh': '111112tu2RTz4ZLfm6nwnmzVVYDerCJ1GUa66TYpw6EgKckrbkxXbT14CJiEqBnf3cjD3aFriqdKZs6A8QJB2AYqbmYX8qYaJRnwaipyeGThYFXGoKQKWwgB',
-		'lu': '111119SowJUqZyfe4jLRUfMiWf8c8WYnkjRBJUL3ZZaCqfAeNPhf9rVc62kRS3jD3J63z77A6QF6Mhazdo7kb9hjbyQ3JUTCLeAmStvwTzmPMhnSREk4jzYP',
-		'pw': '34T6PksDM6sxLWXsKMV54x6nBYTVK2X82XguTcaNo2PNHaSYwAgcpjW5ZD5MLL4xexbsTeVEWu6cDStLHKr2ey2kqMcTGr9p7MYBp157yy7xG3Mhu9rpQWJqd',
-		'php': '7BMHBGQKT6faneej8J2UfgXkv259Mh1u9B4bysSRxEYy7VtvWt4cdFK5MwuM5pAWp8rdGDfJai6329LzskzZkh9ipbXn4rDdD1YQjJYCzXxoV1JgQzadPpXfu',
-		'bhp': '7BMHBGLmaZAt72j4pAcPAVnSrSTf2sb9NC6LKmg8cmfTtK5cFcHvPcUGnfH99T7EAeTwdLUYEMKEHKYm4VTVLuJywmfAAR3XthQc3v361s6Lq6UJQLBuW6a6b',
-		'bhc': '7BMHBGGGKzwmnk2LXPSFk2ZR1UCBQV7GsbQ51LNWWc2ZJkkZBaLs1QbPoCe86BcCp69QnKH67dcF48hGfrriBi5Xdf4a8jnYma3QvDjHm5QQcR5cezjbEECBR'
+		sl: '111114YA69VjV2TF883n6f74g6pdmvw94esjz2Fg9dVLMafmEXKsLhDNrqyMiHgYJLUFEU4BBbMM2fbPNNkEPnFr2gKqHzZest5dM9rcxKvMBfZaNVG7wsFV',
+		rs: '34T6PkuM9azcqQRP2uhqSKehYPVttMZPtXpjTTUjUwxb7py2H6TKgBffhrzZ7nPmKhP9JD3gEhifVkUezyWGSUnQyk8ogjYL61H2E9d5KhKMhhHhaxT3G4jR1',
+		sh: '111112tu2RTz4ZLfm6nwnmzVVYDerCJ1GUa66TYpw6EgKckrbkxXbT14CJiEqBnf3cjD3aFriqdKZs6A8QJB2AYqbmYX8qYaJRnwaipyeGThYFXGoKQKWwgB',
+		lu: '111119SowJUqZyfe4jLRUfMiWf8c8WYnkjRBJUL3ZZaCqfAeNPhf9rVc62kRS3jD3J63z77A6QF6Mhazdo7kb9hjbyQ3JUTCLeAmStvwTzmPMhnSREk4jzYP',
+		pw: '34T6PksDM6sxLWXsKMV54x6nBYTVK2X82XguTcaNo2PNHaSYwAgcpjW5ZD5MLL4xexbsTeVEWu6cDStLHKr2ey2kqMcTGr9p7MYBp157yy7xG3Mhu9rpQWJqd',
+		php: '7BMHBGQKT6faneej8J2UfgXkv259Mh1u9B4bysSRxEYy7VtvWt4cdFK5MwuM5pAWp8rdGDfJai6329LzskzZkh9ipbXn4rDdD1YQjJYCzXxoV1JgQzadPpXfu',
+		bhp: '7BMHBGLmaZAt72j4pAcPAVnSrSTf2sb9NC6LKmg8cmfTtK5cFcHvPcUGnfH99T7EAeTwdLUYEMKEHKYm4VTVLuJywmfAAR3XthQc3v361s6Lq6UJQLBuW6a6b',
+		bhc: '7BMHBGGGKzwmnk2LXPSFk2ZR1UCBQV7GsbQ51LNWWc2ZJkkZBaLs1QbPoCe86BcCp69QnKH67dcF48hGfrriBi5Xdf4a8jnYma3QvDjHm5QQcR5cezjbEECBR',
 	};
 
 	function gs(c) {
@@ -20,7 +20,7 @@
 	}
 
 	const c = cv.getContext('2d');
-	const ar = (Math.PI / 180);
+	const ar = Math.PI / 180;
 	const tp = ar * 360;
 
 	let kn = kontra;
@@ -30,9 +30,9 @@
 	let cb = c.beginPath.bind(c);
 	let cc = c.closePath.bind(c);
 	let clt = c.lineTo.bind(c);
-//let cmt = c.moveTo.bind(c);
+	//let cmt = c.moveTo.bind(c);
 	let cr = c.rotate.bind(c);
-//let cs = c.scale.bind(c);
+	//let cs = c.scale.bind(c);
 	let crt = c.resetTransform.bind(c);
 	let cf = c.fill.bind(c);
 	let cfr = c.fillRect.bind(c);
@@ -43,12 +43,9 @@
 	let kp = kn.keys.pressed.bind(kn);
 	let s = kn.sprite.bind(kn);
 
-// Check Collision Detection
+	// Check Collision Detection
 	function cd(o1, o2) {
-		return (o1.x < o2.x + o2.width &&
-			o1.x + o1.width > o2.x &&
-			o1.y < o2.y + o2.height &&
-			o1.y + o1.height > o2.y);
+		return o1.x < o2.x + o2.width && o1.x + o1.width > o2.x && o1.y < o2.y + o2.height && o1.y + o1.height > o2.y;
 	}
 
 	function im(id, flag, time, callback) {
@@ -104,7 +101,7 @@
 		cfr(0, 0, w, h);
 	}
 
-// Asteroids
+	// Asteroids
 	let a = [];
 
 	// Stars
@@ -132,7 +129,7 @@
 			ta: (i + 1) * 5,
 			ma: Math.ceil((i + 1) / 5) * 20,
 			fs: (i % 5) + 1,
-			ms: i + 5
+			ms: i + 5,
 		});
 	}
 
@@ -145,7 +142,8 @@
 		p: 100, // Percent Left
 		ccs: ['#05A84E', '#FE251D', '#F7C808'],
 		t: 1,
-		gcl() {	// Battery Level that will determine its color and blinking
+		gcl() {
+			// Battery Level that will determine its color and blinking
 			return this.p <= 20 ? 1 : this.p <= 60 ? 2 : 0;
 		},
 		gcc() {
@@ -167,7 +165,7 @@
 			}
 		},
 		render() {
-			if(ri(this.t) >= 0) {
+			if (ri(this.t) >= 0) {
 				ct(this.x, this.y);
 				cb();
 				c.strokeStyle = '#fff';
@@ -178,11 +176,11 @@
 				cc();
 				cb();
 				c.fillStyle = this.gcc();
-				cfr(2, 2, this.p / 100 * (this.w - 4), this.h - 4);
+				cfr(2, 2, (this.p / 100) * (this.w - 4), this.h - 4);
 				cc();
 				crt();
 			}
-		}
+		},
 	});
 
 	// Bullets
@@ -200,10 +198,10 @@
 				image: bti,
 				update() {
 					this.x += this.dx;
-				}
+				},
 			});
 			bs.push(bt);
-		}
+		};
 	}
 
 	// Player
@@ -217,7 +215,7 @@
 			width: 120,
 			height: 60,
 			image: pi,
-			a: 0,	// Alive
+			a: 0, // Alive
 			dx: 5,
 			dy: 2,
 			dt: 0,
@@ -233,7 +231,7 @@
 						if (kp('left') && this.x >= 0 && !g.s.v) {
 							this.x -= this.dx;
 						}
-						if (kp('right') && this.x + this.width <= 2 * w / 3 && !g.s.v) {
+						if (kp('right') && this.x + this.width <= (2 * w) / 3 && !g.s.v) {
 							this.x += this.dx;
 						}
 						if (kp('up') && this.y >= 50) {
@@ -255,9 +253,9 @@
 				if (g.s.v) {
 					this.x += this.dx;
 				}
-			}
+			},
 		});
-	}
+	};
 
 	// Asteroid
 	function cas(sz) {
@@ -297,20 +295,20 @@
 					this.dg -= this.sa;
 				},
 				render() {
-					ct(this.x + this.width/2, this.y + this.height/2);
+					ct(this.x + this.width / 2, this.y + this.height / 2);
 					cr(this.dg * ar);
-					let sz = this.p * 25 / 100;
+					let sz = (this.p * 25) / 100;
 					c.scale(sz, sz);
-					ct(-(this.x + this.width/2), -(this.y + this.height/2));
+					ct(-(this.x + this.width / 2), -(this.y + this.height / 2));
 					cb();
 					c.filter = `hue-rotate(${this.cc}deg)`;
 					this.draw();
-					c.filter = "none";
+					c.filter = 'none';
 					crt();
-				}
+				},
 			});
 			a.push(as);
-		}
+		};
 
 		cas(sz - 1);
 	}
@@ -335,7 +333,7 @@
 						this.da *= -1;
 					}
 				}
-				this.x -= (this.p ? this.dx * 3 / 2 : this.dx);
+				this.x -= this.p ? (this.dx * 3) / 2 : this.dx;
 
 				if (this.x <= -this.s) {
 					this.x = w;
@@ -356,12 +354,12 @@
 				if (this.p) {
 					cb();
 					c.fillStyle = `rgba(255,207,64,${this.a / 255})`;
-					ca(sz, sz, 4 * sz / 5, 0, tp);
+					ca(sz, sz, (4 * sz) / 5, 0, tp);
 					cf();
 					cc();
 				}
 				crt();
-			}
+			},
 		});
 
 		ss.push(st);
@@ -395,11 +393,13 @@
 
 	// Game Play Titles
 	let g = {
-		h: {	// Heading
+		h: {
+			// Heading
 			v: 1,
-			m: ['Robo', 'Galactic', 'Shooter']
+			m: ['Robo', 'Galactic', 'Shooter'],
 		},
-		m: {	// Menu
+		m: {
+			// Menu
 			v: 1,
 			dt: 0,
 			l: [
@@ -410,37 +410,37 @@
 				{
 					m: 'Instructions',
 					s: 0,
-				}
-			]
+				},
+			],
 		},
-		i: {	// Instructions
+		i: {
+			// Instructions
 			v: 0,
 		},
-		s: {	// Game Start
+		s: {
+			// Game Start
 			v: 0,
 			t: 3,
-			m: 'start game'
+			m: 'start game',
 		},
 		t: {
 			v: 0,
 			t: 2,
 			i: 0,
-			m: [
-				'boom',
-				'ouch',
-				'level up'
-			]
+			m: ['boom', 'ouch', 'level up'],
 		},
-		c: {	// Continue Game
+		c: {
+			// Continue Game
 			v: 0,
 			t: 9,
-			m: 'continue'
+			m: 'continue',
 		},
-		o: {	// Game Over
+		o: {
+			// Game Over
 			v: 0,
 			t: 3,
-			m: 'game over'
-		}
+			m: 'game over',
+		},
 	};
 
 	function rt() {
@@ -501,8 +501,8 @@
 			dp(`${g.o.m}`, (w - `${g.o.m}`.length * 64) / 2, 275, 15);
 		}
 
-		if(g.t.v) {
-			dp(`${g.t.m[g.t.i]}`, 130 - (`${g.t.m[g.t.i]}`.length * 20 /2), 15, 5);
+		if (g.t.v) {
+			dp(`${g.t.m[g.t.i]}`, 130 - (`${g.t.m[g.t.i]}`.length * 20) / 2, 15, 5);
 		}
 	}
 
@@ -511,7 +511,7 @@
 		update() {
 			let i, j;
 
-			[].concat(...[p], ...ss, ...a, ...bs, ...[b]).map(sr => {
+			[].concat(...[p], ...ss, ...a, ...bs, ...[b]).map((sr) => {
 				sr.update();
 			});
 
@@ -536,8 +536,8 @@
 					break;
 				}
 				if (p.collidesWith(a[i]) && !g.s.v) {
-					b.p -= (a[i].p * 10);
-					p.x -= (a[i].p * 20);
+					b.p -= a[i].p * 10;
+					p.x -= a[i].p * 20;
 					a[i].p = 0;
 					sx.php.play();
 					sx.bhc.play();
@@ -664,24 +664,24 @@
 				}
 			}
 
-			if(g.t.v){
-				g.t.t -= 1/60;
-				if(ri(g.t.t) <= 0) {
+			if (g.t.v) {
+				g.t.t -= 1 / 60;
+				if (ri(g.t.t) <= 0) {
 					g.t.v = 0;
 				}
 			}
 
-			if(!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
-				b.p -= 1/120;
+			if (!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
+				b.p -= 1 / 120;
 			}
 		},
 		render() {
 			rb();
-			[].concat(...ss, ...[p], ...a, ...bs, ...[b]).map(sr => {
+			[].concat(...ss, ...[p], ...a, ...bs, ...[b]).map((sr) => {
 				sr.render();
 			});
 			rt();
-		}
+		},
 	});
 
 	let ii = null;
@@ -689,7 +689,7 @@
 	cst(bsz);
 	lp.start();
 
-// Reset Game
+	// Reset Game
 	function rsg() {
 		a.length = 0;
 		ss.length = bsz;
@@ -705,7 +705,7 @@
 		g.s.t = 3;
 	}
 
-// Start Game
+	// Start Game
 	function stg() {
 		g.s.v = 1;
 		p.x = -w;
