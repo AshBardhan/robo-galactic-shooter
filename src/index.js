@@ -19,24 +19,12 @@
 		sx[n] = gs(sm[n]).getAudio();
 	}
 
-	const c = cv.getContext('2d');
+	const ctx = myCanvas.getContext('2d');
 	const ar = Math.PI / 180;
 	const tp = ar * 360;
 
 	let kn = kontra;
 	kn.init();
-
-	let ct = c.translate.bind(c);
-	let cb = c.beginPath.bind(c);
-	let cc = c.closePath.bind(c);
-	let clt = c.lineTo.bind(c);
-	//let cmt = c.moveTo.bind(c);
-	let cr = c.rotate.bind(c);
-	//let cs = c.scale.bind(c);
-	let crt = c.resetTransform.bind(c);
-	let cf = c.fill.bind(c);
-	let cfr = c.fillRect.bind(c);
-	let ca = c.arc.bind(c);
 
 	let w = kn.canvas.width;
 	let h = kn.canvas.height;
@@ -67,9 +55,9 @@
 			}
 		}
 
-		ct(dx, dy);
-		cb();
-		c.fillStyle = fc;
+		ctx.translate(dx, dy);
+		ctx.beginPath();
+		ctx.fillStyle = fc;
 		let currX = 0;
 		for (i = 0; i < needed.length; i++) {
 			ch = needed[i];
@@ -79,7 +67,7 @@
 				let row = ch[y];
 				for (x = 0; x < row.length; x++) {
 					if (row[x]) {
-						cfr(currX + x * sz, currY, sz, sz);
+						ctx.fillRect(currX + x * sz, currY, sz, sz);
 					}
 				}
 				addX = Math.max(addX, row.length * sz);
@@ -87,18 +75,18 @@
 			}
 			currX += sz + addX;
 		}
-		cc();
-		crt();
+		ctx.closePath();
+		ctx.resetTransform();
 	}
 
 	function rb() {
-		let g = c.createLinearGradient(w / 2, 0, w / 2, h);
+		let g = ctx.createLinearGradient(w / 2, 0, w / 2, h);
 		let ga = g.addColorStop.bind(g);
 		ga(0.3, '#101014');
 		ga(0.7, '#141852');
 		ga(1, '#35274E');
-		c.fillStyle = g;
-		cfr(0, 0, w, h);
+		ctx.fillStyle = g;
+		ctx.fillRect(0, 0, w, h);
 	}
 
 	// Asteroids
@@ -166,19 +154,19 @@
 		},
 		render() {
 			if (ri(this.t) >= 0) {
-				ct(this.x, this.y);
-				cb();
-				c.strokeStyle = '#fff';
-				c.fillStyle = '#fff';
-				c.lineWidth = 4;
-				c.strokeRect(0, 0, this.w, this.h);
-				cfr(this.w + 4, this.h / 2 - 10, 4, 20);
-				cc();
-				cb();
-				c.fillStyle = this.gcc();
-				cfr(2, 2, (this.p / 100) * (this.w - 4), this.h - 4);
-				cc();
-				crt();
+				ctx.translate(this.x, this.y);
+				ctx.beginPath();
+				ctx.strokeStyle = '#fff';
+				ctx.fillStyle = '#fff';
+				ctx.lineWidth = 4;
+				ctx.strokeRect(0, 0, this.w, this.h);
+				ctx.fillRect(this.w + 4, this.h / 2 - 10, 4, 20);
+				ctx.closePath();
+				ctx.beginPath();
+				ctx.fillStyle = this.gcc();
+				ctx.fillRect(2, 2, (this.p / 100) * (this.w - 4), this.h - 4);
+				ctx.closePath();
+				ctx.resetTransform();
 			}
 		},
 	});
@@ -295,16 +283,16 @@
 					this.dg -= this.sa;
 				},
 				render() {
-					ct(this.x + this.width / 2, this.y + this.height / 2);
-					cr(this.dg * ar);
+					ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+					ctx.rotate(this.dg * ar);
 					let sz = (this.p * 25) / 100;
-					c.scale(sz, sz);
-					ct(-(this.x + this.width / 2), -(this.y + this.height / 2));
-					cb();
-					c.filter = `hue-rotate(${this.cc}deg)`;
+					ctx.scale(sz, sz);
+					ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
+					ctx.beginPath();
+					ctx.filter = `hue-rotate(${this.cc}deg)`;
 					this.draw();
-					c.filter = 'none';
-					crt();
+					ctx.filter = 'none';
+					ctx.resetTransform();
 				},
 			});
 			a.push(as);
@@ -342,23 +330,21 @@
 			render() {
 				let sz = this.p ? this.s : this.s / 2;
 
-				ct(this.x, this.y);
-				cb();
-				c.fillStyle = this.p ? '#ffcf40' : '#fff';
-				c.ellipse(sz, sz, 1, sz, 0, 0, tp);
-				//c.ellipse(sz, sz, 1, sz, ar* 180, 0, tp);
-				c.ellipse(sz, sz, 1, sz, ar * 90, 0, tp);
-				//c.ellipse(sz, sz, 1, sz, ar * 270, 0, tp);
-				cf();
-				cc();
+				ctx.translate(this.x, this.y);
+				ctx.beginPath();
+				ctx.fillStyle = this.p ? '#ffcf40' : '#fff';
+				ctx.ellipse(sz, sz, 1, sz, 0, 0, tp);
+				ctx.ellipse(sz, sz, 1, sz, ar * 90, 0, tp);
+				ctx.fill();
+				ctx.closePath();
 				if (this.p) {
-					cb();
-					c.fillStyle = `rgba(255,207,64,${this.a / 255})`;
-					ca(sz, sz, (4 * sz) / 5, 0, tp);
-					cf();
-					cc();
+					ctx.beginPath();
+					ctx.fillStyle = `rgba(255,207,64,${this.a / 255})`;
+					ctx.arc(sz, sz, (4 * sz) / 5, 0, tp);
+					ctx.fill();
+					ctx.closePath();
 				}
-				crt();
+				ctx.resetTransform();
 			},
 		});
 
