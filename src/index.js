@@ -245,8 +245,8 @@
 	};
 
 	// Asteroid
-	function createAsteroids(sz) {
-		if (sz === 0 || asteroids.length === levels[currentLevel - 1].asteroidLimit) {
+	function createAsteroids(count) {
+		if (count === 0 || asteroids.length === levels[currentLevel - 1].asteroidLimit) {
 			return;
 		}
 
@@ -297,7 +297,7 @@
 			asteroids.push(asteroid);
 		};
 
-		createAsteroids(sz - 1);
+		createAsteroids(count - 1);
 	}
 
 	// Stars
