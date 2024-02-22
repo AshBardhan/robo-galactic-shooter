@@ -191,28 +191,27 @@
 	}
 
 	// Player
-	let p;
-	let pi = new Image();
-	pi.src = '../assets/player.svg';
-	pi.onload = function () {
-		p = sprite({
+	let player;
+	let playerImage = new Image();
+	playerImage.src = '../assets/player.svg';
+	playerImage.onload = function () {
+		player = sprite({
 			x: -canvasWidth,
 			y: 80,
 			width: 120,
 			height: 60,
-			image: pi,
-			a: 0, // Alive
+			image: playerImage,
+			alive: 0, // Alive
 			dx: 5,
 			dy: 2,
 			dt: 0,
 			bdt: 0,
-			la: 0,
-			s: 0,
-			hs: localStorage.getItem('hiScore') || 0,
+			level: 0,
+			score: 0,
+			hiScore: localStorage.getItem('hiScore') || 0,
 			update() {
-				//this.advance();
 				if (!g.m.v) {
-					if (this.a) {
+					if (this.alive) {
 						this.bdt += 1 / 60;
 						if (keyPressed('left') && this.x >= 0 && !g.s.v) {
 							this.x -= this.dx;
@@ -365,7 +364,7 @@
 
 	// End Game
 	function endGame() {
-		p.a = 0;
+		player.alive = 0;
 		g.c.v = 1;
 		unsetGameIntervals();
 		kn.keys.unbind('p');
@@ -431,12 +430,12 @@
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${l}/${ml}`, 380, 10);
 		drawPixel(`Target`, 280, 35);
-		drawPixel(`${p?.la ?? 0}/${ls[l - 1].ta}`, 380, 35);
+		drawPixel(`${player?.level ?? 0}/${ls[l - 1].ta}`, 380, 35);
 
 		drawPixel(`Score`, 550, 10);
-		drawPixel(`${p?.s ?? 0}`, 680, 10);
+		drawPixel(`${player?.score ?? 0}`, 680, 10);
 		drawPixel(`Hi-Score`, 550, 35);
-		drawPixel(`${p?.hs ?? 0}`, 680, 35);
+		drawPixel(`${player?.hiScore ?? 0}`, 680, 35);
 
 		if (g.h.v) {
 			drawPixel(`${g.h.m[0]}`, (canvasWidth - `${g.h.m[0]}`.length * 55) / 2, 125, 15);
@@ -493,7 +492,7 @@
 		update() {
 			let i, j;
 
-			[].concat(...[p], ...ss, ...a, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...[player], ...ss, ...a, ...bullets, ...[battery]).map((sr) => {
 				sr?.update();
 			});
 
@@ -501,7 +500,7 @@
 				for (j = 0; j < bullets.length; j++) {
 					if (detectCollosion(bullets[j], a[i])) {
 						if (!--a[i].p) {
-							p.la += 1;
+							player.level += 1;
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
@@ -514,12 +513,12 @@
 				}
 				if (j !== bullets.length) {
 					bullets.splice(j, 1);
-					p.s += 50;
+					player.score += 50;
 					break;
 				}
-				if (p?.collidesWith(a[i]) && !g.s.v) {
+				if (player?.collidesWith(a[i]) && !g.s.v) {
 					battery.percent -= a[i].p * 10;
-					p.x -= a[i].p * 20;
+					player.x -= a[i].p * 20;
 					a[i].p = 0;
 					sx.php.play();
 					sx.bhc.play();
@@ -542,27 +541,27 @@
 			bullets.splice(i, 1);
 
 			for (i = 0; i < ss.length; i++) {
-				if (p?.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
+				if (player?.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
 					sx.pw.play();
 					battery.percent += ss[i].s;
 					break;
 				}
 			}
 			ss.splice(i, 1);
-			if (p) {
-				if (p.s > p.hs) {
-					p.hs = p.s;
+			if (player) {
+				if (player.score > player.hiScore) {
+					player.hiScore = player.score;
 				}
 
-				if (p.s >= fls) {
-					p.s = 0;
-					p.hs = fls;
+				if (player.score >= fls) {
+					player.score = 0;
+					player.hiScore = fls;
 				}
 
-				if (p.la >= ls[l - 1].ta) {
+				if (player.level >= ls[l - 1].ta) {
 					if (l < ml) {
 						l += 1;
-						p.la = 0;
+						player.level = 0;
 						g.t.i = 2;
 						g.t.v = 1;
 						g.t.t = 2;
@@ -570,14 +569,14 @@
 						unsetGameIntervals();
 						setGameIntervals();
 					} else {
-						if (p.la === fla) {
-							p.la = 0;
+						if (player.level === fla) {
+							player.level = 0;
 						}
 					}
 				}
 			}
 
-			if (battery.percent <= 0 && p.a) {
+			if (battery.percent <= 0 && player.alive) {
 				endGame();
 			}
 
@@ -590,7 +589,7 @@
 			}
 
 			if (g.c.v) {
-				localStorage.setItem('hiScore', p.hs);
+				localStorage.setItem('hiScore', player.hiScore);
 				if (roundInteger(g.c.t) >= 0) {
 					g.c.t -= 1 / 60;
 				} else {
@@ -603,7 +602,7 @@
 					g.s.t = 3;
 					g.c.t = 9;
 					g.c.v = 0;
-					p.s = 0;
+					player.score = 0;
 					battery.percent = 100;
 					startGame();
 				}
@@ -660,7 +659,7 @@
 		},
 		render() {
 			renderBackground();
-			[].concat(...ss, ...[p], ...a, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...ss, ...[player], ...a, ...bullets, ...[battery]).map((sr) => {
 				sr?.render();
 			});
 			renderTexts();
@@ -679,8 +678,8 @@
 		g.o.v = 0;
 		g.m.v = 1;
 		g.h.v = 1;
-		p.la = 0;
-		p.s = 0;
+		player.level = 0;
+		player.score = 0;
 		l = 1;
 		battery.percent = 100;
 		g.c.t = 9;
@@ -691,9 +690,9 @@
 	// Start Game
 	function startGame() {
 		g.s.v = 1;
-		p.x = -canvasWidth;
-		p.y = 80;
-		p.a = 1;
+		player.x = -canvasWidth;
+		player.y = 80;
+		player.alive = 1;
 		setGameIntervals();
 		kn.keys.bind('p', () => {
 			if (!lp.isStopped) {
