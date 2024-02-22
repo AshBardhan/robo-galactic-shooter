@@ -26,8 +26,8 @@
 	let kn = kontra;
 	kn.init();
 
-	let width = kn.canvas.width;
-	let height = kn.canvas.height;
+	let canvasWidth = kn.canvas.width;
+	let canvasHeight = kn.canvas.height;
 	let keyPressed = kn.keys.pressed.bind(kn);
 	let sprite = kn.sprite.bind(kn);
 
@@ -80,13 +80,13 @@
 	}
 
 	function renderBackground() {
-		let g = ctx.createLinearGradient(width / 2, 0, width / 2, height);
+		let g = ctx.createLinearGradient(canvasWidth / 2, 0, canvasWidth / 2, canvasHeight);
 		let ga = g.addColorStop.bind(g);
 		ga(0.3, '#101014');
 		ga(0.7, '#141852');
 		ga(1, '#35274E');
 		ctx.fillStyle = g;
-		ctx.fillRect(0, 0, width, height);
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 	}
 
 	// Asteroids
@@ -121,7 +121,7 @@
 
 	// Battery
 	let b = sprite({
-		x: width - 100,
+		x: canvasWidth - 100,
 		y: 15,
 		w: 50,
 		h: 30,
@@ -196,7 +196,7 @@
 	pi.src = '../assets/player.svg';
 	pi.onload = function () {
 		p = sprite({
-			x: -width,
+			x: -canvasWidth,
 			y: 80,
 			width: 120,
 			height: 60,
@@ -217,13 +217,13 @@
 						if (keyPressed('left') && this.x >= 0 && !g.s.v) {
 							this.x -= this.dx;
 						}
-						if (keyPressed('right') && this.x + this.width <= (2 * width) / 3 && !g.s.v) {
+						if (keyPressed('right') && this.x + this.width <= (2 * canvasWidth) / 3 && !g.s.v) {
 							this.x += this.dx;
 						}
 						if (keyPressed('up') && this.y >= 50) {
 							this.y -= this.dy;
 						}
-						if (keyPressed('down') && this.y + this.height <= height) {
+						if (keyPressed('down') && this.y + this.height <= canvasHeight) {
 							this.y += this.dy;
 						}
 						if (keyPressed('space') && this.bdt > 0.1) {
@@ -254,7 +254,7 @@
 		ai.src = '../assets/asteroid.svg';
 		ai.onload = function () {
 			as = sprite({
-				x: 2 * width,
+				x: 2 * canvasWidth,
 				y: randomValue(440, 100),
 				dg: 0,
 				sa: randomValue(5, 1), // Spin Angle
@@ -275,7 +275,7 @@
 					this.x -= this.dx;
 
 					if (this.x <= -this.s) {
-						this.x = width;
+						this.x = canvasWidth;
 					}
 
 					this.dg -= this.sa;
@@ -305,7 +305,7 @@
 			return;
 		}
 		let st = sprite({
-			x: width + randomValue(55, 0, 20),
+			x: canvasWidth + randomValue(55, 0, 20),
 			y: randomValue(25, 3, 25),
 			s: 20, // Size
 			a: 0, // Alpha/Opacity
@@ -322,7 +322,7 @@
 				this.x -= this.p ? (this.dx * 3) / 2 : this.dx;
 
 				if (this.x <= -this.s) {
-					this.x = width;
+					this.x = canvasWidth;
 				}
 			},
 			render() {
@@ -439,14 +439,14 @@
 		drawPixel(`${p.hs}`, 680, 35);
 
 		if (g.h.v) {
-			drawPixel(`${g.h.m[0]}`, (width - `${g.h.m[0]}`.length * 55) / 2, 125, 15);
-			drawPixel(`${g.h.m[1]}`, (width - `${g.h.m[1]}`.length * 60) / 2, 225, 15);
-			drawPixel(`${g.h.m[2]}`, (width - `${g.h.m[2]}`.length * 56) / 2, 325, 15);
+			drawPixel(`${g.h.m[0]}`, (canvasWidth - `${g.h.m[0]}`.length * 55) / 2, 125, 15);
+			drawPixel(`${g.h.m[1]}`, (canvasWidth - `${g.h.m[1]}`.length * 60) / 2, 225, 15);
+			drawPixel(`${g.h.m[2]}`, (canvasWidth - `${g.h.m[2]}`.length * 56) / 2, 325, 15);
 		}
 
 		if (g.m.v) {
-			drawPixel(`${g.m.l[0].m}`, (width - `${g.m.l[0].m}`.length * 40) / 2, 475, 10, g.m.l[0].s ? '#FEDA94' : undefined);
-			drawPixel(`${g.m.l[1].m}`, (width - `${g.m.l[1].m}`.length * 40) / 2, 575, 10, g.m.l[1].s ? '#FEDA94' : undefined);
+			drawPixel(`${g.m.l[0].m}`, (canvasWidth - `${g.m.l[0].m}`.length * 40) / 2, 475, 10, g.m.l[0].s ? '#FEDA94' : undefined);
+			drawPixel(`${g.m.l[1].m}`, (canvasWidth - `${g.m.l[1].m}`.length * 40) / 2, 575, 10, g.m.l[1].s ? '#FEDA94' : undefined);
 		}
 
 		if (g.i.v) {
@@ -470,17 +470,17 @@
 		}
 
 		if (g.c.v) {
-			drawPixel(`${g.c.m}`, (width - `${g.c.m}`.length * 40) / 2, 235, 10);
-			drawPixel(`${roundInteger(g.c.t)}`, (width - `${roundInteger(g.c.t)}`.length * 50) / 2, 305, 20);
+			drawPixel(`${g.c.m}`, (canvasWidth - `${g.c.m}`.length * 40) / 2, 235, 10);
+			drawPixel(`${roundInteger(g.c.t)}`, (canvasWidth - `${roundInteger(g.c.t)}`.length * 50) / 2, 305, 20);
 		}
 
 		if (g.s.v) {
-			drawPixel(`${g.s.m}`, (width - `${g.s.m}`.length * 20) / 2, 255, 5);
-			drawPixel(`${roundInteger(g.s.t)}`, (width - `${roundInteger(g.s.t)}`.length * 50) / 2, 305, 10);
+			drawPixel(`${g.s.m}`, (canvasWidth - `${g.s.m}`.length * 20) / 2, 255, 5);
+			drawPixel(`${roundInteger(g.s.t)}`, (canvasWidth - `${roundInteger(g.s.t)}`.length * 50) / 2, 305, 10);
 		}
 
 		if (g.o.v) {
-			drawPixel(`${g.o.m}`, (width - `${g.o.m}`.length * 64) / 2, 275, 15);
+			drawPixel(`${g.o.m}`, (canvasWidth - `${g.o.m}`.length * 64) / 2, 275, 15);
 		}
 
 		if (g.t.v) {
@@ -535,7 +535,7 @@
 			}
 
 			for (i = 0; i < bs.length; i++) {
-				if (bs[i].x >= width) {
+				if (bs[i].x >= canvasWidth) {
 					break;
 				}
 			}
@@ -690,7 +690,7 @@
 	// Start Game
 	function startGame() {
 		g.s.v = 1;
-		p.x = -width;
+		p.x = -canvasWidth;
 		p.y = 80;
 		p.a = 1;
 		setGameIntervals();
