@@ -93,8 +93,8 @@
 	let asteroids = [];
 
 	// Stars
-	let ss = [];
-	let bsz = 100;
+	let stars = [];
+	const backgroundStarCount = 100;
 
 	// Bullets
 	let bullets = [];
@@ -301,45 +301,44 @@
 	}
 
 	// Stars
-	function createStars(sz, p = 0) {
-		if (sz === 0 || ss.length === levels[currentLevel - 1].starLimit + bsz) {
+	function createStars(count, hasPower = false) {
+		if (count === 0 || stars.length === levels[currentLevel - 1].starLimit + backgroundStarCount) {
 			return;
 		}
-		let st = sprite({
+		let star = sprite({
 			x: canvasWidth + randomValue(55, 0, 20),
 			y: randomValue(25, 3, 25),
-			s: 20, // Size
+			size: 20, // Size
 			a: 0, // Alpha/Opacity
 			da: 2,
-			p: p,
+			hasPower,
 			dx: 10,
 			update() {
-				if (this.p) {
+				if (this.hasPower) {
 					this.a += this.da;
 					if (this.a >= 150 || this.a <= 0) {
 						this.da *= -1;
 					}
 				}
-				this.x -= this.p ? (this.dx * 3) / 2 : this.dx;
+				this.x -= this.hasPower ? (this.dx * 3) / 2 : this.dx;
 
-				if (this.x <= -this.s) {
+				if (this.x <= -this.size) {
 					this.x = canvasWidth;
 				}
 			},
 			render() {
-				let sz = this.p ? this.s : this.s / 2;
-
+				let renderSize = this.hasPower ? this.size : this.size / 2;
 				ctx.translate(this.x, this.y);
 				ctx.beginPath();
-				ctx.fillStyle = this.p ? '#ffcf40' : '#fff';
-				ctx.ellipse(sz, sz, 1, sz, 0, 0, tp);
-				ctx.ellipse(sz, sz, 1, sz, angleRadianRatio * 90, 0, tp);
+				ctx.fillStyle = this.hasPower ? '#ffcf40' : '#fff';
+				ctx.ellipse(renderSize, renderSize, 1, renderSize, 0, 0, tp);
+				ctx.ellipse(renderSize, renderSize, 1, renderSize, angleRadianRatio * 90, 0, tp);
 				ctx.fill();
 				ctx.closePath();
-				if (this.p) {
+				if (this.hasPower) {
 					ctx.beginPath();
 					ctx.fillStyle = `rgba(255,207,64,${this.a / 255})`;
-					ctx.arc(sz, sz, (4 * sz) / 5, 0, tp);
+					ctx.arc(renderSize, renderSize, (4 * renderSize) / 5, 0, tp);
 					ctx.fill();
 					ctx.closePath();
 				}
@@ -347,8 +346,8 @@
 			},
 		});
 
-		ss.push(st);
-		createStars(sz - 1);
+		stars.push(star);
+		createStars(count - 1);
 	}
 
 	// Unset Intervals
@@ -359,7 +358,7 @@
 	// Set Intervals
 	function setGameIntervals() {
 		ii = intervalMethod(ii, 1, levels[currentLevel - 1].time, () => {
-			createStars(levels[currentLevel - 1].starFrequency, 1);
+			createStars(levels[currentLevel - 1].starFrequency, true);
 			createAsteroids(levels[currentLevel - 1].asteroidFrequency);
 		});
 	}
@@ -494,7 +493,7 @@
 		update() {
 			let i, j;
 
-			[].concat(...[player], ...ss, ...asteroids, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...[player], ...stars, ...asteroids, ...bullets, ...[battery]).map((sr) => {
 				sr?.update();
 			});
 
@@ -542,14 +541,14 @@
 			}
 			bullets.splice(i, 1);
 
-			for (i = 0; i < ss.length; i++) {
-				if (player?.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
+			for (i = 0; i < stars.length; i++) {
+				if (player?.collidesWith(stars[i]) && stars[i].hasPower && battery.percent > 0) {
 					sx.pw.play();
-					battery.percent += ss[i].s;
+					battery.percent += stars[i].size;
 					break;
 				}
 			}
-			ss.splice(i, 1);
+			stars.splice(i, 1);
 			if (player) {
 				if (player.score > player.hiScore) {
 					player.hiScore = player.score;
@@ -661,7 +660,7 @@
 		},
 		render() {
 			renderBackground();
-			[].concat(...ss, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...stars, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
 				sr?.render();
 			});
 			renderTexts();
@@ -670,13 +669,13 @@
 
 	let ii = null;
 
-	createStars(bsz);
+	createStars(backgroundStarCount);
 	lp.start();
 
 	// Reset Game
 	function resetGame() {
 		asteroids.length = 0;
-		ss.length = bsz;
+		stars.length = backgroundStarCount;
 		g.o.v = 0;
 		g.m.v = 1;
 		g.h.v = 1;
