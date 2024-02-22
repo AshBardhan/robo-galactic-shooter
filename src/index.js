@@ -120,49 +120,49 @@
 	}
 
 	// Battery
-	let b = sprite({
+	let battery = sprite({
 		x: canvasWidth - 100,
 		y: 15,
-		w: 50,
-		h: 30,
-		p: 100, // Percent Left
-		ccs: ['#05A84E', '#FE251D', '#F7C808'],
-		t: 1,
-		gcl() {
+		width: 50,
+		height: 30,
+		percent: 100, // Percent Left
+		colorCodes: ['#05A84E', '#FE251D', '#F7C808'],
+		time: 1,
+		getColorIndex() {
 			// Battery Level that will determine its color and blinking
-			return this.p <= 20 ? 1 : this.p <= 60 ? 2 : 0;
+			return this.percent <= 20 ? 1 : this.percent <= 60 ? 2 : 0;
 		},
-		gcc() {
-			return this.ccs[this.gcl()];
+		getColorCode() {
+			return this.colorCodes[this.getColorIndex()];
 		},
 		update() {
-			if (this.p >= 100) {
-				this.p = 100;
+			if (this.percent >= 100) {
+				this.percent = 100;
 			}
-			if (this.p <= 0) {
-				this.p = 0;
+			if (this.percent <= 0) {
+				this.percent = 0;
 			}
 
-			if (this.gcl()) {
-				this.t -= 1 / (10 * this.gcl());
-				if (roundInteger(this.t) < -1) {
-					this.t = 1;
+			if (this.getColorIndex()) {
+				this.time -= 1 / (10 * this.getColorIndex());
+				if (roundInteger(this.time) < -1) {
+					this.time = 1;
 				}
 			}
 		},
 		render() {
-			if (roundInteger(this.t) >= 0) {
+			if (roundInteger(this.time) >= 0) {
 				ctx.translate(this.x, this.y);
 				ctx.beginPath();
 				ctx.strokeStyle = '#fff';
 				ctx.fillStyle = '#fff';
 				ctx.lineWidth = 4;
-				ctx.strokeRect(0, 0, this.w, this.h);
-				ctx.fillRect(this.w + 4, this.h / 2 - 10, 4, 20);
+				ctx.strokeRect(0, 0, this.width, this.height);
+				ctx.fillRect(this.width + 4, this.height / 2 - 10, 4, 20);
 				ctx.closePath();
 				ctx.beginPath();
-				ctx.fillStyle = this.gcc();
-				ctx.fillRect(2, 2, (this.p / 100) * (this.w - 4), this.h - 4);
+				ctx.fillStyle = this.getColorCode();
+				ctx.fillRect(2, 2, (this.percent / 100) * (this.width - 4), this.height - 4);
 				ctx.closePath();
 				ctx.resetTransform();
 			}
@@ -493,7 +493,7 @@
 		update() {
 			let i, j;
 
-			[].concat(...[p], ...ss, ...a, ...bs, ...[b]).map((sr) => {
+			[].concat(...[p], ...ss, ...a, ...bs, ...[battery]).map((sr) => {
 				sr.update();
 			});
 
@@ -518,7 +518,7 @@
 					break;
 				}
 				if (p.collidesWith(a[i]) && !g.s.v) {
-					b.p -= a[i].p * 10;
+					battery.percent -= a[i].p * 10;
 					p.x -= a[i].p * 20;
 					a[i].p = 0;
 					sx.php.play();
@@ -542,9 +542,9 @@
 			bs.splice(i, 1);
 
 			for (i = 0; i < ss.length; i++) {
-				if (p.collidesWith(ss[i]) && ss[i].p && b.p > 0) {
+				if (p.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
 					sx.pw.play();
-					b.p += ss[i].s;
+					battery.percent += ss[i].s;
 					break;
 				}
 			}
@@ -576,7 +576,7 @@
 				}
 			}
 
-			if (b.p <= 0 && p.a) {
+			if (battery.percent <= 0 && p.a) {
 				endGame();
 			}
 
@@ -603,7 +603,7 @@
 					g.c.t = 9;
 					g.c.v = 0;
 					p.s = 0;
-					b.p = 100;
+					battery.percent = 100;
 					startGame();
 				}
 			}
@@ -654,12 +654,12 @@
 			}
 
 			if (!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
-				b.p -= 1 / 120;
+				battery.percent -= 1 / 120;
 			}
 		},
 		render() {
 			renderBackground();
-			[].concat(...ss, ...[p], ...a, ...bs, ...[b]).map((sr) => {
+			[].concat(...ss, ...[p], ...a, ...bs, ...[battery]).map((sr) => {
 				sr.render();
 			});
 			renderTexts();
@@ -681,7 +681,7 @@
 		p.la = 0;
 		p.s = 0;
 		l = 1;
-		b.p = 100;
+		battery.percent = 100;
 		g.c.t = 9;
 		g.o.t = 3;
 		g.s.t = 3;
