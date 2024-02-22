@@ -104,9 +104,11 @@
 	const maxLevel = 50;
 	let currentLevel = 1;
 
-	// Flipping Scores
-	let fla = 99999;
-	let fls = 9999999999;
+	// Flipping Score and Asteroid Hit
+	const flip = {
+		maxScore: 9999999999,
+		maxHit: 99999,
+	};
 
 	for (let i = 0; i < maxLevel; i++) {
 		levels.push({
@@ -553,9 +555,9 @@
 					player.hiScore = player.score;
 				}
 
-				if (player.score >= fls) {
+				if (player.score >= flip.maxScore) {
 					player.score = 0;
-					player.hiScore = fls;
+					player.hiScore = flip.maxScore;
 				}
 
 				if (player.level >= levels[currentLevel - 1].target) {
@@ -569,7 +571,7 @@
 						unsetGameIntervals();
 						setGameIntervals();
 					} else {
-						if (player.level === fla) {
+						if (player.level === flip.maxHit) {
 							player.level = 0;
 						}
 					}
