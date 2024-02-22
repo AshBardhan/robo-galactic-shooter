@@ -97,7 +97,7 @@
 	let bsz = 100;
 
 	// Bullets
-	let bs = [];
+	let bullets = [];
 
 	// Levels
 	let ls = [];
@@ -170,23 +170,23 @@
 	});
 
 	// Bullets
-	function cbt(x, y, w, h) {
-		let bt;
-		let bti = new Image();
-		bti.src = '../assets/bullet.svg';
-		bti.onload = function () {
-			bt = sprite({
-				x: x + w,
-				y: y + h / 2,
+	function createBullet(player) {
+		let bullet;
+		let bulletImage = new Image();
+		bulletImage.src = '../assets/bullet.svg';
+		bulletImage.onload = function () {
+			bullet = sprite({
+				x: player.x + player.width,
+				y: player.y + player.height / 2,
 				dx: 10,
 				width: 120,
 				height: 45,
-				image: bti,
+				image: bulletImage,
 				update() {
 					this.x += this.dx;
 				},
 			});
-			bs.push(bt);
+			bullets.push(bullet);
 		};
 	}
 
@@ -229,7 +229,7 @@
 						if (keyPressed('space') && this.bdt > 0.1) {
 							sx.sh.play();
 							this.bdt = 0;
-							cbt(this.x, this.y, this.width, this.height);
+							createBullet(this);
 						}
 					} else {
 						this.bdt = 0;
@@ -493,13 +493,13 @@
 		update() {
 			let i, j;
 
-			[].concat(...[p], ...ss, ...a, ...bs, ...[battery]).map((sr) => {
+			[].concat(...[p], ...ss, ...a, ...bullets, ...[battery]).map((sr) => {
 				sr.update();
 			});
 
 			for (i = 0; i < a.length; i++) {
-				for (j = 0; j < bs.length; j++) {
-					if (detectCollosion(bs[j], a[i])) {
+				for (j = 0; j < bullets.length; j++) {
+					if (detectCollosion(bullets[j], a[i])) {
 						if (!--a[i].p) {
 							p.la += 1;
 							sx.bhc.play();
@@ -512,8 +512,8 @@
 						break;
 					}
 				}
-				if (j !== bs.length) {
-					bs.splice(j, 1);
+				if (j !== bullets.length) {
+					bullets.splice(j, 1);
 					p.s += 50;
 					break;
 				}
@@ -534,12 +534,12 @@
 				a.splice(i, 1);
 			}
 
-			for (i = 0; i < bs.length; i++) {
-				if (bs[i].x >= canvasWidth) {
+			for (i = 0; i < bullets.length; i++) {
+				if (bullets[i].x >= canvasWidth) {
 					break;
 				}
 			}
-			bs.splice(i, 1);
+			bullets.splice(i, 1);
 
 			for (i = 0; i < ss.length; i++) {
 				if (p.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
@@ -659,7 +659,7 @@
 		},
 		render() {
 			renderBackground();
-			[].concat(...ss, ...[p], ...a, ...bs, ...[battery]).map((sr) => {
+			[].concat(...ss, ...[p], ...a, ...bullets, ...[battery]).map((sr) => {
 				sr.render();
 			});
 			renderTexts();
