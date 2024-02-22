@@ -30,6 +30,8 @@
 	let canvasHeight = kn.canvas.height;
 	let keyPressed = kn.keys.pressed.bind(kn);
 	let sprite = kn.sprite.bind(kn);
+	let gameInterval = null;
+	let gameLoop;
 
 	// Check Collision  between two objects 'o1' and 'o2'
 	function detectCollosion(o1, o2) {
@@ -352,12 +354,12 @@
 
 	// Unset Intervals
 	function unsetGameIntervals() {
-		intervalMethod(ii, 0);
+		intervalMethod(gameInterval, 0);
 	}
 
 	// Set Intervals
 	function setGameIntervals() {
-		ii = intervalMethod(ii, 1, levels[currentLevel - 1].time, () => {
+		gameInterval = intervalMethod(gameInterval, 1, levels[currentLevel - 1].time, () => {
 			createStars(levels[currentLevel - 1].starFrequency, true);
 			createAsteroids(levels[currentLevel - 1].asteroidFrequency);
 		});
@@ -488,7 +490,41 @@
 		}
 	}
 
-	let lp = kn.gameLoop({
+	// Reset Game
+	function resetGame() {
+		asteroids.length = 0;
+		stars.length = backgroundStarCount;
+		g.o.v = 0;
+		g.m.v = 1;
+		g.h.v = 1;
+		player.hit = 0;
+		player.score = 0;
+		currentLevel = 1;
+		battery.percent = 100;
+		g.c.t = 9;
+		g.o.t = 3;
+		g.s.t = 3;
+	}
+
+	// Start Game
+	function startGame() {
+		g.s.v = 1;
+		player.x = -canvasWidth;
+		player.y = 80;
+		player.alive = 1;
+		setGameIntervals();
+		kn.keys.bind('p', () => {
+			if (!gameLoop.isStopped) {
+				gameLoop.stop();
+				unsetGameIntervals();
+			} else {
+				gameLoop.start();
+				setGameIntervals();
+			}
+		});
+	}
+
+	gameLoop = kn.gameLoop({
 		fps: 60,
 		update() {
 			let i, j;
@@ -667,42 +703,6 @@
 		},
 	});
 
-	let ii = null;
-
 	createStars(backgroundStarCount);
-	lp.start();
-
-	// Reset Game
-	function resetGame() {
-		asteroids.length = 0;
-		stars.length = backgroundStarCount;
-		g.o.v = 0;
-		g.m.v = 1;
-		g.h.v = 1;
-		player.hit = 0;
-		player.score = 0;
-		currentLevel = 1;
-		battery.percent = 100;
-		g.c.t = 9;
-		g.o.t = 3;
-		g.s.t = 3;
-	}
-
-	// Start Game
-	function startGame() {
-		g.s.v = 1;
-		player.x = -canvasWidth;
-		player.y = 80;
-		player.alive = 1;
-		setGameIntervals();
-		kn.keys.bind('p', () => {
-			if (!lp.isStopped) {
-				lp.stop();
-				unsetGameIntervals();
-			} else {
-				lp.start();
-				setGameIntervals();
-			}
-		});
-	}
+	gameLoop.start();
 })();
