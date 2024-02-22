@@ -431,12 +431,12 @@
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${l}/${ml}`, 380, 10);
 		drawPixel(`Target`, 280, 35);
-		drawPixel(`${p.la}/${ls[l - 1].ta}`, 380, 35);
+		drawPixel(`${p?.la ?? 0}/${ls[l - 1].ta}`, 380, 35);
 
 		drawPixel(`Score`, 550, 10);
-		drawPixel(`${p.s}`, 680, 10);
+		drawPixel(`${p?.s ?? 0}`, 680, 10);
 		drawPixel(`Hi-Score`, 550, 35);
-		drawPixel(`${p.hs}`, 680, 35);
+		drawPixel(`${p?.hs ?? 0}`, 680, 35);
 
 		if (g.h.v) {
 			drawPixel(`${g.h.m[0]}`, (canvasWidth - `${g.h.m[0]}`.length * 55) / 2, 125, 15);
@@ -494,7 +494,7 @@
 			let i, j;
 
 			[].concat(...[p], ...ss, ...a, ...bullets, ...[battery]).map((sr) => {
-				sr.update();
+				sr?.update();
 			});
 
 			for (i = 0; i < a.length; i++) {
@@ -517,7 +517,7 @@
 					p.s += 50;
 					break;
 				}
-				if (p.collidesWith(a[i]) && !g.s.v) {
+				if (p?.collidesWith(a[i]) && !g.s.v) {
 					battery.percent -= a[i].p * 10;
 					p.x -= a[i].p * 20;
 					a[i].p = 0;
@@ -542,36 +542,37 @@
 			bullets.splice(i, 1);
 
 			for (i = 0; i < ss.length; i++) {
-				if (p.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
+				if (p?.collidesWith(ss[i]) && ss[i].p && battery.percent > 0) {
 					sx.pw.play();
 					battery.percent += ss[i].s;
 					break;
 				}
 			}
 			ss.splice(i, 1);
+			if (p) {
+				if (p.s > p.hs) {
+					p.hs = p.s;
+				}
 
-			if (p.s > p.hs) {
-				p.hs = p.s;
-			}
+				if (p.s >= fls) {
+					p.s = 0;
+					p.hs = fls;
+				}
 
-			if (p.s >= fls) {
-				p.s = 0;
-				p.hs = fls;
-			}
-
-			if (p.la >= ls[l - 1].ta) {
-				if (l < ml) {
-					l += 1;
-					p.la = 0;
-					g.t.i = 2;
-					g.t.v = 1;
-					g.t.t = 2;
-					sx.lu.play();
-					unsetGameIntervals();
-					setGameIntervals();
-				} else {
-					if (p.la === fla) {
+				if (p.la >= ls[l - 1].ta) {
+					if (l < ml) {
+						l += 1;
 						p.la = 0;
+						g.t.i = 2;
+						g.t.v = 1;
+						g.t.t = 2;
+						sx.lu.play();
+						unsetGameIntervals();
+						setGameIntervals();
+					} else {
+						if (p.la === fla) {
+							p.la = 0;
+						}
 					}
 				}
 			}
@@ -660,7 +661,7 @@
 		render() {
 			renderBackground();
 			[].concat(...ss, ...[p], ...a, ...bullets, ...[battery]).map((sr) => {
-				sr.render();
+				sr?.render();
 			});
 			renderTexts();
 		},
