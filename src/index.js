@@ -208,7 +208,7 @@
 			dy: 2,
 			dt: 0,
 			bdt: 0,
-			level: 0,
+			hit: 0,
 			score: 0,
 			hiScore: localStorage.getItem('hiScore') || 0,
 			update() {
@@ -432,7 +432,7 @@
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
 		drawPixel(`Target`, 280, 35);
-		drawPixel(`${player?.level ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
+		drawPixel(`${player?.hit ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
 
 		drawPixel(`Score`, 550, 10);
 		drawPixel(`${player?.score ?? 0}`, 680, 10);
@@ -502,7 +502,7 @@
 				for (j = 0; j < bullets.length; j++) {
 					if (detectCollosion(bullets[j], asteroids[i])) {
 						if (!--asteroids[i].power) {
-							player.level += 1;
+							player.hit += 1;
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
@@ -560,10 +560,10 @@
 					player.hiScore = flip.maxScore;
 				}
 
-				if (player.level >= levels[currentLevel - 1].target) {
+				if (player.hit >= levels[currentLevel - 1].target) {
 					if (currentLevel < maxLevel) {
 						currentLevel += 1;
-						player.level = 0;
+						player.hit = 0;
 						g.t.i = 2;
 						g.t.v = 1;
 						g.t.t = 2;
@@ -571,8 +571,8 @@
 						unsetGameIntervals();
 						setGameIntervals();
 					} else {
-						if (player.level === flip.maxHit) {
-							player.level = 0;
+						if (player.hit === flip.maxHit) {
+							player.hit = 0;
 						}
 					}
 				}
@@ -680,7 +680,7 @@
 		g.o.v = 0;
 		g.m.v = 1;
 		g.h.v = 1;
-		player.level = 0;
+		player.hit = 0;
 		player.score = 0;
 		currentLevel = 1;
 		battery.percent = 100;
