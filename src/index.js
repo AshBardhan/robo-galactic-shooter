@@ -100,22 +100,22 @@
 	let bullets = [];
 
 	// Levels
-	let ls = [];
-	let ml = 50;
-	let l = 1;
+	let levels = [];
+	const maxLevel = 50;
+	let currentLevel = 1;
 
 	// Flipping Scores
 	let fla = 99999;
 	let fls = 9999999999;
 
-	for (let i = 0; i < ml; i++) {
-		ls.push({
-			ti: Math.ceil((ml - i) / 5) * 250,
-			fa: (i % 5) + 2,
-			ta: (i + 1) * 5,
-			ma: Math.ceil((i + 1) / 5) * 20,
-			fs: (i % 5) + 1,
-			ms: i + 5,
+	for (let i = 0; i < maxLevel; i++) {
+		levels.push({
+			time: Math.ceil((maxLevel - i) / 5) * 250,
+			asteroidFrequency: (i % 5) + 2,
+			target: (i + 1) * 5,
+			asteroidLimit: Math.ceil((i + 1) / 5) * 20,
+			starFrequency: (i % 5) + 1,
+			starLimit: i + 5,
 		});
 	}
 
@@ -244,7 +244,7 @@
 
 	// Asteroid
 	function createAsteroids(sz) {
-		if (sz === 0 || a.length === ls[l - 1].ma) {
+		if (sz === 0 || asteroids.length === levels[currentLevel - 1].asteroidLimit) {
 			return;
 		}
 
@@ -300,7 +300,7 @@
 
 	// Stars
 	function createStars(sz, p = 0) {
-		if (sz === 0 || ss.length === ls[l - 1].ms + bsz) {
+		if (sz === 0 || ss.length === levels[currentLevel - 1].starLimit + bsz) {
 			return;
 		}
 		let st = sprite({
@@ -356,9 +356,9 @@
 
 	// Set Intervals
 	function setGameIntervals() {
-		ii = intervalMethod(ii, 1, ls[l - 1].ti, () => {
-			createStars(ls[l - 1].fs, 1);
-			createAsteroids(ls[l - 1].fa);
+		ii = intervalMethod(ii, 1, levels[currentLevel - 1].time, () => {
+			createStars(levels[currentLevel - 1].starFrequency, 1);
+			createAsteroids(levels[currentLevel - 1].asteroidFrequency);
 		});
 	}
 
@@ -428,9 +428,9 @@
 
 	function renderTexts() {
 		drawPixel(`Level`, 280, 10);
-		drawPixel(`${l}/${ml}`, 380, 10);
+		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
 		drawPixel(`Target`, 280, 35);
-		drawPixel(`${player?.level ?? 0}/${ls[l - 1].ta}`, 380, 35);
+		drawPixel(`${player?.level ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
 
 		drawPixel(`Score`, 550, 10);
 		drawPixel(`${player?.score ?? 0}`, 680, 10);
@@ -558,9 +558,9 @@
 					player.hiScore = fls;
 				}
 
-				if (player.level >= ls[l - 1].ta) {
-					if (l < ml) {
-						l += 1;
+				if (player.level >= levels[currentLevel - 1].target) {
+					if (currentLevel < maxLevel) {
+						currentLevel += 1;
 						player.level = 0;
 						g.t.i = 2;
 						g.t.v = 1;
@@ -680,7 +680,7 @@
 		g.h.v = 1;
 		player.level = 0;
 		player.score = 0;
-		l = 1;
+		currentLevel = 1;
 		battery.percent = 100;
 		g.c.t = 9;
 		g.o.t = 3;
