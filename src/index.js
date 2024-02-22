@@ -90,7 +90,7 @@
 	}
 
 	// Asteroids
-	let a = [];
+	let asteroids = [];
 
 	// Stars
 	let ss = [];
@@ -248,51 +248,51 @@
 			return;
 		}
 
-		let as;
-		let ai = new Image();
-		ai.src = '../assets/asteroid.svg';
-		ai.onload = function () {
-			as = sprite({
+		let asteroid;
+		let asteroidImage = new Image();
+		asteroidImage.src = '../assets/asteroid.svg';
+		asteroidImage.onload = function () {
+			asteroid = sprite({
 				x: 2 * canvasWidth,
 				y: randomValue(440, 100),
-				dg: 0,
-				sa: randomValue(5, 1), // Spin Angle
-				s: randomValue(4, 1, 25),
+				degree: 0,
+				spin: randomValue(5, 1),
+				size: randomValue(4, 1, 25),
 				dx: randomValue(5, 2, 2),
-				cc: randomValue(12, 1, 30),
-				image: ai,
-				get p() {
-					return this.s / 25;
+				colorCode: randomValue(12, 1, 30),
+				image: asteroidImage,
+				get power() {
+					return this.size / 25;
 				},
 				get width() {
-					return this.s;
+					return this.size;
 				},
 				get height() {
-					return this.s;
+					return this.size;
 				},
 				update() {
 					this.x -= this.dx;
 
-					if (this.x <= -this.s) {
+					if (this.x <= -this.size) {
 						this.x = canvasWidth;
 					}
 
-					this.dg -= this.sa;
+					this.degree -= this.spin;
 				},
 				render() {
 					ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-					ctx.rotate(this.dg * angleRadianRatio);
-					let sz = (this.p * 25) / 100;
-					ctx.scale(sz, sz);
+					ctx.rotate(this.degree * angleRadianRatio);
+					let renderSize = (this.power * 25) / 100;
+					ctx.scale(renderSize, renderSize);
 					ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
 					ctx.beginPath();
-					ctx.filter = `hue-rotate(${this.cc}deg)`;
+					ctx.filter = `hue-rotate(${this.colorCode}deg)`;
 					this.draw();
 					ctx.filter = 'none';
 					ctx.resetTransform();
 				},
 			});
-			a.push(as);
+			asteroids.push(asteroid);
 		};
 
 		createAsteroids(sz - 1);
@@ -492,14 +492,14 @@
 		update() {
 			let i, j;
 
-			[].concat(...[player], ...ss, ...a, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...[player], ...ss, ...asteroids, ...bullets, ...[battery]).map((sr) => {
 				sr?.update();
 			});
 
-			for (i = 0; i < a.length; i++) {
+			for (i = 0; i < asteroids.length; i++) {
 				for (j = 0; j < bullets.length; j++) {
-					if (detectCollosion(bullets[j], a[i])) {
-						if (!--a[i].p) {
+					if (detectCollosion(bullets[j], asteroids[i])) {
+						if (!--asteroids[i].power) {
 							player.level += 1;
 							sx.bhc.play();
 						} else {
@@ -516,10 +516,10 @@
 					player.score += 50;
 					break;
 				}
-				if (player?.collidesWith(a[i]) && !g.s.v) {
-					battery.percent -= a[i].p * 10;
-					player.x -= a[i].p * 20;
-					a[i].p = 0;
+				if (player?.collidesWith(asteroids[i]) && !g.s.v) {
+					battery.percent -= asteroids[i].power * 10;
+					player.x -= asteroids[i].power * 20;
+					asteroids[i].power = 0;
 					sx.php.play();
 					sx.bhc.play();
 					g.t.i = 1;
@@ -529,8 +529,8 @@
 				}
 			}
 
-			if (i !== a.length && a[i].p === 0) {
-				a.splice(i, 1);
+			if (i !== asteroids.length && asteroids[i].power === 0) {
+				asteroids.splice(i, 1);
 			}
 
 			for (i = 0; i < bullets.length; i++) {
@@ -659,7 +659,7 @@
 		},
 		render() {
 			renderBackground();
-			[].concat(...ss, ...[player], ...a, ...bullets, ...[battery]).map((sr) => {
+			[].concat(...ss, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
 				sr?.render();
 			});
 			renderTexts();
@@ -673,7 +673,7 @@
 
 	// Reset Game
 	function resetGame() {
-		a.length = 0;
+		asteroids.length = 0;
 		ss.length = bsz;
 		g.o.v = 0;
 		g.m.v = 1;
