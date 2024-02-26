@@ -46,12 +46,13 @@
 		return Math.floor(Math.random() * end + start) * factor;
 	}
 
-	function drawPixel(s, dx = 0, dy = 0, sz = 3, fc = '#fff') {
+	// Prints string text in pixelated form
+	function drawPixel(str, dx = 0, dy = 0, size = 3, color = '#fff') {
 		let needed = [];
 		let i, x, y, ch;
-		s = s.toUpperCase();
-		for (i = 0; i < s.length; i++) {
-			ch = chrs[s.charAt(i)];
+		str = str.toUpperCase();
+		for (i = 0; i < str.length; i++) {
+			ch = chrs[str.charAt(i)];
 			if (ch) {
 				needed.push(ch);
 			}
@@ -59,7 +60,7 @@
 
 		ctx.translate(dx, dy);
 		ctx.beginPath();
-		ctx.fillStyle = fc;
+		ctx.fillStyle = color;
 		let currX = 0;
 		for (i = 0; i < needed.length; i++) {
 			ch = needed[i];
@@ -69,13 +70,13 @@
 				let row = ch[y];
 				for (x = 0; x < row.length; x++) {
 					if (row[x]) {
-						ctx.fillRect(currX + x * sz, currY, sz, sz);
+						ctx.fillRect(currX + x * size, currY, size, size);
 					}
 				}
-				addX = Math.max(addX, row.length * sz);
-				currY += sz;
+				addX = Math.max(addX, row.length * size);
+				currY += size;
 			}
-			currX += sz + addX;
+			currX += size + addX;
 		}
 		ctx.closePath();
 		ctx.resetTransform();
@@ -112,6 +113,7 @@
 		maxHit: 99999,
 	};
 
+	// Initiate all level rules
 	for (let i = 0; i < maxLevel; i++) {
 		levels.push({
 			time: Math.ceil((maxLevel - i) / 5) * 250,
@@ -123,7 +125,7 @@
 		});
 	}
 
-	// Battery
+	// Generate 'Battery' sprites
 	let battery = sprite({
 		x: canvasWidth - 100,
 		y: 15,
@@ -173,7 +175,7 @@
 		},
 	});
 
-	// Bullets
+	// Generate 'Bullet' sprites
 	function createBullet(player) {
 		let bullet;
 		let bulletImage = new Image();
@@ -194,7 +196,7 @@
 		};
 	}
 
-	// Player
+	// Generate 'Player' sprites
 	let player;
 	let playerImage = new Image();
 	playerImage.src = '../assets/player.svg';
@@ -246,7 +248,7 @@
 		});
 	};
 
-	// Asteroid
+	// Generate 'Asteroid' sprites
 	function createAsteroids(count) {
 		if (count === 0 || asteroids.length === levels[currentLevel - 1].asteroidLimit) {
 			return;
@@ -302,7 +304,7 @@
 		createAsteroids(count - 1);
 	}
 
-	// Stars
+	// Generate 'Star' sprites
 	function createStars(count, hasPower = false) {
 		if (count === 0 || stars.length === levels[currentLevel - 1].starLimit + backgroundStarCount) {
 			return;
@@ -352,12 +354,12 @@
 		createStars(count - 1);
 	}
 
-	// Unset Intervals
+	// Unset game intervals
 	function unsetGameIntervals() {
 		intervalMethod(gameInterval, 0);
 	}
 
-	// Set Intervals
+	// Set game intervals
 	function setGameIntervals() {
 		gameInterval = intervalMethod(gameInterval, 1, levels[currentLevel - 1].time, () => {
 			createStars(levels[currentLevel - 1].starFrequency, true);
@@ -365,7 +367,7 @@
 		});
 	}
 
-	// End Game
+	// End game
 	function endGame() {
 		player.alive = 0;
 		gamePlay.continue.visible = 1;
@@ -377,7 +379,7 @@
 		return Math.ceil(val);
 	}
 
-	// Game Play Titles
+	// Gameplay message map based on different sub-components of game
 	let gamePlay = {
 		heading: {
 			visible: 1,
@@ -423,6 +425,7 @@
 		},
 	};
 
+	// Render text based on different sub-components of game
 	function renderTexts() {
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
@@ -484,7 +487,7 @@
 		}
 	}
 
-	// Reset Game
+	// Reset game once it is over
 	function resetGame() {
 		asteroids.length = 0;
 		stars.length = backgroundStarCount;
@@ -500,7 +503,7 @@
 		gamePlay.start.time = 3;
 	}
 
-	// Start Game
+	// Start game
 	function startGame() {
 		gamePlay.start.visible = 1;
 		player.x = -canvasWidth;
