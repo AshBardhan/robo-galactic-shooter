@@ -214,13 +214,13 @@
 			score: 0,
 			hiScore: localStorage.getItem('hiScore') || 0,
 			update() {
-				if (!g.m.v) {
+				if (!gamePlay.menu.visible) {
 					if (this.alive) {
 						this.bdt += 1 / 60;
-						if (keyPressed('left') && this.x >= 0 && !g.s.v) {
+						if (keyPressed('left') && this.x >= 0 && !gamePlay.start.visible) {
 							this.x -= this.dx;
 						}
-						if (keyPressed('right') && this.x + this.width <= (2 * canvasWidth) / 3 && !g.s.v) {
+						if (keyPressed('right') && this.x + this.width <= (2 * canvasWidth) / 3 && !gamePlay.start.visible) {
 							this.x += this.dx;
 						}
 						if (keyPressed('up') && this.y >= 50) {
@@ -239,7 +239,7 @@
 						this.y += 10;
 					}
 				}
-				if (g.s.v) {
+				if (gamePlay.start.visible) {
 					this.x += this.dx;
 				}
 			},
@@ -368,7 +368,7 @@
 	// End Game
 	function endGame() {
 		player.alive = 0;
-		g.c.v = 1;
+		gamePlay.continue.visible = 1;
 		unsetGameIntervals();
 		kn.keys.unbind('p');
 	}
@@ -378,54 +378,48 @@
 	}
 
 	// Game Play Titles
-	let g = {
-		h: {
-			// Heading
-			v: 1,
-			m: ['Robo', 'Galactic', 'Shooter'],
+	let gamePlay = {
+		heading: {
+			visible: 1,
+			messages: ['Robo', 'Galactic', 'Shooter'],
 		},
-		m: {
-			// Menu
-			v: 1,
+		menu: {
+			visible: 1,
 			dt: 0,
-			l: [
+			options: [
 				{
-					m: 'Play Game',
-					s: 1,
+					message: 'Play Game',
+					selected: 1,
 				},
 				{
-					m: 'Instructions',
-					s: 0,
+					message: 'Instructions',
+					selected: 0,
 				},
 			],
 		},
-		i: {
-			// Instructions
-			v: 0,
+		instructions: {
+			visible: 0,
 		},
-		s: {
-			// Game Start
-			v: 0,
-			t: 3,
-			m: 'start game',
+		start: {
+			visible: 0,
+			time: 3,
+			message: 'start game',
 		},
-		t: {
-			v: 0,
-			t: 2,
-			i: 0,
-			m: ['boom', 'ouch', 'level up'],
+		action: {
+			visible: 0,
+			time: 2,
+			index: 0,
+			messages: ['boom', 'ouch', 'level up'],
 		},
-		c: {
-			// Continue Game
-			v: 0,
-			t: 9,
-			m: 'continue',
+		continue: {
+			visible: 0,
+			time: 9,
+			message: 'continue',
 		},
-		o: {
-			// Game Over
-			v: 0,
-			t: 3,
-			m: 'game over',
+		end: {
+			visible: 0,
+			time: 3,
+			message: 'game over',
 		},
 	};
 
@@ -440,18 +434,18 @@
 		drawPixel(`Hi-Score`, 550, 35);
 		drawPixel(`${player?.hiScore ?? 0}`, 680, 35);
 
-		if (g.h.v) {
-			drawPixel(`${g.h.m[0]}`, (canvasWidth - `${g.h.m[0]}`.length * 55) / 2, 125, 15);
-			drawPixel(`${g.h.m[1]}`, (canvasWidth - `${g.h.m[1]}`.length * 60) / 2, 225, 15);
-			drawPixel(`${g.h.m[2]}`, (canvasWidth - `${g.h.m[2]}`.length * 56) / 2, 325, 15);
+		if (gamePlay.heading.visible) {
+			drawPixel(`${gamePlay.heading.messages[0]}`, (canvasWidth - `${gamePlay.heading.messages[0]}`.length * 55) / 2, 125, 15);
+			drawPixel(`${gamePlay.heading.messages[1]}`, (canvasWidth - `${gamePlay.heading.messages[1]}`.length * 60) / 2, 225, 15);
+			drawPixel(`${gamePlay.heading.messages[2]}`, (canvasWidth - `${gamePlay.heading.messages[2]}`.length * 56) / 2, 325, 15);
 		}
 
-		if (g.m.v) {
-			drawPixel(`${g.m.l[0].m}`, (canvasWidth - `${g.m.l[0].m}`.length * 40) / 2, 475, 10, g.m.l[0].s ? '#FEDA94' : undefined);
-			drawPixel(`${g.m.l[1].m}`, (canvasWidth - `${g.m.l[1].m}`.length * 40) / 2, 575, 10, g.m.l[1].s ? '#FEDA94' : undefined);
+		if (gamePlay.menu.visible) {
+			drawPixel(`${gamePlay.menu.options[0].message}`, (canvasWidth - `${gamePlay.menu.options[0].message}`.length * 40) / 2, 475, 10, gamePlay.menu.options[0].selected ? '#FEDA94' : undefined);
+			drawPixel(`${gamePlay.menu.options[1].message}`, (canvasWidth - `${gamePlay.menu.options[1].message}`.length * 40) / 2, 575, 10, gamePlay.menu.options[1].selected ? '#FEDA94' : undefined);
 		}
 
-		if (g.i.v) {
+		if (gamePlay.instructions.visible) {
 			drawPixel(`your planet is under threat as the asteroids`, 20, 455);
 			drawPixel(`are approaching with uncertain speed. your`, 20, 485);
 			drawPixel(`mission is to destroy them all before`, 20, 515);
@@ -471,22 +465,22 @@
 			drawPixel(`confirm`, 835, 585);
 		}
 
-		if (g.c.v) {
-			drawPixel(`${g.c.m}`, (canvasWidth - `${g.c.m}`.length * 40) / 2, 235, 10);
-			drawPixel(`${roundInteger(g.c.t)}`, (canvasWidth - `${roundInteger(g.c.t)}`.length * 50) / 2, 305, 20);
+		if (gamePlay.continue.visible) {
+			drawPixel(`${gamePlay.continue.message}`, (canvasWidth - `${gamePlay.continue.message}`.length * 40) / 2, 235, 10);
+			drawPixel(`${roundInteger(gamePlay.continue.time)}`, (canvasWidth - `${roundInteger(gamePlay.continue.time)}`.length * 50) / 2, 305, 20);
 		}
 
-		if (g.s.v) {
-			drawPixel(`${g.s.m}`, (canvasWidth - `${g.s.m}`.length * 20) / 2, 255, 5);
-			drawPixel(`${roundInteger(g.s.t)}`, (canvasWidth - `${roundInteger(g.s.t)}`.length * 50) / 2, 305, 10);
+		if (gamePlay.start.visible) {
+			drawPixel(`${gamePlay.start.message}`, (canvasWidth - `${gamePlay.start.message}`.length * 20) / 2, 255, 5);
+			drawPixel(`${roundInteger(gamePlay.start.time)}`, (canvasWidth - `${roundInteger(gamePlay.start.time)}`.length * 50) / 2, 305, 10);
 		}
 
-		if (g.o.v) {
-			drawPixel(`${g.o.m}`, (canvasWidth - `${g.o.m}`.length * 64) / 2, 275, 15);
+		if (gamePlay.end.visible) {
+			drawPixel(`${gamePlay.end.message}`, (canvasWidth - `${gamePlay.end.message}`.length * 64) / 2, 275, 15);
 		}
 
-		if (g.t.v) {
-			drawPixel(`${g.t.m[g.t.i]}`, 130 - (`${g.t.m[g.t.i]}`.length * 20) / 2, 15, 5);
+		if (gamePlay.action.visible) {
+			drawPixel(`${gamePlay.action.messages[gamePlay.action.index]}`, 130 - (`${gamePlay.action.messages[gamePlay.action.index]}`.length * 20) / 2, 15, 5);
 		}
 	}
 
@@ -494,21 +488,21 @@
 	function resetGame() {
 		asteroids.length = 0;
 		stars.length = backgroundStarCount;
-		g.o.v = 0;
-		g.m.v = 1;
-		g.h.v = 1;
+		gamePlay.end.visible = 0;
+		gamePlay.menu.visible = 1;
+		gamePlay.heading.visible = 1;
 		player.hit = 0;
 		player.score = 0;
 		currentLevel = 1;
 		battery.percent = 100;
-		g.c.t = 9;
-		g.o.t = 3;
-		g.s.t = 3;
+		gamePlay.continue.time = 9;
+		gamePlay.end.time = 3;
+		gamePlay.start.time = 3;
 	}
 
 	// Start Game
 	function startGame() {
-		g.s.v = 1;
+		gamePlay.start.visible = 1;
 		player.x = -canvasWidth;
 		player.y = 80;
 		player.alive = 1;
@@ -541,9 +535,9 @@
 							sx.bhc.play();
 						} else {
 							sx.bhp.play();
-							g.t.i = 0;
-							g.t.v = 1;
-							g.t.t = 2;
+							gamePlay.action.index = 0;
+							gamePlay.action.visible = 1;
+							gamePlay.action.time = 2;
 						}
 						break;
 					}
@@ -553,15 +547,15 @@
 					player.score += 50;
 					break;
 				}
-				if (player?.collidesWith(asteroids[i]) && !g.s.v) {
+				if (player?.collidesWith(asteroids[i]) && !gamePlay.start.visible) {
 					battery.percent -= asteroids[i].power * 10;
 					player.x -= asteroids[i].power * 20;
 					asteroids[i].power = 0;
 					sx.php.play();
 					sx.bhc.play();
-					g.t.i = 1;
-					g.t.v = 1;
-					g.t.t = 2;
+					gamePlay.action.index = 1;
+					gamePlay.action.visible = 1;
+					gamePlay.action.time = 2;
 					break;
 				}
 			}
@@ -599,9 +593,9 @@
 					if (currentLevel < maxLevel) {
 						currentLevel += 1;
 						player.hit = 0;
-						g.t.i = 2;
-						g.t.v = 1;
-						g.t.t = 2;
+						gamePlay.action.index = 2;
+						gamePlay.action.visible = 1;
+						gamePlay.action.time = 2;
 						sx.lu.play();
 						unsetGameIntervals();
 						setGameIntervals();
@@ -617,80 +611,80 @@
 				endGame();
 			}
 
-			if (g.s.v) {
-				if (roundInteger(g.s.t) >= 0) {
-					g.s.t -= 1 / 60;
+			if (gamePlay.start.visible) {
+				if (roundInteger(gamePlay.start.time) >= 0) {
+					gamePlay.start.time -= 1 / 60;
 				} else {
-					g.s.v = 0;
+					gamePlay.start.visible = 0;
 				}
 			}
 
-			if (g.c.v) {
+			if (gamePlay.continue.visible) {
 				localStorage.setItem('hiScore', player.hiScore);
-				if (roundInteger(g.c.t) >= 0) {
-					g.c.t -= 1 / 60;
+				if (roundInteger(gamePlay.continue.time) >= 0) {
+					gamePlay.continue.time -= 1 / 60;
 				} else {
-					g.c.v = 0;
-					g.o.v = 1;
+					gamePlay.continue.visible = 0;
+					gamePlay.end.visible = 1;
 				}
 
 				if (keyPressed('enter')) {
 					sx.rs.play();
-					g.s.t = 3;
-					g.c.t = 9;
-					g.c.v = 0;
+					gamePlay.start.time = 3;
+					gamePlay.continue.time = 9;
+					gamePlay.continue.visible = 0;
 					player.score = 0;
 					battery.percent = 100;
 					startGame();
 				}
 			}
 
-			if (g.o.v) {
-				if (roundInteger(g.o.t) >= 0) {
-					g.o.t -= 1 / 60;
+			if (gamePlay.end.visible) {
+				if (roundInteger(gamePlay.end.time) >= 0) {
+					gamePlay.end.time -= 1 / 60;
 				} else {
 					resetGame();
 				}
 			}
 
-			if (g.m.v) {
-				g.m.dt += 1 / 60;
-				if ((keyPressed('up') || keyPressed('down')) && g.m.dt > 0.25) {
+			if (gamePlay.menu.visible) {
+				gamePlay.menu.dt += 1 / 60;
+				if ((keyPressed('up') || keyPressed('down')) && gamePlay.menu.dt > 0.25) {
 					sx.sl.play();
-					g.m.l[0].s = !g.m.l[0].s;
-					g.m.l[1].s = !g.m.l[1].s;
-					g.m.dt = 0;
+					gamePlay.menu.options[0].selected = !gamePlay.menu.options[0].selected;
+					gamePlay.menu.options[1].selected = !gamePlay.menu.options[1].selected;
+					gamePlay.menu.dt = 0;
 				}
 
-				if (keyPressed('enter') && g.m.dt > 0.25) {
-					g.m.dt = 0;
-					g.m.v = 0;
-					if (g.m.l[0].s) {
-						g.h.v = 0;
+				if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
+					gamePlay.menu.dt = 0;
+					gamePlay.menu.visible = 0;
+					if (gamePlay.menu.options[0].selected) {
+						gamePlay.heading.visible = 0;
 						startGame();
 					} else {
-						g.i.v = 1;
+						gamePlay.instructions.visible = 1;
 					}
 				}
 			}
 
-			if (g.i.v) {
-				g.m.dt += 1 / 60;
-				if (keyPressed('enter') && g.m.dt > 0.25) {
-					g.i.v = 0;
-					g.m.v = 1;
-					g.m.dt = 0;
+			if (gamePlay.instructions.visible) {
+				gamePlay.menu.dt += 1 / 60;
+				if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
+					gamePlay.instructions.visible = 0;
+					gamePlay.menu.visible = 1;
+					gamePlay.menu.dt = 0;
 				}
 			}
 
-			if (g.t.v) {
-				g.t.t -= 1 / 60;
-				if (roundInteger(g.t.t) <= 0) {
-					g.t.v = 0;
+			if (gamePlay.action.visible) {
+				gamePlay.action.time -= 1 / 60;
+				if (roundInteger(gamePlay.action.time) <= 0) {
+					gamePlay.action.visible = 0;
 				}
 			}
 
-			if (!g.h.v && !g.m.v && !g.i.v && !g.s.v) {
+			if (!gamePlay.heading.visible && !gamePlay.menu.visible && !gamePlay.instructions.visible && !gamePlay.start.visible) {
 				battery.percent -= 1 / 120;
 			}
 		},
