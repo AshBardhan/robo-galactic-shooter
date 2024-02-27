@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 		},
 		concat: {
 			'js': {
-				src: ['src/core.js', 'src/sprite.js', 'src/gameLoop.js', 'src/pointer.js', 'src/keyboard.js', 'src/pixel.js', 'src/riffwave.js', 'src/sfxr.js', 'src/index.js'],
+				src: ['src/lib/kontra/*.js', 'src/lib/sfxr/*.js', 'src/pixel.js', 'src/index.js'],
 				dest: 'dist/game.js',
 			}
 		},
@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			'src': {
-				files: ['src/**.js', '!src/game.js'],
+				files: ['src/{pixel,index}.js'],
 				tasks: ['concat']
 			}
 		}
