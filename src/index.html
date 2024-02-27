@@ -10,13 +10,13 @@
             height: 100vh;
             margin: 0;
         }
-        .gs {
+        .scenery {
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             position: relative;
         }
-        .gs-hz {
+        .horizon {
             background: linear-gradient(to bottom, #26007D 0%, #3503A8 50%, #B30699 74%, #FF179A 84%, #FFFF05 100%);
             height: 50vh;
             left: 0;
@@ -24,7 +24,7 @@
             right: 0;
             top: 0;
         }
-        .gs-la {
+        .surface {
             background: linear-gradient(to bottom, rgba(179, 6, 153, 0.34) 0%, transparent 100%), linear-gradient(to right, #1F0540 0%, #570257 100%);
             bottom: 0;
             height: 50vh;
@@ -34,7 +34,7 @@
             position: absolute;
             right: 0;
         }
-        .gs-o {
+        .surface-overlay {
             background: linear-gradient(to bottom, #05f3fe 0%, #05f3fe 2%, transparent 14%);
             bottom: 0;
             left: 0;
@@ -42,7 +42,7 @@
             right: 0;
             top: 0;
         }
-        .gs-ln {
+        .surface-lines {
             height: 100vh;
             left: 0;
             position: absolute;
@@ -57,7 +57,7 @@
             /*-webkit-animation: move-up 15s linear infinite;
             animation: move-up 15s linear infinite;*/
         }
-        .gs-s {
+        .sun {
             background: linear-gradient(to bottom, #FFFF05 0%, #FF4700 50%);
             border-radius: 50%;
             box-shadow: 0 0 26px 20px rgba(255, 71, 0, 0.5);
@@ -85,7 +85,7 @@
                 background-position: 0 -100%;
             }
         }
-        #cv {
+        #myCanvas {
             border-width: 60px 100px;
             border-style: solid;
             border-radius: 10px;
@@ -116,19 +116,19 @@
             }
         }
         @media screen and (max-width: 1440px) {
-            #cv {
+            #myCanvas {
                 transform: translate(-50%, -50%) scale(0.75);
                 -webkit-transform: translate(-50%, -50%) scale(0.75);
             }
         }
         @media screen and (max-width: 1280px) {
-            #cv {
+            #myCanvas {
                 transform: translate(-50%, -50%) scale(0.65);
                 -webkit-transform: translate(-50%, -50%) scale(0.65);
             }
         }
         @media screen and (max-width: 1024px) {
-            #cv {
+            #myCanvas {
                 transform: translate(-50%, -50%) scale(0.5);
                 -webkit-transform: translate(-50%, -50%) scale(0.5);
             }
@@ -136,14 +136,14 @@
     </style>
 </head>
 <body>
-    <canvas id="cv" width="1000" height="700"></canvas>
-    <div class="gs">
-        <div class="gs-hz">
-            <div class="gs-s"></div>
+    <canvas id="myCanvas" width="1000" height="700"></canvas>
+    <div class="scenery">
+        <div class="horizon">
+            <div class="sun"></div>
         </div>
-        <div class="gs-la">
-            <div class="gs-ln"></div>
-            <div class="gs-o"></div>
+        <div class="surface">
+            <div class="surface-lines"></div>
+            <div class="surface-overlay"></div>
         </div>
     </div>
     <script src="game.js"></script>
