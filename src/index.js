@@ -38,10 +38,6 @@
 		return o1.x < o2.x + o2.width && o1.x + o1.width > o2.x && o1.y < o2.y + o2.height && o1.y + o1.height > o2.y;
 	}
 
-	function intervalMethod(id, flag, time, callback) {
-		return flag ? setInterval(callback, time) : clearInterval(id);
-	}
-
 	function randomValue(end, start = 0, factor = 1) {
 		return Math.floor(Math.random() * end + start) * factor;
 	}
@@ -354,24 +350,27 @@
 		createStars(count - 1);
 	}
 
-	// Unset game intervals
-	function unsetGameIntervals() {
-		intervalMethod(gameInterval, 0);
+	// Unset game interval
+	function unsetGameInterval() {
+		clearInterval(gameInterval);
 	}
 
-	// Set game intervals
-	function setGameIntervals() {
-		gameInterval = intervalMethod(gameInterval, 1, levels[currentLevel - 1].time, () => {
-			createStars(levels[currentLevel - 1].starFrequency, true);
-			createAsteroids(levels[currentLevel - 1].asteroidFrequency);
-		});
+	// Set game interval
+	function setGameInterval() {
+		gameInterval = setInterval(
+			() => {
+				createStars(levels[currentLevel - 1].starFrequency, true);
+				createAsteroids(levels[currentLevel - 1].asteroidFrequency);
+			},
+			levels[currentLevel - 1].time
+		);
 	}
 
 	// End game
 	function endGame() {
 		player.alive = 0;
 		gamePlay.continue.visible = 1;
-		unsetGameIntervals();
+		unsetGameInterval();
 		kn.keys.unbind('p');
 	}
 
@@ -509,14 +508,14 @@
 		player.x = -canvasWidth;
 		player.y = 80;
 		player.alive = 1;
-		setGameIntervals();
+		setGameInterval();
 		kn.keys.bind('p', () => {
 			if (!gameLoop.isStopped) {
 				gameLoop.stop();
-				unsetGameIntervals();
+				unsetGameInterval();
 			} else {
 				gameLoop.start();
-				setGameIntervals();
+				setGameInterval();
 			}
 		});
 	}
@@ -600,8 +599,8 @@
 						gamePlay.action.visible = 1;
 						gamePlay.action.time = 2;
 						sx.lu.play();
-						unsetGameIntervals();
-						setGameIntervals();
+						unsetGameInterval();
+						setGameInterval();
 					} else {
 						if (player.hit === flip.maxHit) {
 							player.hit = 0;
