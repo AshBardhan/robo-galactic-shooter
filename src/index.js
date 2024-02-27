@@ -3,13 +3,12 @@
 	const angleRadianRatio = Math.PI / 180;
 	const FRAME_RATE = 60;
 
-	let kn = kontra;
-	kn.init();
+	kontra.init();
 
-	let canvasWidth = kn.canvas.width;
-	let canvasHeight = kn.canvas.height;
-	let keyPressed = kn.keys.pressed.bind(kn);
-	let sprite = kn.sprite.bind(kn);
+	let canvasWidth = kontra.canvas.width;
+	let canvasHeight = kontra.canvas.height;
+	let keyPressed = kontra.keys.pressed.bind(kontra);
+	let sprite = kontra.sprite.bind(kontra);
 	let gameInterval = null;
 	let gameLoop;
 
@@ -377,7 +376,7 @@
 		player.alive = 0;
 		gamePlay.continue.visible = 1;
 		unsetGameInterval();
-		kn.keys.unbind('p');
+		kontra.keys.unbind('p');
 	}
 
 	// Prints string text in pixelated form
@@ -512,7 +511,7 @@
 		player.y = 80;
 		player.alive = 1;
 		setGameInterval();
-		kn.keys.bind('p', () => {
+		kontra.keys.bind('p', () => {
 			if (!gameLoop.isStopped) {
 				gameLoop.stop();
 				unsetGameInterval();
