@@ -49,51 +49,51 @@
 		soundEffects[n] = generateSound(soundCodes[n]).getAudio();
 	}
 
-	// Prints string text in pixelated form
-	function drawPixel(str, dx = 0, dy = 0, size = 3, color = '#fff') {
-		let needed = [];
-		let i, x, y, ch;
-		str = str.toUpperCase();
-		for (i = 0; i < str.length; i++) {
-			ch = chrs[str.charAt(i)];
-			if (ch) {
-				needed.push(ch);
-			}
-		}
-
-		ctx.translate(dx, dy);
-		ctx.beginPath();
-		ctx.fillStyle = color;
-		let currX = 0;
-		for (i = 0; i < needed.length; i++) {
-			ch = needed[i];
-			let currY = 0;
-			let addX = 0;
-			for (y = 0; y < ch.length; y++) {
-				let row = ch[y];
-				for (x = 0; x < row.length; x++) {
-					if (row[x]) {
-						ctx.fillRect(currX + x * size, currY, size, size);
-					}
-				}
-				addX = Math.max(addX, row.length * size);
-				currY += size;
-			}
-			currX += size + addX;
-		}
-		ctx.closePath();
-		ctx.resetTransform();
-	}
-
-	function renderBackground() {
-		let g = ctx.createLinearGradient(canvasWidth / 2, 0, canvasWidth / 2, canvasHeight);
-		let ga = g.addColorStop.bind(g);
-		ga(0.3, '#101014');
-		ga(0.7, '#141852');
-		ga(1, '#35274E');
-		ctx.fillStyle = g;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-	}
+	// Gameplay message map based on different sub-components of game
+	let gamePlay = {
+		heading: {
+			visible: 1,
+			messages: ['Robo', 'Galactic', 'Shooter'],
+		},
+		menu: {
+			visible: 1,
+			dt: 0,
+			options: [
+				{
+					message: 'Play Game',
+					selected: 1,
+				},
+				{
+					message: 'Instructions',
+					selected: 0,
+				},
+			],
+		},
+		instructions: {
+			visible: 0,
+		},
+		start: {
+			visible: 0,
+			time: 3,
+			message: 'start game',
+		},
+		action: {
+			visible: 0,
+			time: 2,
+			index: 0,
+			messages: ['boom', 'ouch', 'level up'],
+		},
+		continue: {
+			visible: 0,
+			time: 9,
+			message: 'continue',
+		},
+		end: {
+			visible: 0,
+			time: 3,
+			message: 'game over',
+		},
+	};
 
 	// Asteroids
 	let asteroids = [];
@@ -134,11 +134,10 @@
 		y: 15,
 		width: 50,
 		height: 30,
-		percent: 100, // Percent Left
+		percent: 100,
 		colorCodes: ['#05A84E', '#FE251D', '#F7C808'],
 		time: 1,
 		getColorIndex() {
-			// Battery Level that will determine its color and blinking
 			return this.percent <= 20 ? 1 : this.percent <= 60 ? 2 : 0;
 		},
 		getColorCode() {
@@ -210,7 +209,7 @@
 			width: 120,
 			height: 60,
 			image: playerImage,
-			alive: 0, // Alive
+			alive: 0,
 			dx: 5,
 			dy: 2,
 			dt: 0,
@@ -381,53 +380,54 @@
 		kn.keys.unbind('p');
 	}
 
-	// Gameplay message map based on different sub-components of game
-	let gamePlay = {
-		heading: {
-			visible: 1,
-			messages: ['Robo', 'Galactic', 'Shooter'],
-		},
-		menu: {
-			visible: 1,
-			dt: 0,
-			options: [
-				{
-					message: 'Play Game',
-					selected: 1,
-				},
-				{
-					message: 'Instructions',
-					selected: 0,
-				},
-			],
-		},
-		instructions: {
-			visible: 0,
-		},
-		start: {
-			visible: 0,
-			time: 3,
-			message: 'start game',
-		},
-		action: {
-			visible: 0,
-			time: 2,
-			index: 0,
-			messages: ['boom', 'ouch', 'level up'],
-		},
-		continue: {
-			visible: 0,
-			time: 9,
-			message: 'continue',
-		},
-		end: {
-			visible: 0,
-			time: 3,
-			message: 'game over',
-		},
-	};
+	// Prints string text in pixelated form
+	function drawPixel(str, dx = 0, dy = 0, size = 3, color = '#fff') {
+		let needed = [];
+		let i, x, y, ch;
+		str = str.toUpperCase();
+		for (i = 0; i < str.length; i++) {
+			ch = chrs[str.charAt(i)];
+			if (ch) {
+				needed.push(ch);
+			}
+		}
 
-	// Render text based on different sub-components of game
+		ctx.translate(dx, dy);
+		ctx.beginPath();
+		ctx.fillStyle = color;
+		let currX = 0;
+		for (i = 0; i < needed.length; i++) {
+			ch = needed[i];
+			let currY = 0;
+			let addX = 0;
+			for (y = 0; y < ch.length; y++) {
+				let row = ch[y];
+				for (x = 0; x < row.length; x++) {
+					if (row[x]) {
+						ctx.fillRect(currX + x * size, currY, size, size);
+					}
+				}
+				addX = Math.max(addX, row.length * size);
+				currY += size;
+			}
+			currX += size + addX;
+		}
+		ctx.closePath();
+		ctx.resetTransform();
+	}
+
+	// Render background of the game
+	function renderBackground() {
+		let g = ctx.createLinearGradient(canvasWidth / 2, 0, canvasWidth / 2, canvasHeight);
+		let ga = g.addColorStop.bind(g);
+		ga(0.3, '#101014');
+		ga(0.7, '#141852');
+		ga(1, '#35274E');
+		ctx.fillStyle = g;
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	}
+
+	// Render text based on different sub-components of the game
 	function renderTexts() {
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
@@ -523,7 +523,8 @@
 		});
 	}
 
-	gameLoop = kn.gameLoop({
+	// Game loop that update and renders the game every frame
+	gameLoop = kontra.gameLoop({
 		fps: 60,
 		update() {
 			let i, j;
