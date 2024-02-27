@@ -127,7 +127,7 @@
 		});
 	}
 
-	// Generate 'Battery' sprites
+	// Generate 'Battery' sprite
 	let battery = sprite({
 		x: canvasWidth - 100,
 		y: 15,
@@ -197,7 +197,7 @@
 		};
 	}
 
-	// Generate 'Player' sprites
+	// Generate 'Player' sprite
 	let player;
 	let playerImage = new Image();
 	playerImage.src = '../assets/player.svg';
@@ -379,7 +379,7 @@
 		kontra.keys.unbind('p');
 	}
 
-	// Prints string text in pixelated form
+	// Print string text in pixelated form
 	function drawPixel(str, dx = 0, dy = 0, size = 3, color = '#fff') {
 		let needed = [];
 		let i, x, y, ch;
@@ -426,7 +426,7 @@
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 	}
 
-	// Render text based on different sub-components of the game
+	// Render text based on different views of the game
 	function renderTexts() {
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
@@ -511,6 +511,7 @@
 		player.y = 80;
 		player.alive = 1;
 		setGameInterval();
+		// Toggle 'p' key to pause and resume the game
 		kontra.keys.bind('p', () => {
 			if (!gameLoop.isStopped) {
 				gameLoop.stop();
@@ -534,6 +535,7 @@
 
 			for (i = 0; i < asteroids.length; i++) {
 				for (j = 0; j < bullets.length; j++) {
+					// Check if the bullet has hit any incoming asteroid
 					if (bullets[j].collidesWith(asteroids[i])) {
 						if (!--asteroids[i].power) {
 							player.currentTarget += 1;
@@ -547,11 +549,13 @@
 						break;
 					}
 				}
+				// Update player's score once the bullet has hit the asteroid
 				if (j !== bullets.length) {
 					bullets.splice(j, 1);
 					player.score += 50;
 					break;
 				}
+				// Check if the player has hit any incoming asteroid
 				if (player?.collidesWith(asteroids[i]) && !gamePlay.start.visible) {
 					battery.percent -= asteroids[i].power * 10;
 					player.x -= asteroids[i].power * 20;
@@ -565,10 +569,12 @@
 				}
 			}
 
+			// Destroy the asteroid once it is hit by the bullet or the player
 			if (i !== asteroids.length && asteroids[i].power === 0) {
 				asteroids.splice(i, 1);
 			}
 
+			// Destroy the bullet once it has reached beyond the canvas screen
 			for (i = 0; i < bullets.length; i++) {
 				if (bullets[i].x >= canvasWidth) {
 					break;
@@ -576,6 +582,7 @@
 			}
 			bullets.splice(i, 1);
 
+			// Check if the player has consumed any incoming golden power star
 			for (i = 0; i < stars.length; i++) {
 				if (player?.collidesWith(stars[i]) && stars[i].hasPower && battery.percent > 0) {
 					playSoundEffect(soundTypes.POWER);
@@ -583,17 +590,20 @@
 					break;
 				}
 			}
+			// Destroy the golden power star once it is consumed by the player
 			stars.splice(i, 1);
+
 			if (player) {
 				if (player.score > player.hiScore) {
 					player.hiScore = player.score;
 				}
-
+				// Flip the player's score to zero once it has reached to maximum score
 				if (player.score >= flip.maxScore) {
 					player.score = 0;
 					player.hiScore = flip.maxScore;
 				}
 
+				// Update player's level once it has hit the required target amount
 				if (player.currentTarget >= levels[currentLevel - 1].target) {
 					if (currentLevel < maxLevel) {
 						currentLevel += 1;
@@ -605,6 +615,7 @@
 						unsetGameInterval();
 						setGameInterval();
 					} else {
+						// Flip the player's target amount to zero once it has reached to maximum value
 						if (player.currentTarget === flip.maxTarget) {
 							player.currentTarget = 0;
 						}
@@ -612,10 +623,12 @@
 				}
 			}
 
+			// End the game once the player's power level drops to zero
 			if (battery.percent <= 0 && player.alive) {
 				endGame();
 			}
 
+			// Show 'Start Game' countdown view
 			if (gamePlay.start.visible) {
 				if (roundInteger(gamePlay.start.time) >= 0) {
 					gamePlay.start.time -= 1 / FRAME_RATE;
@@ -624,6 +637,7 @@
 				}
 			}
 
+			// Show 'Continue' countdown view which allow player to revive
 			if (gamePlay.continue.visible) {
 				localStorage.setItem('hiScore', player.hiScore);
 				if (roundInteger(gamePlay.continue.time) >= 0) {
@@ -632,7 +646,7 @@
 					gamePlay.continue.visible = 0;
 					gamePlay.end.visible = 1;
 				}
-
+				// Restart the game once the player has pressed 'Enter' to continue the game
 				if (keyPressed('enter')) {
 					playSoundEffect(soundTypes.RESET);
 					gamePlay.start.time = 3;
@@ -644,6 +658,7 @@
 				}
 			}
 
+			// Show 'Game Over' view
 			if (gamePlay.end.visible) {
 				if (roundInteger(gamePlay.end.time) >= 0) {
 					gamePlay.end.time -= 1 / FRAME_RATE;
@@ -652,6 +667,7 @@
 				}
 			}
 
+			// Show 'Game Menu' view to choose either play game or view instructions
 			if (gamePlay.menu.visible) {
 				gamePlay.menu.dt += 1 / FRAME_RATE;
 				if ((keyPressed('up') || keyPressed('down')) && gamePlay.menu.dt > 0.25) {
@@ -660,7 +676,6 @@
 					gamePlay.menu.options[1].selected = !gamePlay.menu.options[1].selected;
 					gamePlay.menu.dt = 0;
 				}
-
 				if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
 					gamePlay.menu.dt = 0;
 					gamePlay.menu.visible = 0;
@@ -673,6 +688,7 @@
 				}
 			}
 
+			// Show 'Instructions' view
 			if (gamePlay.instructions.visible) {
 				gamePlay.menu.dt += 1 / FRAME_RATE;
 				if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
@@ -682,6 +698,7 @@
 				}
 			}
 
+			// Show 'action' text view based on certain conditions
 			if (gamePlay.action.visible) {
 				gamePlay.action.time -= 1 / FRAME_RATE;
 				if (roundInteger(gamePlay.action.time) <= 0) {
@@ -689,6 +706,7 @@
 				}
 			}
 
+			// Decrease player's power level in small amount during the game
 			if (!gamePlay.heading.visible && !gamePlay.menu.visible && !gamePlay.instructions.visible && !gamePlay.start.visible) {
 				battery.percent -= 1 / (2 * FRAME_RATE);
 			}
