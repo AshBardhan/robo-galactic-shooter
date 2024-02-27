@@ -113,7 +113,7 @@
 	// Flipping Score and Asteroid Hit
 	const flip = {
 		maxScore: 9999999999,
-		maxHit: 99999,
+		maxTarget: 99999,
 	};
 
 	// Initiate all level rules
@@ -215,7 +215,7 @@
 			dy: 2,
 			dt: 0,
 			bdt: 0,
-			hit: 0,
+			currentTarget: 0,
 			score: 0,
 			hiScore: localStorage.getItem('hiScore') || 0,
 			update() {
@@ -432,7 +432,7 @@
 		drawPixel(`Level`, 280, 10);
 		drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
 		drawPixel(`Target`, 280, 35);
-		drawPixel(`${player?.hit ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
+		drawPixel(`${player?.currentTarget ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
 
 		drawPixel(`Score`, 550, 10);
 		drawPixel(`${player?.score ?? 0}`, 680, 10);
@@ -496,7 +496,7 @@
 		gamePlay.end.visible = 0;
 		gamePlay.menu.visible = 1;
 		gamePlay.heading.visible = 1;
-		player.hit = 0;
+		player.currentTarget = 0;
 		player.score = 0;
 		currentLevel = 1;
 		battery.percent = 100;
@@ -536,7 +536,7 @@
 				for (j = 0; j < bullets.length; j++) {
 					if (bullets[j].collidesWith(asteroids[i])) {
 						if (!--asteroids[i].power) {
-							player.hit += 1;
+							player.currentTarget += 1;
 							playSoundEffect(soundTypes.ASTEROID_DESTORY);
 						} else {
 							playSoundEffect(soundTypes.BULLET_HIT);
@@ -594,10 +594,10 @@
 					player.hiScore = flip.maxScore;
 				}
 
-				if (player.hit >= levels[currentLevel - 1].target) {
+				if (player.currentTarget >= levels[currentLevel - 1].target) {
 					if (currentLevel < maxLevel) {
 						currentLevel += 1;
-						player.hit = 0;
+						player.currentTarget = 0;
 						gamePlay.action.index = 2;
 						gamePlay.action.visible = 1;
 						gamePlay.action.time = 2;
@@ -605,8 +605,8 @@
 						unsetGameInterval();
 						setGameInterval();
 					} else {
-						if (player.hit === flip.maxHit) {
-							player.hit = 0;
+						if (player.currentTarget === flip.maxTarget) {
+							player.currentTarget = 0;
 						}
 					}
 				}
