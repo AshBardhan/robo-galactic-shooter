@@ -27,5 +27,3 @@ node_modules
 
 ## Deployment
 dist/
-*.zip
-src/game.js
