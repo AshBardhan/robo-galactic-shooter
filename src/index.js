@@ -1,7 +1,7 @@
 (function init() {
 	const ctx = myCanvas.getContext('2d');
 	const angleRadianRatio = Math.PI / 180;
-	const tp = angleRadianRatio * 360;
+	const FRAME_RATE = 60;
 
 	let kn = kontra;
 	kn.init();
@@ -220,7 +220,7 @@
 			update() {
 				if (!gamePlay.menu.visible) {
 					if (this.alive) {
-						this.bdt += 1 / 60;
+						this.bdt += 1 / FRAME_RATE;
 						if (keyPressed('left') && this.x >= 0 && !gamePlay.start.visible) {
 							this.x -= this.dx;
 						}
@@ -337,14 +337,14 @@
 				ctx.translate(this.x, this.y);
 				ctx.beginPath();
 				ctx.fillStyle = this.hasPower ? '#ffcf40' : '#fff';
-				ctx.ellipse(renderSize, renderSize, 1, renderSize, 0, 0, tp);
-				ctx.ellipse(renderSize, renderSize, 1, renderSize, angleRadianRatio * 90, 0, tp);
+				ctx.ellipse(renderSize, renderSize, 1, renderSize, 0, 0, 2 * Math.PI);
+				ctx.ellipse(renderSize, renderSize, 1, renderSize, angleRadianRatio * 90, 0, 2 * Math.PI);
 				ctx.fill();
 				ctx.closePath();
 				if (this.hasPower) {
 					ctx.beginPath();
 					ctx.fillStyle = `rgba(255,207,64,${this.a / 255})`;
-					ctx.arc(renderSize, renderSize, (4 * renderSize) / 5, 0, tp);
+					ctx.arc(renderSize, renderSize, (4 * renderSize) / 5, 0, 2 * Math.PI);
 					ctx.fill();
 					ctx.closePath();
 				}
@@ -619,7 +619,7 @@
 
 			if (gamePlay.start.visible) {
 				if (roundInteger(gamePlay.start.time) >= 0) {
-					gamePlay.start.time -= 1 / 60;
+					gamePlay.start.time -= 1 / FRAME_RATE;
 				} else {
 					gamePlay.start.visible = 0;
 				}
@@ -628,7 +628,7 @@
 			if (gamePlay.continue.visible) {
 				localStorage.setItem('hiScore', player.hiScore);
 				if (roundInteger(gamePlay.continue.time) >= 0) {
-					gamePlay.continue.time -= 1 / 60;
+					gamePlay.continue.time -= 1 / FRAME_RATE;
 				} else {
 					gamePlay.continue.visible = 0;
 					gamePlay.end.visible = 1;
@@ -647,14 +647,14 @@
 
 			if (gamePlay.end.visible) {
 				if (roundInteger(gamePlay.end.time) >= 0) {
-					gamePlay.end.time -= 1 / 60;
+					gamePlay.end.time -= 1 / FRAME_RATE;
 				} else {
 					resetGame();
 				}
 			}
 
 			if (gamePlay.menu.visible) {
-				gamePlay.menu.dt += 1 / 60;
+				gamePlay.menu.dt += 1 / FRAME_RATE;
 				if ((keyPressed('up') || keyPressed('down')) && gamePlay.menu.dt > 0.25) {
 					playSoundEffect(soundTypes.SELECT);
 					gamePlay.menu.options[0].selected = !gamePlay.menu.options[0].selected;
@@ -675,7 +675,7 @@
 			}
 
 			if (gamePlay.instructions.visible) {
-				gamePlay.menu.dt += 1 / 60;
+				gamePlay.menu.dt += 1 / FRAME_RATE;
 				if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
 					gamePlay.instructions.visible = 0;
 					gamePlay.menu.visible = 1;
@@ -684,14 +684,14 @@
 			}
 
 			if (gamePlay.action.visible) {
-				gamePlay.action.time -= 1 / 60;
+				gamePlay.action.time -= 1 / FRAME_RATE;
 				if (roundInteger(gamePlay.action.time) <= 0) {
 					gamePlay.action.visible = 0;
 				}
 			}
 
 			if (!gamePlay.heading.visible && !gamePlay.menu.visible && !gamePlay.instructions.visible && !gamePlay.start.visible) {
-				battery.percent -= 1 / 120;
+				battery.percent -= 1 / (2 * FRAME_RATE);
 			}
 		},
 		render() {
