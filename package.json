@@ -1,7 +1,7 @@
 {
   "name": "robo-galactic-shooter",
-  "version": "2.0.0",
-  "description": "HTML Canvas game developed under 13KB",
+  "version": "2.1.0",
+  "description": "Retro Video Game developed in Kontra and sfxr JS libraries",
   "main": "index.js",
   "author": "AshBardhan <ashbardhan@gmail.com>",
   "license": "MIT",
