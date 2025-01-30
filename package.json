@@ -27,6 +27,7 @@
     ]
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postversion": "git push && git push --tags"
   }
 }
