@@ -1,5 +1,6 @@
-import {soundEffects, soundTypes} from './constants.mjs';
+import './lib/sfxr/sfxr.mjs';
 import {init, Sprite, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
+import {soundEffects, soundTypes} from './constants.mjs';
 import {chrs} from './pixel.mjs';
 
 const angleRadianRatio = Math.PI / 180;
@@ -15,7 +16,7 @@ let gameLoop;
 let randomValue = (end, start = 0, factor = 1) => Math.floor(Math.random() * end + start) * factor;
 let roundInteger = (val) => Math.ceil(val);
 let playSoundEffect = (soundType) => {
-	//soundEffects[soundType].play();
+	soundEffects[soundType].play();
 };
 
 // Gameplay message map based on different sub-components of game
