@@ -1,4 +1,4 @@
-let chrs = {
+export const chrs = {
 	A: [
 		[, 1],
 		[1, , 1],
