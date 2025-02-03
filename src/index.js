@@ -1,4 +1,4 @@
-import './lib/sfxr/sfxr.mjs';
+import './lib/sfxr.mjs';
 import {init, Sprite, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
 import {soundEffects, soundTypes} from './constants.mjs';
 import {chrs} from './pixel.mjs';
