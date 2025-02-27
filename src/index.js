@@ -153,7 +153,7 @@ let battery = Sprite({
 function createBullet(player) {
 	let bullet;
 	let bulletImage = new Image();
-	bulletImage.src = '../assets/bullet.svg';
+	bulletImage.src = './assets/bullet.svg';
 	bulletImage.onload = function () {
 		bullet = Sprite({
 			x: player.x + player.width,
@@ -173,7 +173,7 @@ function createBullet(player) {
 // Generate 'Player' sprite
 let player;
 let playerImage = new Image();
-playerImage.src = '../assets/player.svg';
+playerImage.src = './assets/player.svg';
 playerImage.onload = function () {
 	player = Sprite({
 		x: -canvas.width,
@@ -230,7 +230,7 @@ function createAsteroids(count) {
 
 	let asteroid;
 	let asteroidImage = new Image();
-	asteroidImage.src = '../assets/asteroid.svg';
+	asteroidImage.src = './assets/asteroid.svg';
 	asteroidImage.onload = function () {
 		asteroid = Sprite({
 			x: 2 * canvas.width,
