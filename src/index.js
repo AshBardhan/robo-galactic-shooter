@@ -1,6 +1,7 @@
 import './lib/sfxr.mjs';
 import {init, Sprite, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
-import {soundEffects, soundTypes} from './constants.mjs';
+import {soundEffects, soundTypes} from './constants/sound.mjs';
+import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game.mjs';
 import {chrs} from './pixel.mjs';
 
 const angleRadianRatio = Math.PI / 180;
@@ -19,52 +20,6 @@ let playSoundEffect = (soundType) => {
 	soundEffects[soundType].play();
 };
 
-// Gameplay message map based on different sub-components of game
-let gamePlay = {
-	heading: {
-		visible: 1,
-		messages: ['Robo', 'Galactic', 'Shooter'],
-	},
-	menu: {
-		visible: 1,
-		dt: 0,
-		options: [
-			{
-				message: 'Play Game',
-				selected: 1,
-			},
-			{
-				message: 'Instructions',
-				selected: 0,
-			},
-		],
-	},
-	instructions: {
-		visible: 0,
-	},
-	start: {
-		visible: 0,
-		time: 3,
-		message: 'start game',
-	},
-	action: {
-		visible: 0,
-		time: 2,
-		index: 0,
-		messages: ['boom', 'ouch', 'level up'],
-	},
-	continue: {
-		visible: 0,
-		time: 9,
-		message: 'continue',
-	},
-	end: {
-		visible: 0,
-		time: 3,
-		message: 'game over',
-	},
-};
-
 // Asteroids
 let asteroids = [];
 
@@ -76,27 +31,8 @@ const backgroundStarCount = 100;
 let bullets = [];
 
 // Levels
-let levels = [];
-const maxLevel = 50;
+
 let currentLevel = 1;
-
-// Flipping Score and Asteroid Hit
-const flip = {
-	maxScore: 9999999999,
-	maxTarget: 99999,
-};
-
-// Initiate all level rules
-for (let i = 0; i < maxLevel; i++) {
-	levels.push({
-		time: Math.ceil((maxLevel - i) / 5) * 250,
-		asteroidFrequency: (i % 5) + 2,
-		target: (i + 1) * 5,
-		asteroidLimit: Math.ceil((i + 1) / 5) * 20,
-		starFrequency: (i % 5) + 1,
-		starLimit: i + 5,
-	});
-}
 
 // Generate 'Battery' sprite
 let battery = Sprite({
@@ -190,13 +126,13 @@ playerImage.onload = function () {
 		score: 0,
 		hiScore: localStorage.getItem('hiScore') || 0,
 		update() {
-			if (!gamePlay.menu.visible) {
+			if (!gameScreen.menu.visible) {
 				if (this.alive) {
 					this.bdt += 1 / FRAME_RATE;
-					if (keyPressed('arrowleft') && this.x >= 0 && !gamePlay.start.visible) {
+					if (keyPressed('arrowleft') && this.x >= 0 && !gameScreen.start.visible) {
 						this.x -= this.dx;
 					}
-					if (keyPressed('arrowright') && this.x + this.width <= (2 * canvas.width) / 3 && !gamePlay.start.visible) {
+					if (keyPressed('arrowright') && this.x + this.width <= (2 * canvas.width) / 3 && !gameScreen.start.visible) {
 						this.x += this.dx;
 					}
 					if (keyPressed('arrowup') && this.y >= 50) {
@@ -215,7 +151,7 @@ playerImage.onload = function () {
 					this.y += 10;
 				}
 			}
-			if (gamePlay.start.visible) {
+			if (gameScreen.start.visible) {
 				this.x += this.dx;
 			}
 		},
@@ -347,7 +283,7 @@ function setGameInterval() {
 // End game
 function endGame() {
 	player.alive = 0;
-	gamePlay.continue.visible = 1;
+	gameScreen.continue.visible = 1;
 	unsetGameInterval();
 	offKey('esc');
 }
@@ -411,18 +347,18 @@ function renderTexts() {
 	drawPixel(`Hi-Score`, 550, 35);
 	drawPixel(`${player?.hiScore ?? 0}`, 680, 35);
 
-	if (gamePlay.heading.visible) {
-		drawPixel(`${gamePlay.heading.messages[0]}`, (canvas.width - `${gamePlay.heading.messages[0]}`.length * 55) / 2, 125, 15);
-		drawPixel(`${gamePlay.heading.messages[1]}`, (canvas.width - `${gamePlay.heading.messages[1]}`.length * 60) / 2, 225, 15);
-		drawPixel(`${gamePlay.heading.messages[2]}`, (canvas.width - `${gamePlay.heading.messages[2]}`.length * 56) / 2, 325, 15);
+	if (gameScreen.heading.visible) {
+		drawPixel(`${gameScreen.heading.messages[0]}`, (canvas.width - `${gameScreen.heading.messages[0]}`.length * 55) / 2, 125, 15);
+		drawPixel(`${gameScreen.heading.messages[1]}`, (canvas.width - `${gameScreen.heading.messages[1]}`.length * 60) / 2, 225, 15);
+		drawPixel(`${gameScreen.heading.messages[2]}`, (canvas.width - `${gameScreen.heading.messages[2]}`.length * 56) / 2, 325, 15);
 	}
 
-	if (gamePlay.menu.visible) {
-		drawPixel(`${gamePlay.menu.options[0].message}`, (canvas.width - `${gamePlay.menu.options[0].message}`.length * 40) / 2, 475, 10, gamePlay.menu.options[0].selected ? '#FEDA94' : undefined);
-		drawPixel(`${gamePlay.menu.options[1].message}`, (canvas.width - `${gamePlay.menu.options[1].message}`.length * 40) / 2, 575, 10, gamePlay.menu.options[1].selected ? '#FEDA94' : undefined);
+	if (gameScreen.menu.visible) {
+		drawPixel(`${gameScreen.menu.options[0].message}`, (canvas.width - `${gameScreen.menu.options[0].message}`.length * 40) / 2, 475, 10, gameScreen.menu.options[0].selected ? '#FEDA94' : undefined);
+		drawPixel(`${gameScreen.menu.options[1].message}`, (canvas.width - `${gameScreen.menu.options[1].message}`.length * 40) / 2, 575, 10, gameScreen.menu.options[1].selected ? '#FEDA94' : undefined);
 	}
 
-	if (gamePlay.instructions.visible) {
+	if (gameScreen.instructions.visible) {
 		drawPixel(`your planet is under threat as the asteroids`, 20, 455);
 		drawPixel(`are approaching with uncertain speed. your`, 20, 485);
 		drawPixel(`mission is to destroy them all before`, 20, 515);
@@ -442,22 +378,22 @@ function renderTexts() {
 		drawPixel(`confirm`, 835, 585);
 	}
 
-	if (gamePlay.continue.visible) {
-		drawPixel(`${gamePlay.continue.message}`, (canvas.width - `${gamePlay.continue.message}`.length * 40) / 2, 235, 10);
-		drawPixel(`${roundInteger(gamePlay.continue.time)}`, (canvas.width - `${roundInteger(gamePlay.continue.time)}`.length * 50) / 2, 305, 20);
+	if (gameScreen.continue.visible) {
+		drawPixel(`${gameScreen.continue.message}`, (canvas.width - `${gameScreen.continue.message}`.length * 40) / 2, 235, 10);
+		drawPixel(`${roundInteger(gameScreen.continue.time)}`, (canvas.width - `${roundInteger(gameScreen.continue.time)}`.length * 50) / 2, 305, 20);
 	}
 
-	if (gamePlay.start.visible) {
-		drawPixel(`${gamePlay.start.message}`, (canvas.width - `${gamePlay.start.message}`.length * 20) / 2, 255, 5);
-		drawPixel(`${roundInteger(gamePlay.start.time)}`, (canvas.width - `${roundInteger(gamePlay.start.time)}`.length * 50) / 2, 305, 10);
+	if (gameScreen.start.visible) {
+		drawPixel(`${gameScreen.start.message}`, (canvas.width - `${gameScreen.start.message}`.length * 20) / 2, 255, 5);
+		drawPixel(`${roundInteger(gameScreen.start.time)}`, (canvas.width - `${roundInteger(gameScreen.start.time)}`.length * 50) / 2, 305, 10);
 	}
 
-	if (gamePlay.end.visible) {
-		drawPixel(`${gamePlay.end.message}`, (canvas.width - `${gamePlay.end.message}`.length * 64) / 2, 275, 15);
+	if (gameScreen.end.visible) {
+		drawPixel(`${gameScreen.end.message}`, (canvas.width - `${gameScreen.end.message}`.length * 64) / 2, 275, 15);
 	}
 
-	if (gamePlay.action.visible) {
-		drawPixel(`${gamePlay.action.messages[gamePlay.action.index]}`, 130 - (`${gamePlay.action.messages[gamePlay.action.index]}`.length * 20) / 2, 15, 5);
+	if (gameScreen.action.visible) {
+		drawPixel(`${gameScreen.action.messages[gameScreen.action.index]}`, 130 - (`${gameScreen.action.messages[gameScreen.action.index]}`.length * 20) / 2, 15, 5);
 	}
 }
 
@@ -465,21 +401,21 @@ function renderTexts() {
 function resetGame() {
 	asteroids.length = 0;
 	stars.length = backgroundStarCount;
-	gamePlay.end.visible = 0;
-	gamePlay.menu.visible = 1;
-	gamePlay.heading.visible = 1;
+	gameScreen.end.visible = 0;
+	gameScreen.menu.visible = 1;
+	gameScreen.heading.visible = 1;
 	player.currentTarget = 0;
 	player.score = 0;
 	currentLevel = 1;
 	battery.percent = 100;
-	gamePlay.continue.time = 9;
-	gamePlay.end.time = 3;
-	gamePlay.start.time = 3;
+	gameScreen.continue.time = 9;
+	gameScreen.end.time = 3;
+	gameScreen.start.time = 3;
 }
 
 // Start game
 function startGame() {
-	gamePlay.start.visible = 1;
+	gameScreen.start.visible = 1;
 	player.x = -canvas.width;
 	player.y = 80;
 	player.alive = 1;
@@ -515,9 +451,9 @@ gameLoop = GameLoop({
 						playSoundEffect(soundTypes.ASTEROID_DESTORY);
 					} else {
 						playSoundEffect(soundTypes.BULLET_HIT);
-						gamePlay.action.index = 0;
-						gamePlay.action.visible = 1;
-						gamePlay.action.time = 2;
+						gameScreen.action.index = 0;
+						gameScreen.action.visible = 1;
+						gameScreen.action.time = 2;
 					}
 					break;
 				}
@@ -529,15 +465,15 @@ gameLoop = GameLoop({
 				break;
 			}
 			// Check if the player has hit any incoming asteroid
-			if (!gamePlay.start.visible && collides(player, asteroids[i])) {
+			if (!gameScreen.start.visible && collides(player, asteroids[i])) {
 				battery.percent -= asteroids[i].power * 10;
 				player.x -= asteroids[i].power * 20;
 				asteroids[i].power = 0;
 				playSoundEffect(soundTypes.PLAYER_HIT);
 				playSoundEffect(soundTypes.ASTEROID_DESTORY);
-				gamePlay.action.index = 1;
-				gamePlay.action.visible = 1;
-				gamePlay.action.time = 2;
+				gameScreen.action.index = 1;
+				gameScreen.action.visible = 1;
+				gameScreen.action.time = 2;
 				break;
 			}
 		}
@@ -571,9 +507,9 @@ gameLoop = GameLoop({
 				player.hiScore = player.score;
 			}
 			// Flip the player's score to zero once it has reached to maximum score
-			if (player.score >= flip.maxScore) {
+			if (player.score >= maxScoreToFlip) {
 				player.score = 0;
-				player.hiScore = flip.maxScore;
+				player.hiScore = maxScoreToFlip;
 			}
 
 			// Update player's level once it has hit the required target amount
@@ -581,15 +517,15 @@ gameLoop = GameLoop({
 				if (currentLevel < maxLevel) {
 					currentLevel += 1;
 					player.currentTarget = 0;
-					gamePlay.action.index = 2;
-					gamePlay.action.visible = 1;
-					gamePlay.action.time = 2;
+					gameScreen.action.index = 2;
+					gameScreen.action.visible = 1;
+					gameScreen.action.time = 2;
 					playSoundEffect(soundTypes.LEVEL_UP);
 					unsetGameInterval();
 					setGameInterval();
 				} else {
 					// Flip the player's target amount to zero once it has reached to maximum value
-					if (player.currentTarget === flip.maxTarget) {
+					if (player.currentTarget === maxTargetToFlip) {
 						player.currentTarget = 0;
 					}
 				}
@@ -602,29 +538,29 @@ gameLoop = GameLoop({
 		}
 
 		// Show 'Start Game' countdown view
-		if (gamePlay.start.visible) {
-			if (roundInteger(gamePlay.start.time) >= 0) {
-				gamePlay.start.time -= 1 / FRAME_RATE;
+		if (gameScreen.start.visible) {
+			if (roundInteger(gameScreen.start.time) >= 0) {
+				gameScreen.start.time -= 1 / FRAME_RATE;
 			} else {
-				gamePlay.start.visible = 0;
+				gameScreen.start.visible = 0;
 			}
 		}
 
 		// Show 'Continue' countdown view which allow player to revive
-		if (gamePlay.continue.visible) {
+		if (gameScreen.continue.visible) {
 			localStorage.setItem('hiScore', player.hiScore);
-			if (roundInteger(gamePlay.continue.time) >= 0) {
-				gamePlay.continue.time -= 1 / FRAME_RATE;
+			if (roundInteger(gameScreen.continue.time) >= 0) {
+				gameScreen.continue.time -= 1 / FRAME_RATE;
 			} else {
-				gamePlay.continue.visible = 0;
-				gamePlay.end.visible = 1;
+				gameScreen.continue.visible = 0;
+				gameScreen.end.visible = 1;
 			}
 			// Restart the game once the player has pressed 'Enter' to continue the game
 			if (keyPressed('enter')) {
 				playSoundEffect(soundTypes.REVIVE);
-				gamePlay.start.time = 3;
-				gamePlay.continue.time = 9;
-				gamePlay.continue.visible = 0;
+				gameScreen.start.time = 3;
+				gameScreen.continue.time = 9;
+				gameScreen.continue.visible = 0;
 				player.score = 0;
 				battery.percent = 100;
 				startGame();
@@ -632,55 +568,55 @@ gameLoop = GameLoop({
 		}
 
 		// Show 'Game Over' view
-		if (gamePlay.end.visible) {
-			if (roundInteger(gamePlay.end.time) >= 0) {
-				gamePlay.end.time -= 1 / FRAME_RATE;
+		if (gameScreen.end.visible) {
+			if (roundInteger(gameScreen.end.time) >= 0) {
+				gameScreen.end.time -= 1 / FRAME_RATE;
 			} else {
 				resetGame();
 			}
 		}
 
 		// Show 'Game Menu' view to choose either play game or view instructions
-		if (gamePlay.menu.visible) {
-			gamePlay.menu.dt += 1 / FRAME_RATE;
-			if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gamePlay.menu.dt > 0.25) {
+		if (gameScreen.menu.visible) {
+			gameScreen.menu.dt += 1 / FRAME_RATE;
+			if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gameScreen.menu.dt > 0.25) {
 				playSoundEffect(soundTypes.SELECT);
-				gamePlay.menu.options[0].selected = !gamePlay.menu.options[0].selected;
-				gamePlay.menu.options[1].selected = !gamePlay.menu.options[1].selected;
-				gamePlay.menu.dt = 0;
+				gameScreen.menu.options[0].selected = !gameScreen.menu.options[0].selected;
+				gameScreen.menu.options[1].selected = !gameScreen.menu.options[1].selected;
+				gameScreen.menu.dt = 0;
 			}
-			if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
-				gamePlay.menu.dt = 0;
-				gamePlay.menu.visible = 0;
-				if (gamePlay.menu.options[0].selected) {
-					gamePlay.heading.visible = 0;
+			if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
+				gameScreen.menu.dt = 0;
+				gameScreen.menu.visible = 0;
+				if (gameScreen.menu.options[0].selected) {
+					gameScreen.heading.visible = 0;
 					startGame();
 				} else {
-					gamePlay.instructions.visible = 1;
+					gameScreen.instructions.visible = 1;
 				}
 			}
 		}
 
 		// Show 'Instructions' view
-		if (gamePlay.instructions.visible) {
-			gamePlay.menu.dt += 1 / FRAME_RATE;
-			if (keyPressed('enter') && gamePlay.menu.dt > 0.25) {
-				gamePlay.instructions.visible = 0;
-				gamePlay.menu.visible = 1;
-				gamePlay.menu.dt = 0;
+		if (gameScreen.instructions.visible) {
+			gameScreen.menu.dt += 1 / FRAME_RATE;
+			if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
+				gameScreen.instructions.visible = 0;
+				gameScreen.menu.visible = 1;
+				gameScreen.menu.dt = 0;
 			}
 		}
 
 		// Show 'action' text view based on certain conditions
-		if (gamePlay.action.visible) {
-			gamePlay.action.time -= 1 / FRAME_RATE;
-			if (roundInteger(gamePlay.action.time) <= 0) {
-				gamePlay.action.visible = 0;
+		if (gameScreen.action.visible) {
+			gameScreen.action.time -= 1 / FRAME_RATE;
+			if (roundInteger(gameScreen.action.time) <= 0) {
+				gameScreen.action.visible = 0;
 			}
 		}
 
 		// Decrease player's power level in small amount during the game
-		if (!gamePlay.heading.visible && !gamePlay.menu.visible && !gamePlay.instructions.visible && !gamePlay.start.visible) {
+		if (!gameScreen.heading.visible && !gameScreen.menu.visible && !gameScreen.instructions.visible && !gameScreen.start.visible) {
 			battery.percent -= 1 / (2 * FRAME_RATE);
 		}
 	},
