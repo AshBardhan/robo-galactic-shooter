@@ -6,4 +6,3 @@
 ## Deployment
 dist/
 *.zip
-src/game.js
