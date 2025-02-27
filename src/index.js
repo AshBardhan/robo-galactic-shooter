@@ -2,7 +2,8 @@ import './lib/sfxr.mjs';
 import {init, Sprite, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
 import {soundEffects, soundTypes} from './constants/sound.mjs';
 import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game.mjs';
-import {chrs} from './pixel.mjs';
+import {renderBackground, renderTexts} from './render.mjs';
+import {randomValue, roundInteger} from './utils.mjs';
 
 const angleRadianRatio = Math.PI / 180;
 const FRAME_RATE = 60;
@@ -13,9 +14,6 @@ initKeys();
 let gameInterval = null;
 let gameLoop;
 
-// Helper functions
-let randomValue = (end, start = 0, factor = 1) => Math.floor(Math.random() * end + start) * factor;
-let roundInteger = (val) => Math.ceil(val);
 let playSoundEffect = (soundType) => {
 	soundEffects[soundType].play();
 };
@@ -288,115 +286,6 @@ function endGame() {
 	offKey('esc');
 }
 
-// Print string text in pixelated form
-function drawPixel(str, dx = 0, dy = 0, size = 3, color = '#fff') {
-	let needed = [];
-	let i, x, y, ch;
-	str = str.toUpperCase();
-	for (i = 0; i < str.length; i++) {
-		ch = chrs[str.charAt(i)];
-		if (ch) {
-			needed.push(ch);
-		}
-	}
-
-	context.translate(dx, dy);
-	context.beginPath();
-	context.fillStyle = color;
-	let currX = 0;
-	for (i = 0; i < needed.length; i++) {
-		ch = needed[i];
-		let currY = 0;
-		let addX = 0;
-		for (y = 0; y < ch.length; y++) {
-			let row = ch[y];
-			for (x = 0; x < row.length; x++) {
-				if (row[x]) {
-					context.fillRect(currX + x * size, currY, size, size);
-				}
-			}
-			addX = Math.max(addX, row.length * size);
-			currY += size;
-		}
-		currX += size + addX;
-	}
-	context.closePath();
-	context.resetTransform();
-}
-
-// Render background of the game
-function renderBackground() {
-	let g = context.createLinearGradient(canvas.width / 2, 0, canvas.width / 2, canvas.height);
-	let ga = g.addColorStop.bind(g);
-	ga(0.3, '#101014');
-	ga(0.7, '#141852');
-	ga(1, '#35274E');
-	context.fillStyle = g;
-	context.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-// Render text based on different views of the game
-function renderTexts() {
-	drawPixel(`Level`, 280, 10);
-	drawPixel(`${currentLevel}/${maxLevel}`, 380, 10);
-	drawPixel(`Target`, 280, 35);
-	drawPixel(`${player?.currentTarget ?? 0}/${levels[currentLevel - 1].target}`, 380, 35);
-
-	drawPixel(`Score`, 550, 10);
-	drawPixel(`${player?.score ?? 0}`, 680, 10);
-	drawPixel(`Hi-Score`, 550, 35);
-	drawPixel(`${player?.hiScore ?? 0}`, 680, 35);
-
-	if (gameScreen.heading.visible) {
-		drawPixel(`${gameScreen.heading.messages[0]}`, (canvas.width - `${gameScreen.heading.messages[0]}`.length * 55) / 2, 125, 15);
-		drawPixel(`${gameScreen.heading.messages[1]}`, (canvas.width - `${gameScreen.heading.messages[1]}`.length * 60) / 2, 225, 15);
-		drawPixel(`${gameScreen.heading.messages[2]}`, (canvas.width - `${gameScreen.heading.messages[2]}`.length * 56) / 2, 325, 15);
-	}
-
-	if (gameScreen.menu.visible) {
-		drawPixel(`${gameScreen.menu.options[0].message}`, (canvas.width - `${gameScreen.menu.options[0].message}`.length * 40) / 2, 475, 10, gameScreen.menu.options[0].selected ? '#FEDA94' : undefined);
-		drawPixel(`${gameScreen.menu.options[1].message}`, (canvas.width - `${gameScreen.menu.options[1].message}`.length * 40) / 2, 575, 10, gameScreen.menu.options[1].selected ? '#FEDA94' : undefined);
-	}
-
-	if (gameScreen.instructions.visible) {
-		drawPixel(`your planet is under threat as the asteroids`, 20, 455);
-		drawPixel(`are approaching with uncertain speed. your`, 20, 485);
-		drawPixel(`mission is to destroy them all before`, 20, 515);
-		drawPixel(`your battery is drained out completely and`, 20, 545);
-		drawPixel(`making you offline permanently.`, 20, 575);
-		drawPixel(`survival tip`, 20, 615, 4);
-		drawPixel(`look for golden stars to recharge battery.`, 20, 645);
-
-		drawPixel(`controls`, 675, 455, 4);
-		drawPixel(`arrow keys`, 675, 495);
-		drawPixel(`move`, 835, 495);
-		drawPixel(`space`, 675, 525);
-		drawPixel(`shoot`, 835, 525);
-		drawPixel(`esc`, 675, 555);
-		drawPixel(`pause/resume`, 835, 555);
-		drawPixel(`enter`, 675, 585);
-		drawPixel(`confirm`, 835, 585);
-	}
-
-	if (gameScreen.continue.visible) {
-		drawPixel(`${gameScreen.continue.message}`, (canvas.width - `${gameScreen.continue.message}`.length * 40) / 2, 235, 10);
-		drawPixel(`${roundInteger(gameScreen.continue.time)}`, (canvas.width - `${roundInteger(gameScreen.continue.time)}`.length * 50) / 2, 305, 20);
-	}
-
-	if (gameScreen.start.visible) {
-		drawPixel(`${gameScreen.start.message}`, (canvas.width - `${gameScreen.start.message}`.length * 20) / 2, 255, 5);
-		drawPixel(`${roundInteger(gameScreen.start.time)}`, (canvas.width - `${roundInteger(gameScreen.start.time)}`.length * 50) / 2, 305, 10);
-	}
-
-	if (gameScreen.end.visible) {
-		drawPixel(`${gameScreen.end.message}`, (canvas.width - `${gameScreen.end.message}`.length * 64) / 2, 275, 15);
-	}
-
-	if (gameScreen.action.visible) {
-		drawPixel(`${gameScreen.action.messages[gameScreen.action.index]}`, 130 - (`${gameScreen.action.messages[gameScreen.action.index]}`.length * 20) / 2, 15, 5);
-	}
-}
-
 // Reset game once it is over
 function resetGame() {
 	asteroids.length = 0;
@@ -621,11 +510,11 @@ gameLoop = GameLoop({
 		}
 	},
 	render() {
-		renderBackground();
+		renderBackground(context, canvas);
 		[].concat(...stars, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
 			sr?.render();
 		});
-		renderTexts();
+		renderTexts(context, canvas, player, currentLevel);
 	},
 });
 

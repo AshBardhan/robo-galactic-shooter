@@ -1,4 +1,4 @@
-const gameScreen = {
+let gameScreen = {
     heading: {
         visible: 1,
         messages: ['Robo', 'Galactic', 'Shooter'],
