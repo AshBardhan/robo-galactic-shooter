@@ -1,22 +1,19 @@
 import './lib/sfxr.mjs';
 import {init, Sprite, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
-import {soundEffects, soundTypes} from './constants/sound.mjs';
+import {soundTypes} from './constants/sound.mjs';
 import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game.mjs';
 import {renderBackground, renderTexts} from './render.mjs';
-import {randomValue, roundInteger} from './utils.mjs';
+import {playSoundEffect, randomValue, roundInteger} from './utils.mjs';
 
 const angleRadianRatio = Math.PI / 180;
 const FRAME_RATE = 60;
 
 let {canvas, context} = init();
+
 initKeys();
 
 let gameInterval = null;
 let gameLoop;
-
-let playSoundEffect = (soundType) => {
-	soundEffects[soundType].play();
-};
 
 // Asteroids
 let asteroids = [];
@@ -66,7 +63,6 @@ let battery = Sprite({
 	},
 	render() {
 		if (roundInteger(this.time) > 0) {
-			console.log('battery rendering', this.time, context, this.y);
 			context.beginPath();
 			context.strokeStyle = '#fff';
 			context.fillStyle = '#fff';
