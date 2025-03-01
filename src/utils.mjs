@@ -4,5 +4,5 @@ export const randomValue = (end, start = 0, factor = 1) => Math.floor(Math.rando
 export const roundInteger = (val) => Math.ceil(val);
 
 export const playSoundEffect = (soundType) => {
-	soundEffects[soundType].play();
+  soundEffects[soundType].play();
 };
