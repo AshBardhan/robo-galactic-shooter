@@ -2,6 +2,7 @@
 .idea/
 *.iml
 .vs/
+.vscode/
 
 ## macOS template
 *.DS_Store
