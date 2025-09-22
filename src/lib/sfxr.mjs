@@ -1,4 +1,4 @@
-import RIFFWAVE from "./riffwave.mjs";
+import RIFFWAVE from './riffwave.mjs';
 
 // Wave shapes
 var SQUARE = 0;
@@ -16,48 +16,48 @@ var OVERSAMPLING = 8;
 // Sound generation parameters are on [0,1] unless noted SIGNED & thus
 // on [-1,1]
 function Params() {
-  this.oldParams = true;  // Note what structure this is
+  this.oldParams = true; // Note what structure this is
 
   // Wave shape
   this.wave_type = SQUARE;
 
   // Envelope
-  this.p_env_attack = 0;   // Attack time
-  this.p_env_sustain = 0.3;  // Sustain time
-  this.p_env_punch = 0;    // Sustain punch
-  this.p_env_decay = 0.4;    // Decay time
+  this.p_env_attack = 0; // Attack time
+  this.p_env_sustain = 0.3; // Sustain time
+  this.p_env_punch = 0; // Sustain punch
+  this.p_env_decay = 0.4; // Decay time
 
   // Tone
-  this.p_base_freq = 0.3;    // Start frequency
-  this.p_freq_limit = 0;   // Min frequency cutoff
-  this.p_freq_ramp = 0;    // Slide (SIGNED)
-  this.p_freq_dramp = 0;   // Delta slide (SIGNED)
+  this.p_base_freq = 0.3; // Start frequency
+  this.p_freq_limit = 0; // Min frequency cutoff
+  this.p_freq_ramp = 0; // Slide (SIGNED)
+  this.p_freq_dramp = 0; // Delta slide (SIGNED)
   // Vibrato
   this.p_vib_strength = 0; // Vibrato depth
-  this.p_vib_speed = 0;    // Vibrato speed
+  this.p_vib_speed = 0; // Vibrato speed
 
   // Tonal change
-  this.p_arp_mod = 0;      // Change amount (SIGNED)
-  this.p_arp_speed = 0;    // Change speed
+  this.p_arp_mod = 0; // Change amount (SIGNED)
+  this.p_arp_speed = 0; // Change speed
 
   // Square wave duty (proportion of time signal is high vs. low)
-  this.p_duty = 0;         // Square duty
-  this.p_duty_ramp = 0;    // Duty sweep (SIGNED)
+  this.p_duty = 0; // Square duty
+  this.p_duty_ramp = 0; // Duty sweep (SIGNED)
 
   // Repeat
   this.p_repeat_speed = 0; // Repeat speed
 
   // Flanger
-  this.p_pha_offset = 0;   // Flanger offset (SIGNED)
-  this.p_pha_ramp = 0;     // Flanger sweep (SIGNED)
+  this.p_pha_offset = 0; // Flanger offset (SIGNED)
+  this.p_pha_ramp = 0; // Flanger sweep (SIGNED)
 
   // Low-pass filter
-  this.p_lpf_freq = 1;     // Low-pass filter cutoff
-  this.p_lpf_ramp = 0;     // Low-pass filter cutoff sweep (SIGNED)
-  this.p_lpf_resonance = 0;// Low-pass filter resonance
+  this.p_lpf_freq = 1; // Low-pass filter cutoff
+  this.p_lpf_ramp = 0; // Low-pass filter cutoff sweep (SIGNED)
+  this.p_lpf_resonance = 0; // Low-pass filter resonance
   // High-pass filter
-  this.p_hpf_freq = 0;     // High-pass filter cutoff
-  this.p_hpf_ramp = 0;     // High-pass filter cutoff sweep (SIGNED)
+  this.p_hpf_freq = 0; // High-pass filter cutoff
+  this.p_hpf_ramp = 0; // High-pass filter cutoff sweep (SIGNED)
 
   // Sample parameters
   this.sound_vol = 0.5;
@@ -67,10 +67,18 @@ function Params() {
 
 /*** Helper functions ***/
 
-function sqr(x) { return x * x }
-function cube(x) { return x * x * x }
-function sign(x) { return x < 0 ? -1 : 1 }
-function log(x, b) { return Math.log(x) / Math.log(b); }
+function sqr(x) {
+  return x * x;
+}
+function cube(x) {
+  return x * x * x;
+}
+function sign(x) {
+  return x < 0 ? -1 : 1;
+}
+function log(x, b) {
+  return Math.log(x) / Math.log(b);
+}
 var pow = Math.pow;
 
 function frnd(range) {
@@ -88,107 +96,127 @@ function rnd(max) {
 /*** Import/export functions ***/
 
 // http://stackoverflow.com/questions/3096646/how-to-convert-a-floating-point-number-to-its-binary-representation-ieee-754-i
-function assembleFloat(sign, exponent, mantissa)
-{
-    return (sign << 31) | (exponent << 23) | (mantissa);
+function assembleFloat(sign, exponent, mantissa) {
+  return (sign << 31) | (exponent << 23) | mantissa;
 }
 
-function floatToNumber(flt)
-{
-    if (isNaN(flt)) // Special case: NaN
-        return assembleFloat(0, 0xFF, 0x1337); // Mantissa is nonzero for NaN
+function floatToNumber(flt) {
+  if (isNaN(flt))
+    // Special case: NaN
+    return assembleFloat(0, 0xff, 0x1337); // Mantissa is nonzero for NaN
 
-    var sign = (flt < 0) ? 1 : 0;
-    flt = Math.abs(flt);
-    if (flt == 0.0) // Special case: +-0
-        return assembleFloat(sign, 0, 0);
+  var sign = flt < 0 ? 1 : 0;
+  flt = Math.abs(flt);
+  if (flt == 0.0)
+    // Special case: +-0
+    return assembleFloat(sign, 0, 0);
 
-    var exponent = Math.floor(Math.log(flt) / Math.LN2);
-    if (exponent > 127 || exponent < -126) // Special case: +-Infinity (and huge numbers)
-        return assembleFloat(sign, 0xFF, 0); // Mantissa is zero for +-Infinity
+  var exponent = Math.floor(Math.log(flt) / Math.LN2);
+  if (exponent > 127 || exponent < -126)
+    // Special case: +-Infinity (and huge numbers)
+    return assembleFloat(sign, 0xff, 0); // Mantissa is zero for +-Infinity
 
-    var mantissa = flt / Math.pow(2, exponent);
-    return assembleFloat(sign, exponent + 127, (mantissa * Math.pow(2, 23)) & 0x7FFFFF);
+  var mantissa = flt / Math.pow(2, exponent);
+  return assembleFloat(sign, exponent + 127, (mantissa * Math.pow(2, 23)) & 0x7fffff);
 }
 
 // http://stackoverflow.com/a/16001019
 function numberToFloat(bytes) {
-    var sign = (bytes & 0x80000000) ? -1 : 1;
-    var exponent = ((bytes >> 23) & 0xFF) - 127;
-    var significand = (bytes & ~(-1 << 23));
+  var sign = bytes & 0x80000000 ? -1 : 1;
+  var exponent = ((bytes >> 23) & 0xff) - 127;
+  var significand = bytes & ~(-1 << 23);
 
-    if (exponent == 128) 
-        return sign * ((significand) ? Number.NaN : Number.POSITIVE_INFINITY);
+  if (exponent == 128) return sign * (significand ? Number.NaN : Number.POSITIVE_INFINITY);
 
-    if (exponent == -127) {
-        if (significand == 0) return sign * 0.0;
-        exponent = -126;
-        significand /= (1 << 22);
-    } else significand = (significand | (1 << 23)) / (1 << 23);
+  if (exponent == -127) {
+    if (significand == 0) return sign * 0.0;
+    exponent = -126;
+    significand /= 1 << 22;
+  } else significand = (significand | (1 << 23)) / (1 << 23);
 
-    return sign * significand * Math.pow(2, exponent);
+  return sign * significand * Math.pow(2, exponent);
 }
 
 // export parameter list to URL friendly base58 string
 // https://gist.github.com/diafygi/90a3e80ca1c2793220e5/
-var b58alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+var b58alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 var params_order = [
-  "wave_type",
-  "p_env_attack",
-  "p_env_sustain",
-  "p_env_punch",
-  "p_env_decay",
-  "p_base_freq",
-  "p_freq_limit",
-  "p_freq_ramp",
-  "p_freq_dramp",
-  "p_vib_strength",
-  "p_vib_speed",
-  "p_arp_mod",
-  "p_arp_speed",
-  "p_duty",
-  "p_duty_ramp",
-  "p_repeat_speed",
-  "p_pha_offset",
-  "p_pha_ramp",
-  "p_lpf_freq",
-  "p_lpf_ramp",
-  "p_lpf_resonance",
-  "p_hpf_freq",
-  "p_hpf_ramp"
+  'wave_type',
+  'p_env_attack',
+  'p_env_sustain',
+  'p_env_punch',
+  'p_env_decay',
+  'p_base_freq',
+  'p_freq_limit',
+  'p_freq_ramp',
+  'p_freq_dramp',
+  'p_vib_strength',
+  'p_vib_speed',
+  'p_arp_mod',
+  'p_arp_speed',
+  'p_duty',
+  'p_duty_ramp',
+  'p_repeat_speed',
+  'p_pha_offset',
+  'p_pha_ramp',
+  'p_lpf_freq',
+  'p_lpf_ramp',
+  'p_lpf_resonance',
+  'p_hpf_freq',
+  'p_hpf_ramp',
 ];
 
-Params.prototype.toB58 = function() {
+Params.prototype.toB58 = function () {
   var convert = [];
   for (var pi in params_order) {
     var p = params_order[pi];
-    if (p == "wave_type") {
+    if (p == 'wave_type') {
       convert.push(this[p]);
-    } else if (p.indexOf("p_") == 0) {
+    } else if (p.indexOf('p_') == 0) {
       var val = this[p];
       val = floatToNumber(val);
       convert.push(0xff & val);
-      convert.push(0xff & (val >> 8))
-      convert.push(0xff & (val >> 16))
-      convert.push(0xff & (val >> 24))
+      convert.push(0xff & (val >> 8));
+      convert.push(0xff & (val >> 16));
+      convert.push(0xff & (val >> 24));
     }
   }
-  return function(B,A){var d=[],s="",i,j,c,n;for(i in B){j=0,c=B[i];s+=c||s.length^i?"":1;while(j in d||c){n=d[j];n=n?n*256+c:c;c=n/58|0;d[j]=n%58;j++}}while(j--)s+=A[d[j]];return s}(convert, b58alphabet);
-}
+  return (function (B, A) {
+    var d = [],
+      s = '',
+      i,
+      j,
+      c,
+      n;
+    for (i in B) {
+      ((j = 0), (c = B[i]));
+      s += c || s.length ^ i ? '' : 1;
+      while (j in d || c) {
+        n = d[j];
+        n = n ? n * 256 + c : c;
+        c = (n / 58) | 0;
+        d[j] = n % 58;
+        j++;
+      }
+    }
+    while (j--) s += A[d[j]];
+    return s;
+  })(convert, b58alphabet);
+};
 
-Params.prototype.fromB58 = function(b58encoded) {
+Params.prototype.fromB58 = function (b58encoded) {
   this.fromJSON(sfxr.b58decode(b58encoded));
   return this;
-}
+};
 
-Params.prototype.fromJSON = function(struct) {
+Params.prototype.fromJSON = function (struct) {
   for (var p in struct) {
     if (struct.hasOwnProperty(p)) {
       this[p] = struct[p];
     }
   }
   return this;
-}
+};
 
 /*** Presets ***/
 
@@ -207,12 +235,11 @@ Params.prototype.pickupCoin = function () {
     this.p_arp_mod = 0.2 + frnd(0.4);
   }
   return this;
-}
+};
 
 Params.prototype.laserShoot = function () {
   this.wave_type = rnd(2);
-  if(this.wave_type === SINE && rnd(1))
-    this.wave_type = rnd(1);
+  if (this.wave_type === SINE && rnd(1)) this.wave_type = rnd(1);
   if (rnd(2) === 0) {
     this.p_base_freq = 0.3 + frnd(0.6);
     this.p_freq_limit = frnd(0.1);
@@ -223,8 +250,7 @@ Params.prototype.laserShoot = function () {
     if (this.p_freq_limit < 0.2) this.p_freq_limit = 0.2;
     this.p_freq_ramp = -0.15 - frnd(0.2);
   }
-  if (this.wave_type === SAWTOOTH)
-    this.p_duty = 1;
+  if (this.wave_type === SAWTOOTH) this.p_duty = 1;
   if (rnd(1)) {
     this.p_duty = frnd(0.5);
     this.p_duty_ramp = frnd(0.2);
@@ -235,17 +261,16 @@ Params.prototype.laserShoot = function () {
   this.p_env_attack = 0;
   this.p_env_sustain = 0.1 + frnd(0.2);
   this.p_env_decay = frnd(0.4);
-  if (rnd(1))
-    this.p_env_punch = frnd(0.3);
+  if (rnd(1)) this.p_env_punch = frnd(0.3);
   if (rnd(2) === 0) {
     this.p_pha_offset = frnd(0.2);
     this.p_pha_ramp = -frnd(0.2);
   }
   //if (rnd(1))
-    this.p_hpf_freq = frnd(0.3);
+  this.p_hpf_freq = frnd(0.3);
 
   return this;
-}
+};
 
 Params.prototype.explosion = function () {
   this.wave_type = NOISE;
@@ -256,10 +281,8 @@ Params.prototype.explosion = function () {
     this.p_base_freq = sqr(0.2 + frnd(0.7));
     this.p_freq_ramp = -0.2 - frnd(0.2);
   }
-  if (rnd(4) === 0)
-    this.p_freq_ramp = 0;
-  if (rnd(2) === 0)
-    this.p_repeat_speed = 0.3 + frnd(0.5);
+  if (rnd(4) === 0) this.p_freq_ramp = 0;
+  if (rnd(2) === 0) this.p_repeat_speed = 0.3 + frnd(0.5);
   this.p_env_attack = 0;
   this.p_env_sustain = 0.1 + frnd(0.3);
   this.p_env_decay = frnd(0.5);
@@ -278,7 +301,7 @@ Params.prototype.explosion = function () {
   }
 
   return this;
-}
+};
 
 Params.prototype.powerUp = function () {
   if (rnd(1)) {
@@ -303,25 +326,21 @@ Params.prototype.powerUp = function () {
   this.p_env_decay = 0.1 + frnd(0.4);
 
   return this;
-}
+};
 
 Params.prototype.hitHurt = function () {
   this.wave_type = rnd(2);
-  if (this.wave_type === SINE)
-    this.wave_type = NOISE;
-  if (this.wave_type === SQUARE)
-    this.p_duty = frnd(0.6);
-  if (this.wave_type === SAWTOOTH)
-    this.p_duty = 1;
+  if (this.wave_type === SINE) this.wave_type = NOISE;
+  if (this.wave_type === SQUARE) this.p_duty = frnd(0.6);
+  if (this.wave_type === SAWTOOTH) this.p_duty = 1;
   this.p_base_freq = 0.2 + frnd(0.6);
   this.p_freq_ramp = -0.3 - frnd(0.4);
   this.p_env_attack = 0;
   this.p_env_sustain = frnd(0.1);
   this.p_env_decay = 0.1 + frnd(0.2);
-  if (rnd(1))
-    this.p_hpf_freq = frnd(0.3);
+  if (rnd(1)) this.p_hpf_freq = frnd(0.3);
   return this;
-}
+};
 
 Params.prototype.jump = function () {
   this.wave_type = SQUARE;
@@ -331,26 +350,22 @@ Params.prototype.jump = function () {
   this.p_env_attack = 0;
   this.p_env_sustain = 0.1 + frnd(0.3);
   this.p_env_decay = 0.1 + frnd(0.2);
-  if (rnd(1))
-    this.p_hpf_freq = frnd(0.3);
-  if (rnd(1))
-    this.p_lpf_freq = 1 - frnd(0.6);
+  if (rnd(1)) this.p_hpf_freq = frnd(0.3);
+  if (rnd(1)) this.p_lpf_freq = 1 - frnd(0.6);
   return this;
-}
+};
 
 Params.prototype.blipSelect = function () {
   this.wave_type = rnd(1);
-  if (this.wave_type === SQUARE)
-    this.p_duty = frnd(0.6);
-  else
-    this.p_duty = 1;
+  if (this.wave_type === SQUARE) this.p_duty = frnd(0.6);
+  else this.p_duty = 1;
   this.p_base_freq = 0.2 + frnd(0.4);
   this.p_env_attack = 0;
   this.p_env_sustain = 0.1 + frnd(0.1);
   this.p_env_decay = frnd(0.2);
   this.p_hpf_freq = 0.1;
   return this;
-}
+};
 
 Params.prototype.mutate = function () {
   if (rnd(1)) this.p_base_freq += frnd(0.1) - 0.05;
@@ -375,21 +390,16 @@ Params.prototype.mutate = function () {
   if (rnd(1)) this.p_repeat_speed += frnd(0.1) - 0.05;
   if (rnd(1)) this.p_arp_speed += frnd(0.1) - 0.05;
   if (rnd(1)) this.p_arp_mod += frnd(0.1) - 0.05;
-}
-
+};
 
 Params.prototype.random = function () {
   this.wave_type = rnd(3);
-  if (rnd(1))
-    this.p_base_freq = cube(frnd(2) - 1) + 0.5;
-  else
-    this.p_base_freq = sqr(frnd(1));
+  if (rnd(1)) this.p_base_freq = cube(frnd(2) - 1) + 0.5;
+  else this.p_base_freq = sqr(frnd(1));
   this.p_freq_limit = 0;
   this.p_freq_ramp = Math.pow(frnd(2) - 1, 5);
-  if (this.p_base_freq > 0.7 && this.p_freq_ramp > 0.2)
-    this.p_freq_ramp = -this.p_freq_ramp;
-  if (this.p_base_freq < 0.2 && this.p_freq_ramp < -0.05)
-    this.p_freq_ramp = -this.p_freq_ramp;
+  if (this.p_base_freq > 0.7 && this.p_freq_ramp > 0.2) this.p_freq_ramp = -this.p_freq_ramp;
+  if (this.p_base_freq < 0.2 && this.p_freq_ramp < -0.05) this.p_freq_ramp = -this.p_freq_ramp;
   this.p_freq_dramp = Math.pow(frnd(2) - 1, 3);
   this.p_duty = frnd(2) - 1;
   this.p_duty_ramp = Math.pow(frnd(2) - 1, 3);
@@ -406,8 +416,7 @@ Params.prototype.random = function () {
   this.p_lpf_resonance = rndr(-1, 1);
   this.p_lpf_freq = 1 - Math.pow(frnd(1), 3);
   this.p_lpf_ramp = Math.pow(frnd(2) - 1, 3);
-  if (this.p_lpf_freq < 0.1 && this.p_lpf_ramp < -0.05)
-    this.p_lpf_ramp = -this.p_lpf_ramp;
+  if (this.p_lpf_freq < 0.1 && this.p_lpf_ramp < -0.05) this.p_lpf_ramp = -this.p_lpf_ramp;
   this.p_hpf_freq = Math.pow(frnd(1), 5);
   this.p_hpf_ramp = Math.pow(frnd(2) - 1, 5);
   this.p_pha_offset = Math.pow(frnd(2) - 1, 3);
@@ -416,7 +425,7 @@ Params.prototype.random = function () {
   this.p_arp_speed = frnd(2) - 1;
   this.p_arp_mod = frnd(2) - 1;
   return this;
-}
+};
 
 Params.prototype.synth = function () {
   this.wave_type = rnd(1);
@@ -434,7 +443,7 @@ Params.prototype.synth = function () {
   this.p_lpf_resonance = frnd(1);
   this.p_hpf_freq = rnd(3) == 3 ? frnd(1) : 0;
   this.p_hpf_ramp = rnd(3) == 3 ? frnd(1) : 0;
-}
+};
 
 Params.prototype.tone = function () {
   this.wave_type = SINE;
@@ -444,19 +453,19 @@ Params.prototype.tone = function () {
   this.p_env_decay = 0;
   this.p_env_punch = 0;
   return this;
-}
+};
 
 /*** Simpler namespaced functional API ***/
 
 let sfxr = {};
 
-sfxr.toBuffer = function(synthdef) {
-  return (new SoundEffect(synthdef)).getRawBuffer()["buffer"];
+sfxr.toBuffer = function (synthdef) {
+  return new SoundEffect(synthdef).getRawBuffer()['buffer'];
 };
 
-sfxr.toWebAudio = function(synthdef, audiocontext) {
+sfxr.toWebAudio = function (synthdef, audiocontext) {
   var sfx = new SoundEffect(synthdef);
-  var buffer = _sfxr_getNormalized(sfx.getRawBuffer()["buffer"], sfx.bitsPerChannel);
+  var buffer = _sfxr_getNormalized(sfx.getRawBuffer()['buffer'], sfx.bitsPerChannel);
   if (audiocontext) {
     var buff = audiocontext.createBuffer(1, buffer.length, sfx.sampleRate);
     var nowBuffering = buff.getChannelData(0);
@@ -469,36 +478,57 @@ sfxr.toWebAudio = function(synthdef, audiocontext) {
   }
 };
 
-sfxr.toWave = function(synthdef) {
-  return (new SoundEffect(synthdef)).generate();
+sfxr.toWave = function (synthdef) {
+  return new SoundEffect(synthdef).generate();
 };
 
-sfxr.toAudio = function(synthdef) {
-  return (new SoundEffect(synthdef)).generate().getAudio();
-}
+sfxr.toAudio = function (synthdef) {
+  return new SoundEffect(synthdef).generate().getAudio();
+};
 
-sfxr.b58decode = function(b58encoded) {
-  var decoded = function(S,A){var d=[],b=[],i,j,c,n;for(i in S){j=0,c=A.indexOf(S[i]);if(c<0)return undefined;c||b.length^i?i:b.push(0);while(j in d||c){n=d[j];n=n?n*58+c:c;c=n>>8;d[j]=n%256;j++}}while(j--)b.push(d[j]);return new Uint8Array(b)}(b58encoded,b58alphabet);
+sfxr.b58decode = function (b58encoded) {
+  var decoded = (function (S, A) {
+    var d = [],
+      b = [],
+      i,
+      j,
+      c,
+      n;
+    for (i in S) {
+      ((j = 0), (c = A.indexOf(S[i])));
+      if (c < 0) return undefined;
+      c || b.length ^ i ? i : b.push(0);
+      while (j in d || c) {
+        n = d[j];
+        n = n ? n * 58 + c : c;
+        c = n >> 8;
+        d[j] = n % 256;
+        j++;
+      }
+    }
+    while (j--) b.push(d[j]);
+    return new Uint8Array(b);
+  })(b58encoded, b58alphabet);
   var result = {};
   for (var pi in params_order) {
     var p = params_order[pi];
     var offset = (pi - 1) * 4 + 1;
-    if (p == "wave_type") {
+    if (p == 'wave_type') {
       result[p] = decoded[0];
     } else {
-      var val = (decoded[offset] | (decoded[offset + 1] << 8) | (decoded[offset + 2] << 16) | (decoded[offset + 3] << 24));
+      var val = decoded[offset] | (decoded[offset + 1] << 8) | (decoded[offset + 2] << 16) | (decoded[offset + 3] << 24);
       result[p] = numberToFloat(val);
     }
   }
   return result;
-}
+};
 
 /*** Main entry point ***/
 
 function SoundEffect(ps) {
-  if (typeof(ps) == "string") {
+  if (typeof ps == 'string') {
     var PARAMS = new Params();
-    if (ps.indexOf("#") == 0) {
+    if (ps.indexOf('#') == 0) {
       ps = ps.slice(1);
     }
     ps = PARAMS.fromB58(ps);
@@ -508,18 +538,17 @@ function SoundEffect(ps) {
 
 SoundEffect.prototype.init = function (ps) {
   this.parameters = ps;
-  this.initForRepeat();  // First time through, this is a bit of a misnomer
+  this.initForRepeat(); // First time through, this is a bit of a misnomer
 
   // Waveform shape
   this.waveShape = parseInt(ps.wave_type);
 
   // Filter
   this.fltw = Math.pow(ps.p_lpf_freq, 3) * 0.1;
-  this.enableLowPassFilter = (ps.p_lpf_freq != 1);
+  this.enableLowPassFilter = ps.p_lpf_freq != 1;
   this.fltw_d = 1 + ps.p_lpf_ramp * 0.0001;
-  this.fltdmp = 5 / (1 + Math.pow(ps.p_lpf_resonance, 2) * 20) *
-    (0.01 + this.fltw);
-  if (this.fltdmp > 0.8) this.fltdmp=0.8;
+  this.fltdmp = (5 / (1 + Math.pow(ps.p_lpf_resonance, 2) * 20)) * (0.01 + this.fltw);
+  if (this.fltdmp > 0.8) this.fltdmp = 0.8;
   this.flthp = Math.pow(ps.p_hpf_freq, 2) * 0.1;
   this.flthp_d = 1 + ps.p_hpf_ramp * 0.0003;
 
@@ -528,11 +557,7 @@ SoundEffect.prototype.init = function (ps) {
   this.vibratoAmplitude = ps.p_vib_strength * 0.5;
 
   // Envelope
-  this.envelopeLength = [
-    Math.floor(ps.p_env_attack * ps.p_env_attack * 100000),
-    Math.floor(ps.p_env_sustain * ps.p_env_sustain * 100000),
-    Math.floor(ps.p_env_decay * ps.p_env_decay * 100000)
-  ];
+  this.envelopeLength = [Math.floor(ps.p_env_attack * ps.p_env_attack * 100000), Math.floor(ps.p_env_sustain * ps.p_env_sustain * 100000), Math.floor(ps.p_env_decay * ps.p_env_decay * 100000)];
   this.envelopePunch = ps.p_env_punch;
 
   // Flanger
@@ -542,38 +567,33 @@ SoundEffect.prototype.init = function (ps) {
   if (ps.p_pha_ramp < 0) this.flangerOffsetSlide = -this.flangerOffsetSlide;
 
   // Repeat
-  this.repeatTime = Math.floor(Math.pow(1 - ps.p_repeat_speed, 2) * 20000
-                               + 32);
-  if (ps.p_repeat_speed === 0)
-    this.repeatTime = 0;
+  this.repeatTime = Math.floor(Math.pow(1 - ps.p_repeat_speed, 2) * 20000 + 32);
+  if (ps.p_repeat_speed === 0) this.repeatTime = 0;
 
   this.gain = Math.exp(ps.sound_vol) - 1;
 
   this.sampleRate = ps.sample_rate;
   this.bitsPerChannel = ps.sample_size;
-}
+};
 
-SoundEffect.prototype.initForRepeat = function() {
+SoundEffect.prototype.initForRepeat = function () {
   var ps = this.parameters;
   this.elapsedSinceRepeat = 0;
 
   this.period = 100 / (ps.p_base_freq * ps.p_base_freq + 0.001);
   this.periodMax = 100 / (ps.p_freq_limit * ps.p_freq_limit + 0.001);
-  this.enableFrequencyCutoff = (ps.p_freq_limit > 0);
+  this.enableFrequencyCutoff = ps.p_freq_limit > 0;
   this.periodMult = 1 - Math.pow(ps.p_freq_ramp, 3) * 0.01;
   this.periodMultSlide = -Math.pow(ps.p_freq_dramp, 3) * 0.000001;
 
   this.dutyCycle = 0.5 - ps.p_duty * 0.5;
   this.dutyCycleSlide = -ps.p_duty_ramp * 0.00005;
 
-  if (ps.p_arp_mod >= 0)
-    this.arpeggioMultiplier = 1 - Math.pow(ps.p_arp_mod, 2) * .9;
-  else
-    this.arpeggioMultiplier = 1 + Math.pow(ps.p_arp_mod, 2) * 10;
+  if (ps.p_arp_mod >= 0) this.arpeggioMultiplier = 1 - Math.pow(ps.p_arp_mod, 2) * 0.9;
+  else this.arpeggioMultiplier = 1 + Math.pow(ps.p_arp_mod, 2) * 10;
   this.arpeggioTime = Math.floor(Math.pow(1 - ps.p_arp_speed, 2) * 20000 + 32);
-  if (ps.p_arp_speed === 1)
-    this.arpeggioTime = 0;
-}
+  if (ps.p_arp_speed === 1) this.arpeggioTime = 0;
+};
 
 SoundEffect.prototype.getRawBuffer = function () {
   var fltp = 0;
@@ -581,8 +601,7 @@ SoundEffect.prototype.getRawBuffer = function () {
   var fltphp = 0;
 
   var noise_buffer = Array(32);
-  for (var i = 0; i < 32; ++i)
-    noise_buffer[i] = Math.random() * 2 - 1;
+  for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
 
   var envelopeStage = 0;
   var envelopeElapsed = 0;
@@ -592,8 +611,7 @@ SoundEffect.prototype.getRawBuffer = function () {
   var phase = 0;
   var ipp = 0;
   var flanger_buffer = Array(1024);
-  for (var i = 0; i < 1024; ++i)
-    flanger_buffer[i] = 0;
+  for (var i = 0; i < 1024; ++i) flanger_buffer[i] = 0;
 
   var num_clipped = 0;
 
@@ -603,14 +621,12 @@ SoundEffect.prototype.getRawBuffer = function () {
   var num_summed = 0;
   var summands = Math.floor(44100 / this.sampleRate);
 
-  for(var t = 0; ; ++t) {
-
+  for (var t = 0; ; ++t) {
     // Repeats
-    if (this.repeatTime != 0 && ++this.elapsedSinceRepeat >= this.repeatTime)
-      this.initForRepeat();
+    if (this.repeatTime != 0 && ++this.elapsedSinceRepeat >= this.repeatTime) this.initForRepeat();
 
     // Arpeggio (single)
-    if(this.arpeggioTime != 0 && t >= this.arpeggioTime) {
+    if (this.arpeggioTime != 0 && t >= this.arpeggioTime) {
       this.arpeggioTime = 0;
       this.period *= this.arpeggioMultiplier;
     }
@@ -618,10 +634,9 @@ SoundEffect.prototype.getRawBuffer = function () {
     // Frequency slide, and frequency slide slide!
     this.periodMult += this.periodMultSlide;
     this.period *= this.periodMult;
-    if(this.period > this.periodMax) {
+    if (this.period > this.periodMax) {
       this.period = this.periodMax;
-      if (this.enableFrequencyCutoff)
-        break;
+      if (this.enableFrequencyCutoff) break;
     }
 
     // Vibrato
@@ -641,16 +656,18 @@ SoundEffect.prototype.getRawBuffer = function () {
     // Volume envelope
     if (++envelopeElapsed > this.envelopeLength[envelopeStage]) {
       envelopeElapsed = 0;
-      if (++envelopeStage > 2)
-        break;
+      if (++envelopeStage > 2) break;
     }
     var env_vol;
     var envf = envelopeElapsed / this.envelopeLength[envelopeStage];
-    if (envelopeStage === 0) {         // Attack
+    if (envelopeStage === 0) {
+      // Attack
       env_vol = envf;
-    } else if (envelopeStage === 1) {  // Sustain
+    } else if (envelopeStage === 1) {
+      // Sustain
       env_vol = 1 + (1 - envf) * 2 * this.envelopePunch;
-    } else {                           // Decay
+    } else {
+      // Decay
       env_vol = 1 - envf;
     }
 
@@ -661,10 +678,8 @@ SoundEffect.prototype.getRawBuffer = function () {
 
     if (this.flthp_d != 0) {
       this.flthp *= this.flthp_d;
-      if (this.flthp < 0.00001)
-        this.flthp = 0.00001;
-      if (this.flthp > 0.1)
-        this.flthp = 0.1;
+      if (this.flthp < 0.00001) this.flthp = 0.00001;
+      if (this.flthp > 0.1) this.flthp = 0.1;
     }
 
     // 8x oversampling
@@ -674,29 +689,23 @@ SoundEffect.prototype.getRawBuffer = function () {
       phase++;
       if (phase >= iperiod) {
         phase %= iperiod;
-        if (this.waveShape === NOISE)
-          for(var i = 0; i < 32; ++i)
-            noise_buffer[i] = Math.random() * 2 - 1;
+        if (this.waveShape === NOISE) for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
       }
 
       // Base waveform
       var fp = phase / iperiod;
       if (this.waveShape === SQUARE) {
-        if (fp < this.dutyCycle)
-          sub_sample=0.5;
-        else
-          sub_sample=-0.5;
+        if (fp < this.dutyCycle) sub_sample = 0.5;
+        else sub_sample = -0.5;
       } else if (this.waveShape === SAWTOOTH) {
-        if (fp < this.dutyCycle)
-          sub_sample = -1 + 2 * fp/this.dutyCycle;
-        else
-          sub_sample = 1 - 2 * (fp-this.dutyCycle)/(1-this.dutyCycle);
+        if (fp < this.dutyCycle) sub_sample = -1 + (2 * fp) / this.dutyCycle;
+        else sub_sample = 1 - (2 * (fp - this.dutyCycle)) / (1 - this.dutyCycle);
       } else if (this.waveShape === SINE) {
         sub_sample = Math.sin(fp * 2 * Math.PI);
       } else if (this.waveShape === NOISE) {
-        sub_sample = noise_buffer[Math.floor(phase * 32 / iperiod)];
+        sub_sample = noise_buffer[Math.floor((phase * 32) / iperiod)];
       } else {
-        throw "ERROR: Bad wave type: " + this.waveShape;
+        throw 'ERROR: Bad wave type: ' + this.waveShape;
       }
 
       // Low-pass filter
@@ -737,7 +746,7 @@ SoundEffect.prototype.getRawBuffer = function () {
       continue;
     }
 
-    sample = sample / OVERSAMPLING * masterVolume;
+    sample = (sample / OVERSAMPLING) * masterVolume;
     sample *= this.gain;
 
     if (this.bitsPerChannel === 8) {
@@ -753,26 +762,26 @@ SoundEffect.prototype.getRawBuffer = function () {
       buffer.push(sample);
     } else {
       // Rescale [-1, 1) to [-32768, 32768)
-      sample = Math.floor(sample * (1<<15));
-      if (sample >= (1<<15)) {
-        sample = (1 << 15)-1;
+      sample = Math.floor(sample * (1 << 15));
+      if (sample >= 1 << 15) {
+        sample = (1 << 15) - 1;
         ++num_clipped;
-      } else if (sample < -(1<<15)) {
+      } else if (sample < -(1 << 15)) {
         sample = -(1 << 15);
         ++num_clipped;
       }
-      buffer.push(sample & 0xFF);
-      buffer.push((sample >> 8) & 0xFF);
+      buffer.push(sample & 0xff);
+      buffer.push((sample >> 8) & 0xff);
     }
   }
-  
-  return {
-    "buffer": buffer,
-    "clipped": num_clipped,
-  }
-}
 
-SoundEffect.prototype.generate = function() {
+  return {
+    buffer: buffer,
+    clipped: num_clipped,
+  };
+};
+
+SoundEffect.prototype.generate = function () {
   var rendered = this.getRawBuffer();
   var wave = new RIFFWAVE();
   var normalized = _sfxr_getNormalized(rendered.buffer, this.bitsPerChannel);
@@ -783,19 +792,19 @@ SoundEffect.prototype.generate = function() {
   wave.buffer = normalized;
   wave.getAudio = _sfxr_getAudioFn(wave);
   return wave;
-}
+};
 
-var _sfxr_getNormalized = function(buffer, bitsPerChannel) {
+var _sfxr_getNormalized = function (buffer, bitsPerChannel) {
   // normalize buffer
   var normalized = new Float32Array(buffer.length);
-  for (var b=0; b<buffer.length; b++) {
-    normalized[b] = 2.0 * buffer[b] / pow(2, bitsPerChannel) - 1.0;
+  for (var b = 0; b < buffer.length; b++) {
+    normalized[b] = (2.0 * buffer[b]) / pow(2, bitsPerChannel) - 1.0;
   }
   return normalized;
-}
+};
 
-var _sfxr_getAudioFn = function(wave) {
-  return function() {
+var _sfxr_getAudioFn = function (wave) {
+  return function () {
     // check for procedural audio
     var actx = null;
     if ('AudioContext' in window) {
@@ -803,16 +812,16 @@ var _sfxr_getAudioFn = function(wave) {
     } else if ('webkitAudioContext' in window) {
       actx = new webkitAudioContext();
     }
-    
+
     if (actx) {
       var buff = actx.createBuffer(1, wave.buffer.length, wave.header.sampleRate);
       var nowBuffering = buff.getChannelData(0);
-      for (var i=0;i<wave.buffer.length;i++) {
+      for (var i = 0; i < wave.buffer.length; i++) {
         nowBuffering[i] = wave.buffer[i];
       }
       return {
-        "channels": [],
-        "play": function() {
+        channels: [],
+        play: function () {
           var proc = actx.createBufferSource();
           proc.buffer = buff;
           proc.connect(actx.destination);
@@ -822,7 +831,7 @@ var _sfxr_getAudioFn = function(wave) {
             proc.noteOn(0);
           }
           this.channels.push(proc);
-        }
+        },
       };
     } else {
       var audio = new Audio();
@@ -841,4 +850,4 @@ export const waveforms = {
   NOISE,
 };
 
-export { Params, SoundEffect, sfxr };
+export {Params, SoundEffect, sfxr};
