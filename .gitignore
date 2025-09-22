@@ -24,7 +24,6 @@ Icon
 bower_components
 node_modules
 *.log
-.grunt
 
 ## Deployment
 dist/
