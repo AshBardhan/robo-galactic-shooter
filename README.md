@@ -29,20 +29,17 @@ Survive till you go full offline!
 
 - [Fork this repo](https://help.github.com/articles/fork-a-repo) and clone it on your system.
 - Make sure that you're using node version **v21.6.0** for this application. Use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) for switching to this node versions.
-- Install all the required dependencies by running `yarn install`.
-- Create a new branch out off `master` for your fix/feature by running `git checkout -b new-feature`.
-- Build this project by running the following commands
-  - `grunt` - This creates `index.html` and unminified `game.js` inside `dist` folder and a watcher task.
-  - `grunt release` - This creates `index.html` and minified `game.js` inside `dist` folder.
-- Open the generated `index.html` file in your browser to run and play the game application.
+- Install all the required dependencies by running `npm install`.
+- Create a new branch out off `main` for your fix/feature by running `git checkout -b new-feature`.
+- Open a new server by running `npx serve src` and open `http://localhost:3000` in your browser.
 
 ### Things to remember
 
 - Do not fix multiple issues in a single commit. Keep them one thing per commit so that they can be picked easily in case only few commits require to be merged.
-- Before submitting a patch, rebase your branch on upstream `master` to make life easier for the merger.
+- Before submitting a patch, rebase your branch on upstream `main` to make life easier for the merger.
 
 ### License
 
 MIT Licensed
 
-Copyright (c) 2024 Ashish Bardhan, [ashbardhan.github.io](https://ashbardhan.github.io)
+Copyright (c) 2025 Ashish Bardhan, [ashbardhan.github.io](https://ashbardhan.github.io)
