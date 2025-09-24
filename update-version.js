@@ -21,9 +21,9 @@ function updateJsonVersion(filePath, version) {
 // Function to update markdown files like README.md
 function updateMarkdownVersion(filePath, version) {
   let fileContent = fs.readFileSync(filePath, "utf8");
-  // This regex will look for 'Current version: x.x.x' or 'v.x.x.x' format
-  const versionRegex = /\*\*Current version:\*\*\s*\d+\.\d+\.\d+/;
-  const newVersionLine = `**Current version:** ${newVersion}`;
+  // This regex will look for 'Current version: vx.x.x' format
+  const versionRegex = /\*\*Latest Release:\*\*\s?v\d+\.\d+\.\d+/;
+  const newVersionLine = `**Latest Release:** v${newVersion}`;
   fileContent = fileContent.replace(versionRegex, newVersionLine);
 
   fs.writeFileSync(filePath, fileContent);
