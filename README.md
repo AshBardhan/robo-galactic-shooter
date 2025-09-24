@@ -2,9 +2,9 @@
 
 Retro Video Game developed in Kontra and sfxr JS libraries, as a part of JS13k Challenge 2018.
 
-[Demo](https://js13kgames.com/games/robo-galactic-shooter/index.html) and [First Release](https://github.com/AshBardhan/robo-galactic-shooter/tree/js-13k-games-2018) (version 1.0.0) of the game.
+**First Release:** v1.0.0 - [Demo](https://js13kgames.com/games/robo-galactic-shooter/index.html) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/js-13k-games-2018)
 
-**Current version:** 2.3.2
+**Latest Release:** v2.3.2 - [Demo](https://robo-galactic-shooter.netlify.app) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/main)
 
 ## Introduction
 
@@ -14,10 +14,13 @@ Survive till you go full offline!
 
 ## Controls
 
-- Arrow Keys - Menu Toggle/Robot Movement
-- Enter - Confirm/Continue
-- Space - Shoot
-- P - Pause/Resume Game
+| Key         | Action                       |
+|-------------|------------------------------|
+| Arrow Keys  | Menu Toggle / Robot Movement |
+| Enter       | Confirm / Continue           |
+| Space       | Shoot                        |
+| Esc         | Pause / Resume Game          |
+
 
 ## Screenshots
 

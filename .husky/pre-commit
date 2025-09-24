@@ -1,2 +1,8 @@
 #!/bin/sh
+
+# Load nvm (so Node & npm are available in non-login shells)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Run lint-staged
 npx lint-staged
