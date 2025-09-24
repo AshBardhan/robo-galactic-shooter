@@ -5,7 +5,6 @@ import {renderBackground, renderTexts} from './render.mjs';
 import {playSoundEffect, roundInteger} from './utils.mjs';
 import {createAsteroidSprite, createBatterySprite, createBulletSprite, createPlayerSprite, createStarSprite} from './sprites.mjs';
 
-const angleRadianRatio = Math.PI / 180;
 const FRAME_RATE = 60;
 
 let {canvas, context} = init();

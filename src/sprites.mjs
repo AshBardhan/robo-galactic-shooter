@@ -54,7 +54,7 @@ export const createBatterySprite = (context, canvas) => {
 };
 
 export const createBulletSprite = (player) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     let bulletImage = new Image();
     bulletImage.src = './assets/bullet.svg';
     bulletImage.onload = function () {
@@ -75,7 +75,7 @@ export const createBulletSprite = (player) => {
 };
 
 export const createAsteroidSprite = (context, canvas) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     let asteroidImage = new Image();
     asteroidImage.src = './assets/asteroid.svg';
     asteroidImage.onload = function () {
@@ -168,7 +168,7 @@ export const createStarSprite = (context, canvas, hasPower) => {
 };
 
 export const createPlayerSprite = (canvas) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     let playerImage = new Image();
     playerImage.src = './assets/player.svg';
     playerImage.onload = function () {
