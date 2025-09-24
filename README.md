@@ -31,7 +31,7 @@ Survive till you go full offline!
 - Make sure that you're using node version **v21.6.0** for this application. Use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) for switching to this node versions.
 - Install all the required dependencies by running `npm install`.
 - Create a new branch out off `main` for your fix/feature by running `git checkout -b new-feature`.
-- Open a new server by running `npx serve src` and open `http://localhost:3000` in your browser.
+- Open a new server by running `npm run dev` and open `http://localhost:3000` in your browser.
 
 ### Things to remember
 

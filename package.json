@@ -21,6 +21,7 @@
     ]
   },
   "scripts": {
-    "postversion": "git push && git push --tags"
+    "dev": "npx serve src",
+    "postversion": "node update-version.js && git add -u && git commit --amend --no-edit && git push && git push --tags"
   }
 }
