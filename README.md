@@ -31,10 +31,10 @@ Survive till you go full offline!
 ### Setup
 
 - [Fork this repo](https://help.github.com/articles/fork-a-repo) and clone it on your system.
-- Make sure that you're using node version **v21.6.0** for this application. Use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) for switching to this node versions.
+- Ensure you are using **Node v21.6.0**. You can switch versions easily with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating).
 - Install all the required dependencies by running `npm install`.
 - Create a new branch out off `main` for your fix/feature by running `git checkout -b new-feature`.
-- Open a new server by running `npm run dev` and open `http://localhost:3000` in your browser.
+- Start the development server by running `npm run dev` and open your browser at `http://localhost:5173` to view the app.
 
 ### Things to remember
 
