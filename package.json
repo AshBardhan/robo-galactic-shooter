@@ -2,26 +2,37 @@
   "name": "robo-galactic-shooter",
   "version": "2.3.2",
   "description": "Retro Video Game developed in Kontra and sfxr JS libraries",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "AshBardhan <ashbardhan@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
-    "prettier": "3.4.2"
+    "prettier": "3.4.2",
+    "vite": "^7.1.7"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npx lint-staged"
     }
   },
   "lint-staged": {
-    "src/*.{mjs,js}": [
-      "prettier --write --ignore-unknown"
+    "src/*.{js,mjs}": [
+      "prettier --write --ignore-unknown",
+      "eslint --fix"
     ]
   },
   "scripts": {
-    "dev": "npx serve src",
-    "postversion": "node update-version.js && git add -u && git commit --amend --no-edit && git push && git push --tags"
+    "dev": "vite --host",
+    "lint": "eslint src --ext .js,.mjs",
+    "lint:fix": "eslint src --ext .js,.mjs --fix",
+    "build": "npm run lint && vite build",
+    "preview": "vite preview",
+    "start": "vite preview --host",
+    "postversion": "node update-version.js && git add -u && git commit --amend --no-edit && git push && git push --tags",
+    "lint-staged": "lint-staged"
   }
 }

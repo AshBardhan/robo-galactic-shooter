@@ -1,2 +1,12 @@
 #!/bin/sh
+# Husky pre-commit hook
+
+# Load Husky
+. "$(dirname "$0")/_/husky.sh"
+
+# Load nvm (so Node & npm are available in non-login shells)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Run lint-staged
 npx lint-staged
