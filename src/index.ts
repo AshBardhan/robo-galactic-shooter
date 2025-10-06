@@ -1,4 +1,4 @@
-import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, Sprite} from './lib/kontra/kontra';
+import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, Sprite} from 'kontra';
 import {soundTypes} from './constants/sound';
 import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game';
 import {renderBackground, renderTexts} from './render';

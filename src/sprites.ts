@@ -1,6 +1,6 @@
 import {createBullet} from './index';
 import {angleRadianRatio, FRAME_RATE, gameScreen} from './constants/game';
-import {keyPressed, Sprite} from './lib/kontra/kontra';
+import {keyPressed, Sprite} from 'kontra';
 import {randomValue, roundInteger} from './utils/number';
 import {playSoundEffect} from './utils/sound';
 import {soundTypes} from './constants/sound';

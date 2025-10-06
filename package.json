@@ -26,6 +26,9 @@
     "postversion": "node update-version.js && git add -u && git commit --amend --no-edit && git push && git push --tags",
     "lint-staged": "lint-staged"
   },
+  "dependencies": {
+    "kontra": "^10.0.2"
+  },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@types/node": "^24.7.0",
