@@ -1,4 +1,4 @@
-import RIFFWAVE from './riffwave.mjs';
+import RIFFWAVE from './riffwave';
 
 // Wave shapes
 var SQUARE = 0;

@@ -1,9 +1,11 @@
-import {gameScreen, levels, maxLevel} from './constants/game.mjs';
-import {chrs} from './constants/pixel.mjs';
-import {roundInteger} from './utils.mjs';
-export function renderBackground(context, canvas) {
-  let g = context.createLinearGradient(canvas.width / 2, 0, canvas.width / 2, canvas.height);
-  let ga = g.addColorStop.bind(g);
+import {Sprite} from './lib/kontra/kontra';
+import {gameScreen, levels, maxLevel} from './constants/game';
+import {chrs} from './constants/pixel';
+import {roundInteger} from './utils/number';
+
+export function renderBackground(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  const g = context.createLinearGradient(canvas.width / 2, 0, canvas.width / 2, canvas.height);
+  const ga = g.addColorStop.bind(g);
   ga(0.3, '#101014');
   ga(0.7, '#141852');
   ga(1, '#35274E');
@@ -11,11 +13,11 @@ export function renderBackground(context, canvas) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-export function drawPixel(context, str, dx = 0, dy = 0, size = 3, color = '#fff') {
-  let needed = [];
+export function drawPixel(context: CanvasRenderingContext2D, str: string, dx = 0, dy = 0, size = 3, color = '#fff') {
+  const needed = [];
   str = str.toUpperCase();
   for (let i = 0; i < str.length; i++) {
-    let ch = chrs[str.charAt(i)];
+    const ch = chrs[str.charAt(i)];
     if (ch) {
       needed.push(ch);
     }
@@ -29,7 +31,7 @@ export function drawPixel(context, str, dx = 0, dy = 0, size = 3, color = '#fff'
     let currY = 0;
     let addX = 0;
     for (let y = 0; y < ch.length; y++) {
-      let row = ch[y];
+      const row = ch[y];
       for (let x = 0; x < row.length; x++) {
         if (row[x]) {
           context.fillRect(currX + x * size, currY, size, size);
@@ -44,7 +46,7 @@ export function drawPixel(context, str, dx = 0, dy = 0, size = 3, color = '#fff'
   context.resetTransform();
 }
 
-export function renderTexts(context, canvas, player, currentLevel) {
+export function renderTexts(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, player: Sprite, currentLevel: number) {
   drawPixel(context, `Level`, 280, 10);
   drawPixel(context, `${currentLevel}/${maxLevel}`, 380, 10);
   drawPixel(context, `Target`, 280, 35);

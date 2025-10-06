@@ -1,46 +1,46 @@
-import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
-import {soundTypes} from './constants/sound.mjs';
-import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game.mjs';
-import {renderBackground, renderTexts} from './render.mjs';
-import {playSoundEffect, roundInteger} from './utils.mjs';
-import {createAsteroidSprite, createBatterySprite, createBulletSprite, createPlayerSprite, createStarSprite} from './sprites.mjs';
+import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, Sprite} from './lib/kontra/kontra';
+import {soundTypes} from './constants/sound';
+import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game';
+import {renderBackground, renderTexts} from './render';
+import {roundInteger} from './utils/number';
+import {playSoundEffect} from './utils/sound';
+import {createAsteroidSprite, createBatterySprite, createBulletSprite, createPlayerSprite, createStarSprite} from './sprites';
 
 const FRAME_RATE = 60;
 
-let {canvas, context} = init();
+const {canvas, context} = init();
 
 initKeys();
 
-let gameInterval = null;
-let gameLoop;
+let gameInterval: ReturnType<typeof setInterval> | null = null;
 
 // Asteroids
-let asteroids = [];
+const asteroids: Sprite[] = [];
 
 // Stars
-let stars = [];
+const stars: Sprite[] = [];
 const backgroundStarCount = 100;
 
 // Bullets
-let bullets = [];
+const bullets: Sprite[] = [];
 
 // Levels
 let currentLevel = 1;
 
 // Generate 'Battery' sprite
-let battery = createBatterySprite(context, canvas);
+const battery = createBatterySprite(context, canvas);
 
 // Generate 'Bullet' sprites
-export async function createBullet(player) {
+export async function createBullet(player: Sprite) {
   const bullet = await createBulletSprite(player);
   bullets.push(bullet);
 }
 
 // Generate 'Player' sprite
-let player = await createPlayerSprite(canvas);
+const player = await createPlayerSprite(canvas);
 
 // Generate 'Asteroid' sprites
-async function createAsteroids(count) {
+async function createAsteroids(count: number) {
   const asteroidLimit = levels[currentLevel - 1].asteroidLimit;
   while (count > 0 && asteroids.length < asteroidLimit) {
     const asteroid = await createAsteroidSprite(context, canvas);
@@ -50,7 +50,7 @@ async function createAsteroids(count) {
 }
 
 // Generate 'Star' sprites
-function createStars(count, hasPower = false) {
+function createStars(count: number, hasPower = false) {
   const starLimit = levels[currentLevel - 1].starLimit + backgroundStarCount;
   while (count > 0 && stars.length < starLimit) {
     const star = createStarSprite(context, canvas, hasPower);
@@ -61,7 +61,10 @@ function createStars(count, hasPower = false) {
 
 // Unset game interval
 function unsetGameInterval() {
-  clearInterval(gameInterval);
+  if (gameInterval !== null) {
+    clearInterval(gameInterval);
+    gameInterval = null;
+  }
 }
 
 // Set game interval
@@ -119,14 +122,13 @@ function startGame() {
 }
 
 // Game loop that update and renders the game every frame
-gameLoop = GameLoop({
+const gameLoop: GameLoop = GameLoop({
   fps: 60,
   update() {
     let i, j;
 
-    [].concat(...[player], ...stars, ...asteroids, ...bullets, ...[battery]).map((sr) => {
-      sr?.update();
-    });
+    const allSprites: Sprite[] = [player, ...stars, ...asteroids, ...bullets, battery];
+    allSprites.forEach((sr) => sr.update());
 
     for (i = 0; i < asteroids.length; i++) {
       for (j = 0; j < bullets.length; j++) {
@@ -267,8 +269,8 @@ gameLoop = GameLoop({
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gameScreen.menu.dt > 0.25) {
         playSoundEffect(soundTypes.SELECT);
-        gameScreen.menu.options[0].selected = !gameScreen.menu.options[0].selected;
-        gameScreen.menu.options[1].selected = !gameScreen.menu.options[1].selected;
+        gameScreen.menu.options[0].selected = gameScreen.menu.options[0].selected ? 0 : 1;
+        gameScreen.menu.options[1].selected = gameScreen.menu.options[1].selected ? 0 : 1;
         gameScreen.menu.dt = 0;
       }
       if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
@@ -308,9 +310,8 @@ gameLoop = GameLoop({
   },
   render() {
     renderBackground(context, canvas);
-    [].concat(...stars, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
-      sr?.render();
-    });
+    const allSprites: Sprite[] = [...stars, player, ...asteroids, ...bullets, battery];
+    allSprites.forEach((sr) => sr.render());
     renderTexts(context, canvas, player, currentLevel);
   },
 });

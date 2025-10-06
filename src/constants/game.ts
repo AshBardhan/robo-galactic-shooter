@@ -1,4 +1,4 @@
-export let gameScreen = {
+export const gameScreen = {
   heading: {
     visible: 1,
     messages: ['Robo', 'Galactic', 'Shooter'],

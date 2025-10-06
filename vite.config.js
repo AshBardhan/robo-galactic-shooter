@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import checker from 'vite-plugin-checker';
 
 export default defineConfig({
   root: ".",
@@ -6,4 +7,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true
   },
+  plugins: [
+    checker({ typescript: true })
+  ],
 });

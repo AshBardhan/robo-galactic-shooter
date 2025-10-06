@@ -1,10 +1,11 @@
-import {createBullet} from './index.js';
-import {angleRadianRatio, FRAME_RATE, gameScreen} from './constants/game.mjs';
-import {keyPressed, Sprite} from './lib/kontra.min.mjs';
-import {playSoundEffect, randomValue, roundInteger} from './utils.mjs';
-import {soundTypes} from './constants/sound.mjs';
+import {createBullet} from './index';
+import {angleRadianRatio, FRAME_RATE, gameScreen} from './constants/game';
+import {keyPressed, Sprite} from './lib/kontra/kontra';
+import {randomValue, roundInteger} from './utils/number';
+import {playSoundEffect} from './utils/sound';
+import {soundTypes} from './constants/sound';
 
-export const createBatterySprite = (context, canvas) => {
+export const createBatterySprite = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement): Sprite => {
   return Sprite({
     x: canvas.width - 100,
     y: 15,
@@ -19,7 +20,7 @@ export const createBatterySprite = (context, canvas) => {
     getColorCode() {
       return this.colorCodes[this.getColorIndex()];
     },
-    update() {
+    update(this: Sprite) {
       if (this.percent >= 100) {
         this.percent = 100;
       }
@@ -34,7 +35,7 @@ export const createBatterySprite = (context, canvas) => {
         }
       }
     },
-    render() {
+    render(this: Sprite) {
       if (roundInteger(this.time) > 0) {
         context.beginPath();
         context.strokeStyle = '#fff';
@@ -53,11 +54,12 @@ export const createBatterySprite = (context, canvas) => {
   });
 };
 
-export const createBulletSprite = (player) => {
-  return new Promise((resolve, _reject) => {
-    let bulletImage = new Image();
+export const createBulletSprite = (player: Sprite): Promise<Sprite> => {
+  return new Promise((resolve) => {
+    const bulletImage = new Image();
     bulletImage.src = './assets/bullet.svg';
-    bulletImage.onload = function () {
+
+    bulletImage.onload = () => {
       const bullet = Sprite({
         x: player.x + player.width,
         y: player.y + player.height / 2,
@@ -65,18 +67,19 @@ export const createBulletSprite = (player) => {
         width: 120,
         height: 45,
         image: bulletImage,
-        update() {
+        update(this: Sprite) {
           this.x += this.dx;
         },
       });
+
       resolve(bullet);
     };
   });
 };
 
-export const createAsteroidSprite = (context, canvas) => {
-  return new Promise((resolve, _reject) => {
-    let asteroidImage = new Image();
+export const createAsteroidSprite = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement): Promise<Sprite> => {
+  return new Promise((resolve) => {
+    const asteroidImage = new Image();
     asteroidImage.src = './assets/asteroid.svg';
     asteroidImage.onload = function () {
       const asteroid = Sprite({
@@ -97,7 +100,7 @@ export const createAsteroidSprite = (context, canvas) => {
         get height() {
           return this.size;
         },
-        update() {
+        update(this: Sprite) {
           this.x -= this.dx;
 
           if (this.x <= -this.size) {
@@ -106,10 +109,10 @@ export const createAsteroidSprite = (context, canvas) => {
 
           this.degree -= this.spin;
         },
-        render() {
+        render(this: Sprite) {
           context.translate(this.width / 2, this.height / 2);
           context.rotate(this.degree * angleRadianRatio);
-          let renderSize = (this.power * 25) / 100;
+          const renderSize = (this.power * 25) / 100;
           context.scale(renderSize, renderSize);
           context.translate(-(this.width / 2), -(this.height / 2));
           context.beginPath();
@@ -124,7 +127,7 @@ export const createAsteroidSprite = (context, canvas) => {
   });
 };
 
-export const createStarSprite = (context, canvas, hasPower) => {
+export const createStarSprite = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, hasPower: boolean): Sprite => {
   return Sprite({
     x: canvas.width + randomValue(55, 0, 20),
     y: randomValue(25, 3, 25),
@@ -133,7 +136,7 @@ export const createStarSprite = (context, canvas, hasPower) => {
     da: 2,
     hasPower: hasPower,
     dx: 10,
-    update() {
+    update(this: Sprite) {
       if (this.hasPower) {
         this.a += this.da;
         if (this.a >= 150 || this.a <= 0) {
@@ -146,8 +149,8 @@ export const createStarSprite = (context, canvas, hasPower) => {
         this.x = canvas.width;
       }
     },
-    render() {
-      let renderSize = this.hasPower ? this.size : this.size / 2;
+    render(this: Sprite) {
+      const renderSize = this.hasPower ? this.size : this.size / 2;
       context.translate(this.x, this.y);
       context.beginPath();
       context.fillStyle = this.hasPower ? '#ffcf40' : '#fff';
@@ -167,12 +170,12 @@ export const createStarSprite = (context, canvas, hasPower) => {
   });
 };
 
-export const createPlayerSprite = (canvas) => {
-  return new Promise((resolve, _reject) => {
-    let playerImage = new Image();
+export const createPlayerSprite = (canvas: HTMLCanvasElement): Promise<Sprite> => {
+  return new Promise((resolve) => {
+    const playerImage = new Image();
     playerImage.src = './assets/player.svg';
     playerImage.onload = function () {
-      const player = Sprite({
+      const player: Sprite = Sprite({
         x: -canvas.width,
         y: 80,
         width: 120,
@@ -186,7 +189,7 @@ export const createPlayerSprite = (canvas) => {
         currentTarget: 0,
         score: 0,
         hiScore: localStorage.getItem('hiScore') || 0,
-        update() {
+        update(this: Sprite) {
           if (!gameScreen.menu.visible) {
             if (this.alive) {
               this.bdt += 1 / FRAME_RATE;
