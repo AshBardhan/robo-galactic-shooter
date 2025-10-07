@@ -1,13 +1,15 @@
-import { defineConfig } from "vite";
+import {defineConfig} from 'vite';
 import checker from 'vite-plugin-checker';
 
 export default defineConfig({
-  root: ".",
+  root: '.',
   build: {
-    outDir: "dist",
-    emptyOutDir: true
+    outDir: 'dist',
+    emptyOutDir: true,
   },
   plugins: [
-    checker({ typescript: true })
+    checker({
+      typescript: true,
+    }),
   ],
 });
