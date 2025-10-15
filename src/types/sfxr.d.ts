@@ -3,17 +3,17 @@
  * Sound effect generation library
  */
 
-declare module '*/sfxr.js' {
+declare namespace sfxr {
   // Wave shape constants
-  export const waveforms: {
+  interface WaveformConstants {
     SQUARE: number;
     SAWTOOTH: number;
     SINE: number;
     NOISE: number;
-  };
+  }
 
-  // Sound generation parameters class
-  export class Params {
+  // Sound generation parameters interface
+  interface Params {
     oldParams: boolean;
 
     // Wave shape
@@ -64,8 +64,6 @@ declare module '*/sfxr.js' {
     sample_rate: number;
     sample_size: number;
 
-    constructor();
-
     // Preset generation methods
     pickupCoin(): this;
     laserShoot(): this;
@@ -85,8 +83,12 @@ declare module '*/sfxr.js' {
     fromJSON(struct: Record<string, any>): this;
   }
 
-  // Sound effect generation class
-  export class SoundEffect {
+  interface ParamsConstructor {
+    new (): Params;
+  }
+
+  // Sound effect generation interface
+  interface SoundEffect {
     parameters: Params;
     waveShape: number;
     fltw: number;
@@ -116,19 +118,29 @@ declare module '*/sfxr.js' {
     arpeggioMultiplier: number;
     arpeggioTime: number;
 
-    constructor(ps: Params | string);
     init(ps: Params): void;
     initForRepeat(): void;
     getRawBuffer(): {buffer: number[]; clipped: number};
     generate(): any; // Returns RIFFWAVE instance with additional properties
   }
 
-  // Main sfxr API object
-  export const sfxr: {
+  interface SoundEffectConstructor {
+    new (ps: Params | string): SoundEffect;
+  }
+
+  // Main sfxr API interface
+  interface SfxrAPI {
     toBuffer(synthdef: Params | string): number[];
     toWebAudio(synthdef: Params | string, audiocontext?: AudioContext): AudioBufferSourceNode | undefined;
     toWave(synthdef: Params | string): any;
     toAudio(synthdef: Params | string): HTMLAudioElement | AudioBufferSourceNode | null;
     b58decode(b58encoded: string): Record<string, any>;
-  };
+  }
+}
+
+declare module 'sfxr' {
+  export const waveforms: sfxr.WaveformConstants;
+  export const Params: sfxr.ParamsConstructor;
+  export const SoundEffect: sfxr.SoundEffectConstructor;
+  export const sfxr: sfxr.SfxrAPI;
 }

@@ -1,4 +1,4 @@
-import {SoundEffect} from '../lib/sfxr.js';
+import {SoundEffect} from 'sfxr';
 
 // Game sound effects
 export const soundTypes = {

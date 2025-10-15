@@ -3,8 +3,8 @@
  * Audio encoder for HTML5 <audio> elements
  */
 
-declare module '*/riffwave.js' {
-  interface RIFFWAVEHeader {
+declare namespace riffwave {
+  interface Header {
     chunkId: number[];
     chunkSize: number;
     format: number[];
@@ -20,18 +20,30 @@ declare module '*/riffwave.js' {
     subChunk2Size: number;
   }
 
-  class RIFFWAVE {
+  interface FastBase64 {
+    chars: string;
+    encLookup: string[];
+    Init(): void;
+    Encode(src: number[]): string;
+  }
+
+  interface RIFFWAVE {
     data: number[];
     wav: number[];
     dataURI: string;
-    header: RIFFWAVEHeader;
+    header: Header;
     clipping?: number;
     buffer?: Float32Array;
-
-    constructor(data?: number[]);
     Make(data: number[] | Float32Array): void;
     getAudio?(): HTMLAudioElement | AudioBufferSourceNode | null;
   }
 
-  export default RIFFWAVE;
+  interface RIFFWAVEConstructor {
+    new (data?: number[]): RIFFWAVE;
+  }
+}
+
+declare module 'riffwave' {
+  const RIFFWAVE: riffwave.RIFFWAVEConstructor;
+  export = RIFFWAVE;
 }

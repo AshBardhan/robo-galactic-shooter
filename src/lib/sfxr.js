@@ -1,4 +1,4 @@
-import RIFFWAVE from './riffwave.js';
+import RIFFWAVE from 'riffwave';
 
 // Wave shapes
 const SQUARE = 0;
