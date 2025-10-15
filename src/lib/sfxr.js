@@ -1,4 +1,3 @@
-// @ts-expect-error: Legacy library file
 import RIFFWAVE from './riffwave.js';
 
 // Wave shapes

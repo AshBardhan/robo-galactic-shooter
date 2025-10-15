@@ -36,8 +36,8 @@ export async function createBullet(player: Sprite) {
   bullets.push(bullet);
 }
 
-// Generate 'Player' sprite
-const player = await createPlayerSprite(canvas);
+// Initialize player sprite (will be assigned in main function)
+let player: Sprite;
 
 // Generate 'Asteroid' sprites
 async function createAsteroids(count: number) {
@@ -316,5 +316,14 @@ const gameLoop: GameLoop = GameLoop({
   },
 });
 
-createStars(backgroundStarCount);
-gameLoop.start();
+// Main async function to initialize the game
+async function initializeGame() {
+  // Generate 'Player' sprite
+  player = await createPlayerSprite(canvas);
+
+  createStars(backgroundStarCount);
+  gameLoop.start();
+}
+
+// Start the game
+initializeGame();

@@ -1,4 +1,3 @@
-// @ts-expect-error: Legacy library file
 import {SoundEffect} from '../lib/sfxr.js';
 
 // Game sound effects
