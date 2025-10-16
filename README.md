@@ -21,7 +21,6 @@ Survive till you go full offline!
 | Space       | Shoot                        |
 | Esc         | Pause / Resume Game          |
 
-
 ## Screenshots
 
 ![screen-1](/docs/screen-1.png) ![screen-2](/docs/screen-2.png)
@@ -34,7 +33,8 @@ Survive till you go full offline!
 - Ensure you are using **Node v21.6.0**. You can switch versions easily with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating).
 - Install all the required dependencies by running `npm install`.
 - Create a new branch out off `main` for your fix/feature by running `git checkout -b new-feature`.
-- Start the development server by running `npm run dev` and open your browser at `http://localhost:5173` to view the app.
+- Start the development server by running `npm run dev`
+- Open your browser at `http://localhost:5173` and play the game.
 
 ### Things to remember
 

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+  },
+  "exclude": ["src/lib/**", "dist/**"],
+  "include": ["src", "src/types/**/*.d.ts"],
+}
