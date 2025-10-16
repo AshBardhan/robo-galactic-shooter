@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "author": "AshBardhan <ashbardhan@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "husky": {
     "hooks": {
       "pre-commit": "npx lint-staged"

@@ -3,6 +3,11 @@ import {SoundEffect} from 'sfxr';
 // Simple union type for all sound types
 export type SoundType = 'select' | 'reset' | 'shoot' | 'power' | 'level-up' | 'player-hit' | 'bullet-hit' | 'asteroid-destroy';
 
+// Minimal interface for playable audio objects
+interface Playable {
+  play: () => unknown;
+}
+
 // Sound codes mapping with encoded sound data
 export const soundCodes: Record<SoundType, string> = {
   select: '111114YA69VjV2TF883n6f74g6pdmvw94esjz2Fg9dVLMafmEXKsLhDNrqyMiHgYJLUFEU4BBbMM2fbPNNkEPnFr2gKqHzZest5dM9rcxKvMBfZaNVG7wsFV',
@@ -16,15 +21,15 @@ export const soundCodes: Record<SoundType, string> = {
 };
 
 // Sound generation helper
-const generateSound = (code: string): HTMLAudioElement => {
+const generateSound = (code: string): Playable => {
   return new SoundEffect(code).generate().getAudio();
 };
 
-// Type-safe sound effects mapping
-export const soundEffects: Record<SoundType, HTMLAudioElement> = Object.entries(soundCodes).reduce(
+// Type-safe sound effects mapping with correct return type
+export const soundEffects: Record<SoundType, Playable> = Object.entries(soundCodes).reduce(
   (effects, [key, code]) => {
     effects[key as SoundType] = generateSound(code);
     return effects;
   },
-  {} as Record<SoundType, HTMLAudioElement>
+  {} as Record<SoundType, Playable>
 );

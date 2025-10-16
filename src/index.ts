@@ -121,7 +121,7 @@ function startGame() {
 }
 
 // Game loop that update and renders the game every frame
-const gameLoop: GameLoop = GameLoop({
+const gameLoop = GameLoop({
   fps: 60,
   update() {
     let i, j;
