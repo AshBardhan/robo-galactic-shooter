@@ -1,4 +1,4 @@
-import {Sprite} from 'kontra';
+import type {Sprite} from 'kontra';
 import {gameScreen, levels, maxLevel} from './constants/game';
 import {chrs} from './constants/pixel';
 import {roundInteger} from './utils/number';

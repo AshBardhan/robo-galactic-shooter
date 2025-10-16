@@ -1,5 +1,5 @@
-import {soundEffects} from '../constants/sound';
+import {soundEffects, type SoundType} from '../constants/sound';
 
-export const playSoundEffect = (soundType: string) => {
+export const playSoundEffect = (soundType: SoundType): void => {
   soundEffects[soundType].play();
 };

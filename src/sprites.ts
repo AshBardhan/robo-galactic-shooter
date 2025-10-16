@@ -3,7 +3,6 @@ import {angleRadianRatio, FRAME_RATE, gameScreen} from './constants/game';
 import {keyPressed, Sprite} from 'kontra';
 import {randomValue, roundInteger} from './utils/number';
 import {playSoundEffect} from './utils/sound';
-import {soundTypes} from './constants/sound';
 
 export const createBatterySprite = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement): Sprite => {
   return Sprite({
@@ -206,7 +205,7 @@ export const createPlayerSprite = (canvas: HTMLCanvasElement): Promise<Sprite> =
                 this.y += this.dy;
               }
               if (keyPressed('space') && this.bdt > 0.1) {
-                playSoundEffect(soundTypes.SHOOT);
+                playSoundEffect('shoot');
                 this.bdt = 0;
                 createBullet(this);
               }

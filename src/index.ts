@@ -1,5 +1,4 @@
-import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, Sprite} from 'kontra';
-import {soundTypes} from './constants/sound';
+import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, type Sprite} from 'kontra';
 import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game';
 import {renderBackground, renderTexts} from './render';
 import {roundInteger} from './utils/number';
@@ -136,9 +135,9 @@ const gameLoop: GameLoop = GameLoop({
         if (collides(bullets[j], asteroids[i])) {
           if (!--asteroids[i].power) {
             player.currentTarget += 1;
-            playSoundEffect(soundTypes.ASTEROID_DESTORY);
+            playSoundEffect('asteroid-destroy');
           } else {
-            playSoundEffect(soundTypes.BULLET_HIT);
+            playSoundEffect('bullet-hit');
             gameScreen.action.index = 0;
             gameScreen.action.visible = 1;
             gameScreen.action.time = 2;
@@ -157,8 +156,8 @@ const gameLoop: GameLoop = GameLoop({
         battery.percent -= asteroids[i].power * 10;
         player.x -= asteroids[i].power * 20;
         asteroids[i].power = 0;
-        playSoundEffect(soundTypes.PLAYER_HIT);
-        playSoundEffect(soundTypes.ASTEROID_DESTORY);
+        playSoundEffect('player-hit');
+        playSoundEffect('asteroid-destroy');
         gameScreen.action.index = 1;
         gameScreen.action.visible = 1;
         gameScreen.action.time = 2;
@@ -182,7 +181,7 @@ const gameLoop: GameLoop = GameLoop({
     // Check if the player has consumed any incoming golden power star
     for (i = 0; i < stars.length; i++) {
       if (collides(stars[i], player) && stars[i].hasPower && battery.percent > 0) {
-        playSoundEffect(soundTypes.POWER);
+        playSoundEffect('power');
         battery.percent += stars[i].size;
         break;
       }
@@ -208,7 +207,7 @@ const gameLoop: GameLoop = GameLoop({
           gameScreen.action.index = 2;
           gameScreen.action.visible = 1;
           gameScreen.action.time = 2;
-          playSoundEffect(soundTypes.LEVEL_UP);
+          playSoundEffect('level-up');
           unsetGameInterval();
           setGameInterval();
         } else {
@@ -245,7 +244,7 @@ const gameLoop: GameLoop = GameLoop({
       }
       // Restart the game once the player has pressed 'Enter' to continue the game
       if (keyPressed('enter')) {
-        playSoundEffect(soundTypes.REVIVE);
+        playSoundEffect('reset');
         gameScreen.start.time = 3;
         gameScreen.continue.time = 9;
         gameScreen.continue.visible = 0;
@@ -268,7 +267,7 @@ const gameLoop: GameLoop = GameLoop({
     if (gameScreen.menu.visible) {
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gameScreen.menu.dt > 0.25) {
-        playSoundEffect(soundTypes.SELECT);
+        playSoundEffect('select');
         gameScreen.menu.options[0].selected = gameScreen.menu.options[0].selected ? 0 : 1;
         gameScreen.menu.options[1].selected = gameScreen.menu.options[1].selected ? 0 : 1;
         gameScreen.menu.dt = 0;

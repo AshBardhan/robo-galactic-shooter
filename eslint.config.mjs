@@ -3,7 +3,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
-export default defineConfig(
+export default defineConfig([
   {
     ignores: ['dist/**', 'src/lib/**', '**/*.min.js'],
   },
@@ -30,5 +30,5 @@ export default defineConfig(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': ['error', {'ts-expect-error': 'allow-with-description'}],
     },
-  }
-);
+  },
+]);
