@@ -3,7 +3,7 @@ import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './c
 import {renderBackground, renderTexts} from './render';
 import {roundInteger} from './utils/number';
 import {playSoundEffect} from './utils/sound';
-import {createAsteroidSprite, createBatterySprite, createBulletSprite, createPlayerSprite, createStarSprite} from './sprites';
+import {createAsteroidSprite, createBatterySprite, createPlayerSprite, createStarSprite, getBullets, removeBullet} from './sprites';
 
 const FRAME_RATE = 60;
 
@@ -20,20 +20,11 @@ const asteroids: Sprite[] = [];
 const stars: Sprite[] = [];
 const backgroundStarCount = 100;
 
-// Bullets
-const bullets: Sprite[] = [];
-
 // Levels
 let currentLevel = 1;
 
 // Generate 'Battery' sprite
 const battery = createBatterySprite(context, canvas);
-
-// Generate 'Bullet' sprites
-export async function createBullet(player: Sprite) {
-  const bullet = await createBulletSprite(player);
-  bullets.push(bullet);
-}
 
 // Initialize player sprite (will be assigned in main function)
 let player: Sprite;
@@ -126,6 +117,7 @@ const gameLoop = GameLoop({
   update() {
     let i, j;
 
+    const bullets = getBullets();
     const allSprites: Sprite[] = [player, ...stars, ...asteroids, ...bullets, battery];
     allSprites.forEach((sr) => sr.update());
 
@@ -147,7 +139,7 @@ const gameLoop = GameLoop({
       }
       // Update player's score once the bullet has hit the asteroid
       if (j !== bullets.length) {
-        bullets.splice(j, 1);
+        removeBullet(j);
         player.score += 50;
         break;
       }
@@ -176,7 +168,9 @@ const gameLoop = GameLoop({
         break;
       }
     }
-    bullets.splice(i, 1);
+    if (i < bullets.length) {
+      removeBullet(i);
+    }
 
     // Check if the player has consumed any incoming golden power star
     for (i = 0; i < stars.length; i++) {
@@ -309,6 +303,7 @@ const gameLoop = GameLoop({
   },
   render() {
     renderBackground(context, canvas);
+    const bullets = getBullets();
     const allSprites: Sprite[] = [...stars, player, ...asteroids, ...bullets, battery];
     allSprites.forEach((sr) => sr.render());
     renderTexts(context, canvas, player, currentLevel);

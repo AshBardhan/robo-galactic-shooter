@@ -1,4 +1,3 @@
-import {createBullet} from './index';
 import {angleRadianRatio, FRAME_RATE, gameScreen} from './constants/game';
 import {keyPressed, Sprite} from 'kontra';
 import {randomValue, roundInteger} from './utils/number';
@@ -75,6 +74,22 @@ export const createBulletSprite = (player: Sprite): Promise<Sprite> => {
     };
   });
 };
+
+// Bullets array managed by sprites module
+const bullets: Sprite[] = [];
+
+export function getBullets(): Sprite[] {
+  return bullets;
+}
+
+export function removeBullet(index: number): void {
+  bullets.splice(index, 1);
+}
+
+export async function createBullet(player: Sprite): Promise<void> {
+  const bullet = await createBulletSprite(player);
+  bullets.push(bullet);
+}
 
 export const createAsteroidSprite = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement): Promise<Sprite> => {
   return new Promise((resolve) => {
