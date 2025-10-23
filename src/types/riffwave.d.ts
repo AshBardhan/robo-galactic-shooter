@@ -45,5 +45,5 @@ declare namespace riffwave {
 
 declare module 'riffwave' {
   const RIFFWAVE: riffwave.RIFFWAVEConstructor;
-  export = RIFFWAVE;
+  export default RIFFWAVE;
 }

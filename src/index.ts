@@ -72,7 +72,7 @@ function setGameInterval() {
 // End game
 function endGame() {
   player.alive = 0;
-  gameScreen.continue.visible = 1;
+  gameScreen.continue.visible = true;
   unsetGameInterval();
   offKey('esc');
 }
@@ -81,9 +81,9 @@ function endGame() {
 function resetGame() {
   asteroids.length = 0;
   stars.length = backgroundStarCount;
-  gameScreen.end.visible = 0;
-  gameScreen.menu.visible = 1;
-  gameScreen.heading.visible = 1;
+  gameScreen.end.visible = false;
+  gameScreen.menu.visible = true;
+  gameScreen.heading.visible = true;
   player.currentTarget = 0;
   player.score = 0;
   currentLevel = 1;
@@ -95,7 +95,7 @@ function resetGame() {
 
 // Start game
 function startGame() {
-  gameScreen.start.visible = 1;
+  gameScreen.start.visible = true;
   player.x = -canvas.width;
   player.y = 80;
   player.alive = 1;
@@ -132,7 +132,7 @@ const gameLoop = GameLoop({
           } else {
             playSoundEffect('bullet-hit');
             gameScreen.action.index = 0;
-            gameScreen.action.visible = 1;
+            gameScreen.action.visible = true;
             gameScreen.action.time = 2;
           }
           break;
@@ -152,7 +152,7 @@ const gameLoop = GameLoop({
         playSoundEffect('player-hit');
         playSoundEffect('asteroid-destroy');
         gameScreen.action.index = 1;
-        gameScreen.action.visible = 1;
+        gameScreen.action.visible = true;
         gameScreen.action.time = 2;
         break;
       }
@@ -169,14 +169,14 @@ const gameLoop = GameLoop({
         break;
       }
     }
-    if (i < bullets.length) {
+    if (i !== bullets.length) {
       removeBullet(i);
     }
 
     // Check if the player has consumed any incoming golden power star
     for (i = 0; i < stars.length; i++) {
       if (collides(stars[i], player) && stars[i].hasPower && battery.percent > 0) {
-        playSoundEffect('power');
+        playSoundEffect('power-up');
         battery.percent += stars[i].size;
         break;
       }
@@ -200,7 +200,7 @@ const gameLoop = GameLoop({
           currentLevel += 1;
           player.currentTarget = 0;
           gameScreen.action.index = 2;
-          gameScreen.action.visible = 1;
+          gameScreen.action.visible = true;
           gameScreen.action.time = 2;
           playSoundEffect('level-up');
           unsetGameInterval();
@@ -224,7 +224,7 @@ const gameLoop = GameLoop({
       if (roundInteger(gameScreen.start.time) >= 0) {
         gameScreen.start.time -= 1 / FRAME_RATE;
       } else {
-        gameScreen.start.visible = 0;
+        gameScreen.start.visible = false;
       }
     }
 
@@ -234,15 +234,15 @@ const gameLoop = GameLoop({
       if (roundInteger(gameScreen.continue.time) >= 0) {
         gameScreen.continue.time -= 1 / FRAME_RATE;
       } else {
-        gameScreen.continue.visible = 0;
-        gameScreen.end.visible = 1;
+        gameScreen.continue.visible = false;
+        gameScreen.end.visible = true;
       }
       // Restart the game once the player has pressed 'Enter' to continue the game
       if (keyPressed('enter')) {
-        playSoundEffect('reset');
+        playSoundEffect('player-revive');
         gameScreen.start.time = 3;
         gameScreen.continue.time = 9;
-        gameScreen.continue.visible = 0;
+        gameScreen.continue.visible = false;
         player.score = 0;
         battery.percent = 100;
         startGame();
@@ -262,19 +262,19 @@ const gameLoop = GameLoop({
     if (gameScreen.menu.visible) {
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gameScreen.menu.dt > 0.25) {
-        playSoundEffect('select');
-        gameScreen.menu.options[0].selected = gameScreen.menu.options[0].selected ? 0 : 1;
-        gameScreen.menu.options[1].selected = gameScreen.menu.options[1].selected ? 0 : 1;
+        playSoundEffect('menu-select');
+        gameScreen.menu.options[0].selected = !gameScreen.menu.options[0].selected;
+        gameScreen.menu.options[1].selected = !gameScreen.menu.options[1].selected;
         gameScreen.menu.dt = 0;
       }
       if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
         gameScreen.menu.dt = 0;
-        gameScreen.menu.visible = 0;
+        gameScreen.menu.visible = false;
         if (gameScreen.menu.options[0].selected) {
-          gameScreen.heading.visible = 0;
+          gameScreen.heading.visible = false;
           startGame();
         } else {
-          gameScreen.instructions.visible = 1;
+          gameScreen.instructions.visible = true;
         }
       }
     }
@@ -283,8 +283,8 @@ const gameLoop = GameLoop({
     if (gameScreen.instructions.visible) {
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
-        gameScreen.instructions.visible = 0;
-        gameScreen.menu.visible = 1;
+        gameScreen.instructions.visible = false;
+        gameScreen.menu.visible = true;
         gameScreen.menu.dt = 0;
       }
     }
@@ -293,7 +293,7 @@ const gameLoop = GameLoop({
     if (gameScreen.action.visible) {
       gameScreen.action.time -= 1 / FRAME_RATE;
       if (roundInteger(gameScreen.action.time) <= 0) {
-        gameScreen.action.visible = 0;
+        gameScreen.action.visible = false;
       }
     }
 

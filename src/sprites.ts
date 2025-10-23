@@ -53,7 +53,7 @@ export const createBatterySprite = (context: CanvasRenderingContext2D, canvas: H
   }) as BatterySprite;
 };
 
-export const createBulletSprite = (player: Sprite): Promise<BulletSprite> => {
+export const createBulletSprite = (player: PlayerSprite): Promise<BulletSprite> => {
   return new Promise((resolve) => {
     const bulletImage = new Image();
     bulletImage.src = './assets/bullet.svg';
@@ -87,7 +87,7 @@ export function removeBullet(index: number): void {
   bullets.splice(index, 1);
 }
 
-export async function createBullet(player: Sprite): Promise<void> {
+export async function createBullet(player: PlayerSprite): Promise<void> {
   const bullet = await createBulletSprite(player);
   bullets.push(bullet);
 }
@@ -221,7 +221,7 @@ export const createPlayerSprite = (canvas: HTMLCanvasElement): Promise<PlayerSpr
                 this.y += this.dy;
               }
               if (keyPressed('space') && this.bdt > 0.1) {
-                playSoundEffect('shoot');
+                playSoundEffect('player-shoot');
                 this.bdt = 0;
                 createBullet(this);
               }

@@ -1,43 +1,43 @@
 export const gameScreen = {
   heading: {
-    visible: 1,
+    visible: true,
     messages: ['Robo', 'Galactic', 'Shooter'],
   },
   menu: {
-    visible: 1,
+    visible: true,
     dt: 0,
     options: [
       {
         message: 'Play Game',
-        selected: 1,
+        selected: true,
       },
       {
         message: 'Instructions',
-        selected: 0,
+        selected: false,
       },
     ],
   },
   instructions: {
-    visible: 0,
+    visible: false,
   },
   start: {
-    visible: 0,
+    visible: false,
     time: 3,
     message: 'start game',
   },
   action: {
-    visible: 0,
+    visible: false,
     time: 2,
     index: 0,
     messages: ['boom', 'ouch', 'level up'],
   },
   continue: {
-    visible: 0,
+    visible: false,
     time: 9,
     message: 'continue',
   },
   end: {
-    visible: 0,
+    visible: false,
     time: 3,
     message: 'game over',
   },
