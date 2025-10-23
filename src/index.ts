@@ -4,6 +4,7 @@ import {renderBackground, renderTexts} from './render';
 import {roundInteger} from './utils/number';
 import {playSoundEffect} from './utils/sound';
 import {createAsteroidSprite, createBatterySprite, createPlayerSprite, createStarSprite, getBullets, removeBullet} from './sprites';
+import type {AsteroidSprite, BatterySprite, PlayerSprite, StarSprite} from './types/sprites';
 
 const FRAME_RATE = 60;
 
@@ -14,20 +15,20 @@ initKeys();
 let gameInterval: ReturnType<typeof setInterval> | null = null;
 
 // Asteroids
-const asteroids: Sprite[] = [];
+const asteroids: AsteroidSprite[] = [];
 
 // Stars
-const stars: Sprite[] = [];
+const stars: StarSprite[] = [];
 const backgroundStarCount = 100;
 
 // Levels
 let currentLevel = 1;
 
 // Generate 'Battery' sprite
-const battery = createBatterySprite(context, canvas);
+const battery: BatterySprite = createBatterySprite(context, canvas);
 
 // Initialize player sprite (will be assigned in main function)
-let player: Sprite;
+let player: PlayerSprite;
 
 // Generate 'Asteroid' sprites
 async function createAsteroids(count: number) {
@@ -229,7 +230,7 @@ const gameLoop = GameLoop({
 
     // Show 'Continue' countdown view which allow player to revive
     if (gameScreen.continue.visible) {
-      localStorage.setItem('hiScore', player.hiScore);
+      localStorage.setItem('hiScore', player.hiScore.toString());
       if (roundInteger(gameScreen.continue.time) >= 0) {
         gameScreen.continue.time -= 1 / FRAME_RATE;
       } else {
