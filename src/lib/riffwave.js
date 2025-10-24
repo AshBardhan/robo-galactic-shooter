@@ -20,34 +20,34 @@
  *
  */
 
-var FastBase64 = {
+const FastBase64 = {
   chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
   encLookup: [],
 
   Init: function () {
-    for (var i = 0; i < 4096; i++) {
+    for (let i = 0; i < 4096; i++) {
       this.encLookup[i] = this.chars[i >> 6] + this.chars[i & 0x3f];
     }
   },
 
   Encode: function (src) {
-    var len = src.length;
-    var dst = '';
-    var i = 0;
+    let len = src.length;
+    let dst = '';
+    let i = 0;
     while (len > 2) {
-      let n = (src[i] << 16) | (src[i + 1] << 8) | src[i + 2];
+      const n = (src[i] << 16) | (src[i + 1] << 8) | src[i + 2];
       dst += this.encLookup[n >> 12] + this.encLookup[n & 0xfff];
       len -= 3;
       i += 3;
     }
     if (len > 0) {
-      var n1 = (src[i] & 0xfc) >> 2;
-      var n2 = (src[i] & 0x03) << 4;
+      const n1 = (src[i] & 0xfc) >> 2;
+      let n2 = (src[i] & 0x03) << 4;
       if (len > 1) n2 |= (src[++i] & 0xf0) >> 4;
       dst += this.chars[n1];
       dst += this.chars[n2];
       if (len == 2) {
-        var n3 = (src[i++] & 0x0f) << 2;
+        let n3 = (src[i++] & 0x0f) << 2;
         n3 |= (src[i] & 0xc0) >> 6;
         dst += this.chars[n3];
       }
@@ -60,7 +60,7 @@ var FastBase64 = {
 
 FastBase64.Init();
 
-var RIFFWAVE = function (data) {
+const RIFFWAVE = function (data) {
   this.data = []; // Byte array containing audio samples
   this.wav = []; // Array containing the generated wave file
   this.dataURI = ''; // http://en.wikipedia.org/wiki/Data_URI_scheme

@@ -1,46 +1,37 @@
-import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey} from './lib/kontra.min.mjs';
-import {soundTypes} from './constants/sound.mjs';
-import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game.mjs';
-import {renderBackground, renderTexts} from './render.mjs';
-import {playSoundEffect, roundInteger} from './utils.mjs';
-import {createAsteroidSprite, createBatterySprite, createBulletSprite, createPlayerSprite, createStarSprite} from './sprites.mjs';
+import {init, GameLoop, initKeys, keyPressed, collides, offKey, onKey, type Sprite} from 'kontra';
+import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './constants/game';
+import {renderBackground, renderTexts} from './render';
+import {roundInteger} from './utils/number';
+import {playSoundEffect} from './utils/sound';
+import {createAsteroidSprite, createBatterySprite, createPlayerSprite, createStarSprite, getBullets, removeBullet} from './sprites';
+import type {AsteroidSprite, BatterySprite, PlayerSprite, StarSprite} from './types/sprites';
 
 const FRAME_RATE = 60;
 
-let {canvas, context} = init();
+const {canvas, context} = init();
 
 initKeys();
 
-let gameInterval = null;
-let gameLoop;
+let gameInterval: ReturnType<typeof setInterval> | null = null;
 
 // Asteroids
-let asteroids = [];
+const asteroids: AsteroidSprite[] = [];
 
 // Stars
-let stars = [];
+const stars: StarSprite[] = [];
 const backgroundStarCount = 100;
-
-// Bullets
-let bullets = [];
 
 // Levels
 let currentLevel = 1;
 
 // Generate 'Battery' sprite
-let battery = createBatterySprite(context, canvas);
+const battery: BatterySprite = createBatterySprite(context, canvas);
 
-// Generate 'Bullet' sprites
-export async function createBullet(player) {
-  const bullet = await createBulletSprite(player);
-  bullets.push(bullet);
-}
-
-// Generate 'Player' sprite
-let player = await createPlayerSprite(canvas);
+// Initialize player sprite (will be assigned in main function)
+let player: PlayerSprite;
 
 // Generate 'Asteroid' sprites
-async function createAsteroids(count) {
+async function createAsteroids(count: number) {
   const asteroidLimit = levels[currentLevel - 1].asteroidLimit;
   while (count > 0 && asteroids.length < asteroidLimit) {
     const asteroid = await createAsteroidSprite(context, canvas);
@@ -50,7 +41,7 @@ async function createAsteroids(count) {
 }
 
 // Generate 'Star' sprites
-function createStars(count, hasPower = false) {
+function createStars(count: number, hasPower = false) {
   const starLimit = levels[currentLevel - 1].starLimit + backgroundStarCount;
   while (count > 0 && stars.length < starLimit) {
     const star = createStarSprite(context, canvas, hasPower);
@@ -61,7 +52,10 @@ function createStars(count, hasPower = false) {
 
 // Unset game interval
 function unsetGameInterval() {
-  clearInterval(gameInterval);
+  if (gameInterval !== null) {
+    clearInterval(gameInterval);
+    gameInterval = null;
+  }
 }
 
 // Set game interval
@@ -78,7 +72,7 @@ function setGameInterval() {
 // End game
 function endGame() {
   player.alive = 0;
-  gameScreen.continue.visible = 1;
+  gameScreen.continue.visible = true;
   unsetGameInterval();
   offKey('esc');
 }
@@ -87,9 +81,9 @@ function endGame() {
 function resetGame() {
   asteroids.length = 0;
   stars.length = backgroundStarCount;
-  gameScreen.end.visible = 0;
-  gameScreen.menu.visible = 1;
-  gameScreen.heading.visible = 1;
+  gameScreen.end.visible = false;
+  gameScreen.menu.visible = true;
+  gameScreen.heading.visible = true;
   player.currentTarget = 0;
   player.score = 0;
   currentLevel = 1;
@@ -101,7 +95,7 @@ function resetGame() {
 
 // Start game
 function startGame() {
-  gameScreen.start.visible = 1;
+  gameScreen.start.visible = true;
   player.x = -canvas.width;
   player.y = 80;
   player.alive = 1;
@@ -119,14 +113,14 @@ function startGame() {
 }
 
 // Game loop that update and renders the game every frame
-gameLoop = GameLoop({
+const gameLoop = GameLoop({
   fps: 60,
   update() {
     let i, j;
 
-    [].concat(...[player], ...stars, ...asteroids, ...bullets, ...[battery]).map((sr) => {
-      sr?.update();
-    });
+    const bullets = getBullets();
+    const allSprites: Sprite[] = [player, ...stars, ...asteroids, ...bullets, battery];
+    allSprites.forEach((sr) => sr.update());
 
     for (i = 0; i < asteroids.length; i++) {
       for (j = 0; j < bullets.length; j++) {
@@ -134,11 +128,11 @@ gameLoop = GameLoop({
         if (collides(bullets[j], asteroids[i])) {
           if (!--asteroids[i].power) {
             player.currentTarget += 1;
-            playSoundEffect(soundTypes.ASTEROID_DESTORY);
+            playSoundEffect('asteroid-destroy');
           } else {
-            playSoundEffect(soundTypes.BULLET_HIT);
+            playSoundEffect('bullet-hit');
             gameScreen.action.index = 0;
-            gameScreen.action.visible = 1;
+            gameScreen.action.visible = true;
             gameScreen.action.time = 2;
           }
           break;
@@ -146,7 +140,7 @@ gameLoop = GameLoop({
       }
       // Update player's score once the bullet has hit the asteroid
       if (j !== bullets.length) {
-        bullets.splice(j, 1);
+        removeBullet(j);
         player.score += 50;
         break;
       }
@@ -155,10 +149,10 @@ gameLoop = GameLoop({
         battery.percent -= asteroids[i].power * 10;
         player.x -= asteroids[i].power * 20;
         asteroids[i].power = 0;
-        playSoundEffect(soundTypes.PLAYER_HIT);
-        playSoundEffect(soundTypes.ASTEROID_DESTORY);
+        playSoundEffect('player-hit');
+        playSoundEffect('asteroid-destroy');
         gameScreen.action.index = 1;
-        gameScreen.action.visible = 1;
+        gameScreen.action.visible = true;
         gameScreen.action.time = 2;
         break;
       }
@@ -175,12 +169,14 @@ gameLoop = GameLoop({
         break;
       }
     }
-    bullets.splice(i, 1);
+    if (i !== bullets.length) {
+      removeBullet(i);
+    }
 
     // Check if the player has consumed any incoming golden power star
     for (i = 0; i < stars.length; i++) {
       if (collides(stars[i], player) && stars[i].hasPower && battery.percent > 0) {
-        playSoundEffect(soundTypes.POWER);
+        playSoundEffect('power-up');
         battery.percent += stars[i].size;
         break;
       }
@@ -204,9 +200,9 @@ gameLoop = GameLoop({
           currentLevel += 1;
           player.currentTarget = 0;
           gameScreen.action.index = 2;
-          gameScreen.action.visible = 1;
+          gameScreen.action.visible = true;
           gameScreen.action.time = 2;
-          playSoundEffect(soundTypes.LEVEL_UP);
+          playSoundEffect('level-up');
           unsetGameInterval();
           setGameInterval();
         } else {
@@ -228,25 +224,25 @@ gameLoop = GameLoop({
       if (roundInteger(gameScreen.start.time) >= 0) {
         gameScreen.start.time -= 1 / FRAME_RATE;
       } else {
-        gameScreen.start.visible = 0;
+        gameScreen.start.visible = false;
       }
     }
 
     // Show 'Continue' countdown view which allow player to revive
     if (gameScreen.continue.visible) {
-      localStorage.setItem('hiScore', player.hiScore);
+      localStorage.setItem('hiScore', player.hiScore.toString());
       if (roundInteger(gameScreen.continue.time) >= 0) {
         gameScreen.continue.time -= 1 / FRAME_RATE;
       } else {
-        gameScreen.continue.visible = 0;
-        gameScreen.end.visible = 1;
+        gameScreen.continue.visible = false;
+        gameScreen.end.visible = true;
       }
       // Restart the game once the player has pressed 'Enter' to continue the game
       if (keyPressed('enter')) {
-        playSoundEffect(soundTypes.REVIVE);
+        playSoundEffect('player-revive');
         gameScreen.start.time = 3;
         gameScreen.continue.time = 9;
-        gameScreen.continue.visible = 0;
+        gameScreen.continue.visible = false;
         player.score = 0;
         battery.percent = 100;
         startGame();
@@ -266,19 +262,19 @@ gameLoop = GameLoop({
     if (gameScreen.menu.visible) {
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if ((keyPressed('arrowup') || keyPressed('arrowdown')) && gameScreen.menu.dt > 0.25) {
-        playSoundEffect(soundTypes.SELECT);
+        playSoundEffect('menu-select');
         gameScreen.menu.options[0].selected = !gameScreen.menu.options[0].selected;
         gameScreen.menu.options[1].selected = !gameScreen.menu.options[1].selected;
         gameScreen.menu.dt = 0;
       }
       if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
         gameScreen.menu.dt = 0;
-        gameScreen.menu.visible = 0;
+        gameScreen.menu.visible = false;
         if (gameScreen.menu.options[0].selected) {
-          gameScreen.heading.visible = 0;
+          gameScreen.heading.visible = false;
           startGame();
         } else {
-          gameScreen.instructions.visible = 1;
+          gameScreen.instructions.visible = true;
         }
       }
     }
@@ -287,8 +283,8 @@ gameLoop = GameLoop({
     if (gameScreen.instructions.visible) {
       gameScreen.menu.dt += 1 / FRAME_RATE;
       if (keyPressed('enter') && gameScreen.menu.dt > 0.25) {
-        gameScreen.instructions.visible = 0;
-        gameScreen.menu.visible = 1;
+        gameScreen.instructions.visible = false;
+        gameScreen.menu.visible = true;
         gameScreen.menu.dt = 0;
       }
     }
@@ -297,7 +293,7 @@ gameLoop = GameLoop({
     if (gameScreen.action.visible) {
       gameScreen.action.time -= 1 / FRAME_RATE;
       if (roundInteger(gameScreen.action.time) <= 0) {
-        gameScreen.action.visible = 0;
+        gameScreen.action.visible = false;
       }
     }
 
@@ -308,12 +304,21 @@ gameLoop = GameLoop({
   },
   render() {
     renderBackground(context, canvas);
-    [].concat(...stars, ...[player], ...asteroids, ...bullets, ...[battery]).map((sr) => {
-      sr?.render();
-    });
+    const bullets = getBullets();
+    const allSprites: Sprite[] = [...stars, player, ...asteroids, ...bullets, battery];
+    allSprites.forEach((sr) => sr.render());
     renderTexts(context, canvas, player, currentLevel);
   },
 });
 
-createStars(backgroundStarCount);
-gameLoop.start();
+// Main async function to initialize the game
+async function initializeGame() {
+  // Generate 'Player' sprite
+  player = await createPlayerSprite(canvas);
+
+  createStars(backgroundStarCount);
+  gameLoop.start();
+}
+
+// Start the game
+initializeGame();

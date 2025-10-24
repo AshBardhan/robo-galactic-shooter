@@ -1,15 +1,15 @@
-import RIFFWAVE from './riffwave.mjs';
+import RIFFWAVE from 'riffwave';
 
 // Wave shapes
-var SQUARE = 0;
-var SAWTOOTH = 1;
-var SINE = 2;
-var NOISE = 3;
+const SQUARE = 0;
+const SAWTOOTH = 1;
+const SINE = 2;
+const NOISE = 3;
 
 // Playback volume
-var masterVolume = 1;
+const masterVolume = 1;
 
-var OVERSAMPLING = 8;
+const OVERSAMPLING = 8;
 
 /*** Core data structure ***/
 
@@ -79,7 +79,7 @@ function sign(x) {
 function log(x, b) {
   return Math.log(x) / Math.log(b);
 }
-var pow = Math.pow;
+const pow = Math.pow;
 
 function frnd(range) {
   return Math.random() * range;
@@ -105,26 +105,26 @@ function floatToNumber(flt) {
     // Special case: NaN
     return assembleFloat(0, 0xff, 0x1337); // Mantissa is nonzero for NaN
 
-  var sign = flt < 0 ? 1 : 0;
+  const sign = flt < 0 ? 1 : 0;
   flt = Math.abs(flt);
   if (flt == 0.0)
     // Special case: +-0
     return assembleFloat(sign, 0, 0);
 
-  var exponent = Math.floor(Math.log(flt) / Math.LN2);
+  const exponent = Math.floor(Math.log(flt) / Math.LN2);
   if (exponent > 127 || exponent < -126)
     // Special case: +-Infinity (and huge numbers)
     return assembleFloat(sign, 0xff, 0); // Mantissa is zero for +-Infinity
 
-  var mantissa = flt / Math.pow(2, exponent);
+  const mantissa = flt / Math.pow(2, exponent);
   return assembleFloat(sign, exponent + 127, (mantissa * Math.pow(2, 23)) & 0x7fffff);
 }
 
 // http://stackoverflow.com/a/16001019
 function numberToFloat(bytes) {
-  var sign = bytes & 0x80000000 ? -1 : 1;
-  var exponent = ((bytes >> 23) & 0xff) - 127;
-  var significand = bytes & ~(-1 << 23);
+  const sign = bytes & 0x80000000 ? -1 : 1;
+  let exponent = ((bytes >> 23) & 0xff) - 127;
+  let significand = bytes & ~(-1 << 23);
 
   if (exponent == 128) return sign * (significand ? Number.NaN : Number.POSITIVE_INFINITY);
 
@@ -139,8 +139,8 @@ function numberToFloat(bytes) {
 
 // export parameter list to URL friendly base58 string
 // https://gist.github.com/diafygi/90a3e80ca1c2793220e5/
-var b58alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-var params_order = [
+const b58alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const params_order = [
   'wave_type',
   'p_env_attack',
   'p_env_sustain',
@@ -167,13 +167,13 @@ var params_order = [
 ];
 
 Params.prototype.toB58 = function () {
-  var convert = [];
-  for (var pi in params_order) {
-    var p = params_order[pi];
+  const convert = [];
+  for (const pi in params_order) {
+    const p = params_order[pi];
     if (p == 'wave_type') {
       convert.push(this[p]);
     } else if (p.indexOf('p_') == 0) {
-      var val = this[p];
+      let val = this[p];
       val = floatToNumber(val);
       convert.push(0xff & val);
       convert.push(0xff & (val >> 8));
@@ -182,7 +182,7 @@ Params.prototype.toB58 = function () {
     }
   }
   return (function (B, A) {
-    var d = [],
+    let d = [],
       s = '',
       i,
       j,
@@ -210,7 +210,7 @@ Params.prototype.fromB58 = function (b58encoded) {
 };
 
 Params.prototype.fromJSON = function (struct) {
-  for (var p in struct) {
+  for (const p in struct) {
     if (struct.hasOwnProperty(p)) {
       this[p] = struct[p];
     }
@@ -457,22 +457,22 @@ Params.prototype.tone = function () {
 
 /*** Simpler namespaced functional API ***/
 
-let sfxr = {};
+const sfxr = {};
 
 sfxr.toBuffer = function (synthdef) {
   return new SoundEffect(synthdef).getRawBuffer()['buffer'];
 };
 
 sfxr.toWebAudio = function (synthdef, audiocontext) {
-  var sfx = new SoundEffect(synthdef);
-  var buffer = _sfxr_getNormalized(sfx.getRawBuffer()['buffer'], sfx.bitsPerChannel);
+  const sfx = new SoundEffect(synthdef);
+  const buffer = _sfxr_getNormalized(sfx.getRawBuffer()['buffer'], sfx.bitsPerChannel);
   if (audiocontext) {
-    var buff = audiocontext.createBuffer(1, buffer.length, sfx.sampleRate);
-    var nowBuffering = buff.getChannelData(0);
-    for (var i = 0; i < buffer.length; i++) {
+    const buff = audiocontext.createBuffer(1, buffer.length, sfx.sampleRate);
+    const nowBuffering = buff.getChannelData(0);
+    for (let i = 0; i < buffer.length; i++) {
       nowBuffering[i] = buffer[i];
     }
-    var proc = audiocontext.createBufferSource();
+    const proc = audiocontext.createBufferSource();
     proc.buffer = buff;
     return proc;
   }
@@ -487,8 +487,8 @@ sfxr.toAudio = function (synthdef) {
 };
 
 sfxr.b58decode = function (b58encoded) {
-  var decoded = (function (S, A) {
-    var d = [],
+  const decoded = (function (S, A) {
+    let d = [],
       b = [],
       i,
       j,
@@ -509,14 +509,14 @@ sfxr.b58decode = function (b58encoded) {
     while (j--) b.push(d[j]);
     return new Uint8Array(b);
   })(b58encoded, b58alphabet);
-  var result = {};
-  for (var pi in params_order) {
-    var p = params_order[pi];
-    var offset = (pi - 1) * 4 + 1;
+  const result = {};
+  for (const pi in params_order) {
+    const p = params_order[pi];
+    const offset = (pi - 1) * 4 + 1;
     if (p == 'wave_type') {
       result[p] = decoded[0];
     } else {
-      var val = decoded[offset] | (decoded[offset + 1] << 8) | (decoded[offset + 2] << 16) | (decoded[offset + 3] << 24);
+      const val = decoded[offset] | (decoded[offset + 1] << 8) | (decoded[offset + 2] << 16) | (decoded[offset + 3] << 24);
       result[p] = numberToFloat(val);
     }
   }
@@ -527,7 +527,7 @@ sfxr.b58decode = function (b58encoded) {
 
 function SoundEffect(ps) {
   if (typeof ps == 'string') {
-    var PARAMS = new Params();
+    const PARAMS = new Params();
     if (ps.indexOf('#') == 0) {
       ps = ps.slice(1);
     }
@@ -577,7 +577,7 @@ SoundEffect.prototype.init = function (ps) {
 };
 
 SoundEffect.prototype.initForRepeat = function () {
-  var ps = this.parameters;
+  const ps = this.parameters;
   this.elapsedSinceRepeat = 0;
 
   this.period = 100 / (ps.p_base_freq * ps.p_base_freq + 0.001);
@@ -596,32 +596,32 @@ SoundEffect.prototype.initForRepeat = function () {
 };
 
 SoundEffect.prototype.getRawBuffer = function () {
-  var fltp = 0;
-  var fltdp = 0;
-  var fltphp = 0;
+  let fltp = 0;
+  let fltdp = 0;
+  let fltphp = 0;
 
-  var noise_buffer = Array(32);
-  for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
+  const noise_buffer = Array(32);
+  for (let i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
 
-  var envelopeStage = 0;
-  var envelopeElapsed = 0;
+  let envelopeStage = 0;
+  let envelopeElapsed = 0;
 
-  var vibratoPhase = 0;
+  let vibratoPhase = 0;
 
-  var phase = 0;
-  var ipp = 0;
-  var flanger_buffer = Array(1024);
-  for (var i = 0; i < 1024; ++i) flanger_buffer[i] = 0;
+  let phase = 0;
+  let ipp = 0;
+  const flanger_buffer = Array(1024);
+  for (let i = 0; i < 1024; ++i) flanger_buffer[i] = 0;
 
-  var num_clipped = 0;
+  let num_clipped = 0;
 
-  var buffer = [];
+  const buffer = [];
 
-  var sample_sum = 0;
-  var num_summed = 0;
-  var summands = Math.floor(44100 / this.sampleRate);
+  let sample_sum = 0;
+  let num_summed = 0;
+  const summands = Math.floor(44100 / this.sampleRate);
 
-  for (var t = 0; ; ++t) {
+  for (let t = 0; ; ++t) {
     // Repeats
     if (this.repeatTime != 0 && ++this.elapsedSinceRepeat >= this.repeatTime) this.initForRepeat();
 
@@ -640,12 +640,12 @@ SoundEffect.prototype.getRawBuffer = function () {
     }
 
     // Vibrato
-    var rfperiod = this.period;
+    let rfperiod = this.period;
     if (this.vibratoAmplitude > 0) {
       vibratoPhase += this.vibratoSpeed;
       rfperiod = this.period * (1 + Math.sin(vibratoPhase) * this.vibratoAmplitude);
     }
-    var iperiod = Math.floor(rfperiod);
+    let iperiod = Math.floor(rfperiod);
     if (iperiod < OVERSAMPLING) iperiod = OVERSAMPLING;
 
     // Square wave duty cycle
@@ -658,8 +658,8 @@ SoundEffect.prototype.getRawBuffer = function () {
       envelopeElapsed = 0;
       if (++envelopeStage > 2) break;
     }
-    var env_vol;
-    var envf = envelopeElapsed / this.envelopeLength[envelopeStage];
+    let env_vol;
+    const envf = envelopeElapsed / this.envelopeLength[envelopeStage];
     if (envelopeStage === 0) {
       // Attack
       env_vol = envf;
@@ -673,7 +673,7 @@ SoundEffect.prototype.getRawBuffer = function () {
 
     // Flanger step
     this.flangerOffset += this.flangerOffsetSlide;
-    var iphase = Math.abs(Math.floor(this.flangerOffset));
+    let iphase = Math.abs(Math.floor(this.flangerOffset));
     if (iphase > 1023) iphase = 1023;
 
     if (this.flthp_d != 0) {
@@ -683,17 +683,17 @@ SoundEffect.prototype.getRawBuffer = function () {
     }
 
     // 8x oversampling
-    var sample = 0;
-    for (var si = 0; si < OVERSAMPLING; ++si) {
-      var sub_sample = 0;
+    let sample = 0;
+    for (let si = 0; si < OVERSAMPLING; ++si) {
+      let sub_sample = 0;
       phase++;
       if (phase >= iperiod) {
         phase %= iperiod;
-        if (this.waveShape === NOISE) for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
+        if (this.waveShape === NOISE) for (let i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
       }
 
       // Base waveform
-      var fp = phase / iperiod;
+      const fp = phase / iperiod;
       if (this.waveShape === SQUARE) {
         if (fp < this.dutyCycle) sub_sample = 0.5;
         else sub_sample = -0.5;
@@ -709,7 +709,7 @@ SoundEffect.prototype.getRawBuffer = function () {
       }
 
       // Low-pass filter
-      var pp = fltp;
+      const pp = fltp;
       this.fltw *= this.fltw_d;
       if (this.fltw < 0) this.fltw = 0;
       if (this.fltw > 0.1) this.fltw = 0.1;
@@ -782,9 +782,9 @@ SoundEffect.prototype.getRawBuffer = function () {
 };
 
 SoundEffect.prototype.generate = function () {
-  var rendered = this.getRawBuffer();
-  var wave = new RIFFWAVE();
-  var normalized = _sfxr_getNormalized(rendered.buffer, this.bitsPerChannel);
+  const rendered = this.getRawBuffer();
+  const wave = new RIFFWAVE();
+  const normalized = _sfxr_getNormalized(rendered.buffer, this.bitsPerChannel);
   wave.header.sampleRate = this.sampleRate;
   wave.header.bitsPerSample = this.bitsPerChannel;
   wave.Make(normalized);
@@ -794,19 +794,19 @@ SoundEffect.prototype.generate = function () {
   return wave;
 };
 
-var _sfxr_getNormalized = function (buffer, bitsPerChannel) {
+const _sfxr_getNormalized = function (buffer, bitsPerChannel) {
   // normalize buffer
-  var normalized = new Float32Array(buffer.length);
-  for (var b = 0; b < buffer.length; b++) {
+  const normalized = new Float32Array(buffer.length);
+  for (let b = 0; b < buffer.length; b++) {
     normalized[b] = (2.0 * buffer[b]) / pow(2, bitsPerChannel) - 1.0;
   }
   return normalized;
 };
 
-var _sfxr_getAudioFn = function (wave) {
+const _sfxr_getAudioFn = function (wave) {
   return function () {
     // check for procedural audio
-    var actx = null;
+    let actx = null;
     if ('AudioContext' in window) {
       actx = new AudioContext();
     } else if ('webkitAudioContext' in window) {
@@ -814,15 +814,15 @@ var _sfxr_getAudioFn = function (wave) {
     }
 
     if (actx) {
-      var buff = actx.createBuffer(1, wave.buffer.length, wave.header.sampleRate);
-      var nowBuffering = buff.getChannelData(0);
-      for (var i = 0; i < wave.buffer.length; i++) {
+      const buff = actx.createBuffer(1, wave.buffer.length, wave.header.sampleRate);
+      const nowBuffering = buff.getChannelData(0);
+      for (let i = 0; i < wave.buffer.length; i++) {
         nowBuffering[i] = wave.buffer[i];
       }
       return {
         channels: [],
         play: function () {
-          var proc = actx.createBufferSource();
+          const proc = actx.createBufferSource();
           proc.buffer = buff;
           proc.connect(actx.destination);
           if ('AudioContext' in window) {
@@ -834,7 +834,7 @@ var _sfxr_getAudioFn = function (wave) {
         },
       };
     } else {
-      var audio = new Audio();
+      const audio = new Audio();
       audio.src = wave.dataURI;
       return audio;
     }
