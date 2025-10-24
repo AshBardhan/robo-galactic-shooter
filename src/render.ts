@@ -1,7 +1,7 @@
-import type {Sprite} from 'kontra';
 import {gameScreen, levels, maxLevel} from './constants/game';
 import {chrs} from './constants/pixel';
 import {roundInteger} from './utils/number';
+import type {PlayerSprite} from './types/sprites';
 
 export function renderBackground(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
   const g = context.createLinearGradient(canvas.width / 2, 0, canvas.width / 2, canvas.height);
@@ -46,7 +46,10 @@ export function drawPixel(context: CanvasRenderingContext2D, str: string, dx = 0
   context.resetTransform();
 }
 
-export function renderTexts(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, player: Sprite, currentLevel: number) {
+export function renderTexts(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, player: PlayerSprite, currentLevel: number) {
+  const continueTime = roundInteger(gameScreen.continue.time);
+  const startTime = roundInteger(gameScreen.start.time);
+
   drawPixel(context, `Level`, 280, 10);
   drawPixel(context, `${currentLevel}/${maxLevel}`, 380, 10);
   drawPixel(context, `Target`, 280, 35);
@@ -102,14 +105,14 @@ export function renderTexts(context: CanvasRenderingContext2D, canvas: HTMLCanva
     drawPixel(context, `confirm`, 835, 585);
   }
 
-  if (gameScreen.continue.visible) {
+  if (gameScreen.continue.visible && continueTime >= 0) {
     drawPixel(context, `${gameScreen.continue.message}`, (canvas.width - `${gameScreen.continue.message}`.length * 40) / 2, 235, 10);
-    drawPixel(context, `${roundInteger(gameScreen.continue.time)}`, (canvas.width - `${roundInteger(gameScreen.continue.time)}`.length * 50) / 2, 305, 20);
+    drawPixel(context, `${continueTime}`, (canvas.width - `${continueTime}`.length * 50) / 2, 305, 20);
   }
 
-  if (gameScreen.start.visible) {
+  if (gameScreen.start.visible && startTime >= 0) {
     drawPixel(context, `${gameScreen.start.message}`, (canvas.width - `${gameScreen.start.message}`.length * 20) / 2, 255, 5);
-    drawPixel(context, `${roundInteger(gameScreen.start.time)}`, (canvas.width - `${roundInteger(gameScreen.start.time)}`.length * 50) / 2, 305, 10);
+    drawPixel(context, `${startTime}`, (canvas.width - `${startTime}`.length * 50) / 2, 305, 10);
   }
 
   if (gameScreen.end.visible) {

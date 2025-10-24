@@ -601,7 +601,7 @@ SoundEffect.prototype.getRawBuffer = function () {
   let fltphp = 0;
 
   const noise_buffer = Array(32);
-  for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
+  for (let i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
 
   let envelopeStage = 0;
   let envelopeElapsed = 0;
@@ -611,7 +611,7 @@ SoundEffect.prototype.getRawBuffer = function () {
   let phase = 0;
   let ipp = 0;
   const flanger_buffer = Array(1024);
-  for (var i = 0; i < 1024; ++i) flanger_buffer[i] = 0;
+  for (let i = 0; i < 1024; ++i) flanger_buffer[i] = 0;
 
   let num_clipped = 0;
 
@@ -658,7 +658,7 @@ SoundEffect.prototype.getRawBuffer = function () {
       envelopeElapsed = 0;
       if (++envelopeStage > 2) break;
     }
-    var env_vol;
+    let env_vol;
     const envf = envelopeElapsed / this.envelopeLength[envelopeStage];
     if (envelopeStage === 0) {
       // Attack
@@ -689,7 +689,7 @@ SoundEffect.prototype.getRawBuffer = function () {
       phase++;
       if (phase >= iperiod) {
         phase %= iperiod;
-        if (this.waveShape === NOISE) for (var i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
+        if (this.waveShape === NOISE) for (let i = 0; i < 32; ++i) noise_buffer[i] = Math.random() * 2 - 1;
       }
 
       // Base waveform
@@ -794,7 +794,7 @@ SoundEffect.prototype.generate = function () {
   return wave;
 };
 
-var _sfxr_getNormalized = function (buffer, bitsPerChannel) {
+const _sfxr_getNormalized = function (buffer, bitsPerChannel) {
   // normalize buffer
   const normalized = new Float32Array(buffer.length);
   for (let b = 0; b < buffer.length; b++) {
@@ -803,7 +803,7 @@ var _sfxr_getNormalized = function (buffer, bitsPerChannel) {
   return normalized;
 };
 
-var _sfxr_getAudioFn = function (wave) {
+const _sfxr_getAudioFn = function (wave) {
   return function () {
     // check for procedural audio
     let actx = null;
