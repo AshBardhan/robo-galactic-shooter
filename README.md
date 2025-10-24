@@ -12,6 +12,17 @@ This is not just another space robot shooter game. Your planet is under threat a
 
 Survive till you go full offline!
 
+## Tech Stack
+
+- **TypeScript** - Type-safe JavaScript development
+- **Vite** - Fast build tool and development server
+- **Kontra** - Lightweight 2D game engine for HTML5 Canvas
+- **sfxr** - Sound effect generation library
+- **ESLint** - Code linting and quality assurance
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for pre-commit automation
+- **Netlify** - Deployment and hosting platform
+
 ## Controls
 
 | Key         | Action                       |
