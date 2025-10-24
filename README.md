@@ -4,7 +4,7 @@ Retro Video Game developed in Kontra and sfxr JS libraries, as a part of JS13k C
 
 **First Release:** v1.0.0 - [Demo](https://js13kgames.com/games/robo-galactic-shooter/index.html) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/js-13k-games-2018)
 
-**Latest Release:** v2.4.1 - [Demo](https://robo-galactic-shooter.netlify.app) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/main)
+**Latest Release:** v2.5.0 - [Demo](https://robo-galactic-shooter.netlify.app) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/main)
 
 ## Introduction
 
