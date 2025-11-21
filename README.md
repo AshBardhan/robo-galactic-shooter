@@ -8,9 +8,9 @@ Retro Video Game developed in Kontra and sfxr JS libraries, as a part of JS13k C
 
 ## Introduction
 
-This is not just another space robot shooter game. Your planet is under threat as the asteroids are approaching with uncertain speed. Your mission is to destroy them all before your battery is drained out completely and making you offline permanently. However, you can look for golden stars to recharge battery.
+This is not just another space robot shooter game. Your planet is under threat as asteroids are approaching at uncertain speeds. Your mission is to destroy them all before your battery drains completely and makes you offline permanently. However, you can look for golden stars to recharge your battery.
 
-Survive till you go full offline!
+Survive until you go fully offline!
 
 ## Tech Stack
 
@@ -38,19 +38,84 @@ Survive till you go full offline!
 
 ## Contribution
 
-### Setup
+### Getting Started
 
-- [Fork this repo](https://help.github.com/articles/fork-a-repo) and clone it on your system.
-- Ensure you are using **Node v21.6.0**. You can switch versions easily with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating).
-- Install all the required dependencies by running `npm install`.
-- Create a new branch out off `main` for your fix/feature by running `git checkout -b new-feature`.
-- Start the development server by running `npm run dev`
-- Open your browser at `http://localhost:5173` and play the game.
+1. **Fork and Clone**
+   - [Fork this repository](https://help.github.com/articles/fork-a-repo) to your GitHub account
+   - Clone your fork locally:
 
-### Things to remember
+     ```bash
+     git clone https://github.com/YOUR_USERNAME/robo-galactic-shooter.git
+     cd robo-galactic-shooter
+     ```
 
-- Do not fix multiple issues in a single commit. Keep them one thing per commit so that they can be picked easily in case only few commits require to be merged.
-- Before submitting a patch, rebase your branch on upstream `main` to make life easier for the merger.
+2. **Set Up Environment**
+   - Ensure you're using **Node v21.6.0** (use [nvm](https://github.com/nvm-sh/nvm) to switch versions)
+   - Install dependencies:
+
+     ```bash
+     npm install
+     ```
+
+3. **Create a Branch**
+   - Create a new branch for your fix or feature:
+
+     ```bash
+     git checkout -b feature/your-feature-name
+     ```
+
+4. **Start Development**
+   - Run the development server:
+
+     ```bash
+     npm run dev
+     ```
+
+   - Open `http://localhost:5173` in your browser
+
+### Development Guidelines
+
+- **One commit per issue** - Keep commits focused on a single change for easier cherry-picking
+- **Sync before submitting** - Merge the latest changes from upstream `main` into your branch to avoid conflicts: `git merge origin/main`
+- **Test thoroughly** - Ensure your changes work as expected and don't break existing functionality
+- **Follow code style** - The project uses ESLint, Prettier, and Husky for code quality
+
+### Submitting Request for Change
+
+1. **Push to Your Fork**
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+2. **Open a Pull Request**
+   - Go to the [original repository](https://github.com/AshBardhan/robo-galactic-shooter)
+   - Click **"Pull requests"** → **"New pull request"** → **"compare across forks"**
+   - Select your fork and branch, then **"Create pull request"**
+
+3. **Describe Your Changes**
+   - Write a clear title (e.g., "Add particle explosion effects")
+   - Explain what your changes do and why
+   - Include screenshots/GIFs for visual changes
+   - Note any breaking changes or new dependencies
+
+4. **Respond to Feedback**
+   - Address any requested changes from reviewers
+   - Push updates to the same branch - the PR will update automatically
+
+### Versioning and Deployment (Admin Only)
+
+Once your contribution is merged, it will be included in the next release. The code admin/maintainer will take care of the following:
+
+1. Update the version number following [Semantic Versioning](https://semver.org/):
+   - **PATCH** (2.5.x) - Bug fixes and small improvements
+   - **MINOR** (2.x.0) - New features and enhancements
+   - **MAJOR** (x.0.0) - Breaking changes
+
+2. Create a git tag and GitHub release with changelog
+3. Deploy automatically to Netlify
+
+**Note**: You don't need to update version numbers yourself - maintainers handle this during release.
 
 ### License
 
