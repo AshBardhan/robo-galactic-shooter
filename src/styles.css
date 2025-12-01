@@ -1,7 +1,11 @@
+/* =================================
+   Root Element & CSS Variables
+   ================================= */
 html {
   height: 100vh;
 
   /* Day & Night Theme Colors */
+  /* Horizon gradient stops */
   --day-horizon-start: #26007d;
   --day-horizon-mid: #3503a8;
   --day-horizon-accent: #b30699;
@@ -14,23 +18,34 @@ html {
   --night-horizon-bright: #0264a1;
   --night-horizon-end: #0468a6;
 
+  /* Celestial bodies */
   --sun-start: #ffff05;
   --sun-end: #ff4700;
-  --sun-glow: rgba(255, 71, 0, 0.5);
+  --sun-glow: #ff4800b3;
 
   --moon-start: #f4f3bd;
   --moon-end: #edf0c3;
-  --moon-glow: rgba(255, 255, 255, 0.5);
+  --moon-glow: #ffffff80;
 
-  --day-surface-overlay: rgba(179, 6, 153, 0.34);
+  /* Surface and grid */
+  --day-surface-overlay: #b3069934;
   --day-surface-start: #1f0540;
   --day-surface-end: #570257;
   --day-grid-color: #05f3fe;
 
-  --night-surface-overlay: rgba(13, 67, 113, 0.34);
+  --night-surface-overlay: #0d437171;
   --night-surface-start: #243048;
   --night-surface-end: #080707;
   --night-grid-color: #d6d2d2;
+
+  /* Console Frame Colors */
+  --day-console-border: #232121;
+  --day-console-shadow: #85807e80;
+  --day-console-inner-glow: #ffffff4d;
+
+  --night-console-border: #96cff5;
+  --night-console-shadow: #cbe7f980;
+  --night-console-inner-glow: #3939394d;
 
   /* Theme Transition Settings */
   --transition-duration: 1.2s;
@@ -41,17 +56,25 @@ html {
   --grid-animation-duration: 20s;
 }
 
+/* =================================
+   Base Layout
+   ================================= */
 body {
   height: 100vh;
+  min-width: 320px;
   margin: 0;
   overflow: hidden;
 }
 
+/* Scene container */
 .scenary {
   height: 100vh;
   position: relative;
 }
 
+/* =================================
+   Sky & Horizon
+   ================================= */
 .horizon {
   height: 50vh;
   left: 0;
@@ -60,6 +83,7 @@ body {
   top: 0;
   overflow: hidden;
 
+  /* Day and night gradients using pseudo-elements */
   &::before,
   &::after {
     content: '';
@@ -67,11 +91,13 @@ body {
     inset: 0;
   }
 
+  /* Day sky gradient */
   &::before {
     background: linear-gradient(to bottom, var(--day-horizon-start) 0%, var(--day-horizon-mid) 50%, var(--day-horizon-accent) 74%, var(--day-horizon-bright) 84%, var(--day-horizon-end) 100%);
     opacity: 1;
   }
 
+  /* Night sky gradient */
   &::after {
     background: linear-gradient(
       to bottom,
@@ -85,6 +111,10 @@ body {
   }
 }
 
+/* =================================
+   Celestial Bodies
+   ================================= */
+/* Shared styles for sun and moon */
 .sun,
 .moon {
   z-index: 1;
@@ -96,6 +126,7 @@ body {
   transform: translate(-50%, 40%);
 }
 
+/* Sun - visible during day */
 .sun {
   bottom: 5vh;
   background-image: linear-gradient(to bottom, var(--sun-start) 0%, var(--sun-end) 50%);
@@ -104,6 +135,7 @@ body {
   transform: translate(-50%, 40%) translateY(0);
 }
 
+/* Moon - visible during night */
 .moon {
   bottom: 5vh;
   background: linear-gradient(to bottom, var(--moon-start) 0%, var(--moon-end) 50%);
@@ -112,6 +144,9 @@ body {
   transform: translate(-50%, 40%) translateY(40vh);
 }
 
+/* =================================
+   Surface Ground
+   ================================= */
 .surface {
   bottom: 0;
   height: 50vh;
@@ -120,6 +155,7 @@ body {
   position: absolute;
   right: 0;
 
+  /* Day and night surface gradients */
   &::before,
   &::after {
     content: '';
@@ -127,17 +163,20 @@ body {
     inset: 0;
   }
 
+  /* Day surface */
   &::before {
     background: linear-gradient(to bottom, var(--day-surface-overlay) 0%, transparent 100%), linear-gradient(to right, var(--day-surface-start) 0%, var(--day-surface-end) 100%);
     opacity: 1;
   }
 
+  /* Night surface */
   &::after {
     background: linear-gradient(to bottom, var(--night-surface-overlay) 0%, transparent 100%), linear-gradient(to right, var(--night-surface-start) 0%, var(--night-surface-end) 100%);
     opacity: 0;
   }
 }
 
+/* Horizon line overlay */
 .surface-overlay {
   position: absolute;
   inset: 0;
@@ -161,6 +200,7 @@ body {
   }
 }
 
+/* Animated perspective grid */
 .surface-grid {
   position: absolute;
   inset: 0;
@@ -168,6 +208,7 @@ body {
   transform: rotateX(var(--grid-angle));
   z-index: 2;
 
+  /* Animated grid lines using pseudo-elements */
   &::before,
   &::after {
     content: '';
@@ -179,21 +220,22 @@ body {
     animation: surface-move var(--grid-animation-duration) linear infinite;
   }
 
+  /* Day grid pattern */
   &::after {
-    background-image:
-      linear-gradient(to bottom, transparent, transparent 2vw, var(--day-grid-color) 2vw, var(--day-grid-color) 2.1vw),
+    background-image: linear-gradient(to bottom, transparent, transparent 2vw, var(--day-grid-color) 2vw, var(--day-grid-color) 2.1vw),
       linear-gradient(to right, transparent, transparent 2vw, var(--day-grid-color) 2vw, var(--day-grid-color) 2.1vw);
     opacity: 1;
   }
 
+  /* Night grid pattern */
   &::before {
-    background-image:
-      linear-gradient(to bottom, transparent, transparent 2vw, var(--night-grid-color) 2vw, var(--night-grid-color) 2.1vw),
+    background-image: linear-gradient(to bottom, transparent, transparent 2vw, var(--night-grid-color) 2vw, var(--night-grid-color) 2.1vw),
       linear-gradient(to right, transparent, transparent 2vw, var(--night-grid-color) 2vw, var(--night-grid-color) 2.1vw);
     opacity: 0;
   }
 }
 
+/* Grid movement animation */
 @keyframes surface-move {
   0% {
     background-position: 0 0;
@@ -248,6 +290,14 @@ body {
   .surface-grid::after {
     opacity: 0;
   }
+
+  #myCanvas {
+    border-color: var(--night-console-border);
+    box-shadow:
+      0 0 60px 10px var(--night-console-shadow),
+      inset 0 0 40px var(--night-console-inner-glow),
+      inset 0 0 0 8px #0000004d;
+  }
 }
 
 /* =================================
@@ -282,9 +332,13 @@ body {
   }
 }
 
+/* =================================
+   Game Console Canvas
+   ================================= */
 #myCanvas {
   border-width: 60px 100px;
   border-style: solid;
+  border-color: var(--day-console-border);
   border-radius: 10px;
   position: absolute;
   top: 50%;
@@ -293,8 +347,17 @@ body {
   z-index: 2;
   animation: show-up 1s ease-in 1s forwards;
   opacity: 0;
+  box-shadow:
+    0 0 60px 10px var(--day-console-shadow),
+    inset 0 0 40px var(--day-console-inner-glow),
+    inset 0 0 0 8px #0000004d;
+  background: #000;
+  transition:
+    border-color var(--transition-duration) var(--transition-timing),
+    box-shadow var(--transition-duration) var(--transition-timing);
 }
 
+/* Canvas fade-in animation */
 @keyframes show-up {
   0% {
     opacity: 0;
@@ -304,20 +367,26 @@ body {
   }
 }
 
+/* =================================
+   Responsive Adjustments
+   ================================= */
 @media screen and (max-width: 1920px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.75);
+    border-width: 50px 80px;
   }
 }
 
 @media screen and (max-width: 1440px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.65);
+    border-width: 40px 70px;
   }
 }
 
 @media screen and (max-width: 1280px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.5);
+    border-width: 35px 60px;
   }
 }
