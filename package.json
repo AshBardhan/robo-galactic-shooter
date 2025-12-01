@@ -15,12 +15,18 @@
     "src/**/*.ts": [
       "prettier --write --ignore-unknown",
       "eslint --fix"
+    ],
+    "src/**/*.css": [
+      "prettier --write --ignore-unknown",
+      "stylelint --fix"
     ]
   },
   "scripts": {
     "dev": "vite --host",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
+    "lint:css": "stylelint src/**/*.css",
+    "lint:css:fix": "stylelint src/**/*.css --fix",
     "build": "npm run lint && vite build",
     "preview": "vite preview",
     "start": "vite preview --host",
@@ -38,6 +44,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
     "prettier": "3.4.2",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0",
     "vite": "^6.0.0",

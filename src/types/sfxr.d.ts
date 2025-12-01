@@ -120,7 +120,10 @@ declare namespace sfxr {
 
     init(ps: Params): void;
     initForRepeat(): void;
-    getRawBuffer(): {buffer: number[]; clipped: number};
+    getRawBuffer(): {
+      buffer: number[];
+      clipped: number;
+    };
     generate(): any; // Returns RIFFWAVE instance with additional properties
   }
 

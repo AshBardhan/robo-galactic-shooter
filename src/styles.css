@@ -5,13 +5,11 @@ html {
   height: 100vh;
 
   /* Day & Night Theme Colors */
-  /* Horizon gradient stops */
   --day-horizon-start: #26007d;
   --day-horizon-mid: #3503a8;
   --day-horizon-accent: #b30699;
   --day-horizon-bright: #ff179a;
   --day-horizon-end: #ffff05;
-
   --night-horizon-start: #040508;
   --night-horizon-mid: #243048;
   --night-horizon-accent: #0d4371;
@@ -22,7 +20,6 @@ html {
   --sun-start: #ffff05;
   --sun-end: #ff4700;
   --sun-glow: #ff4800b3;
-
   --moon-start: #f4f3bd;
   --moon-end: #edf0c3;
   --moon-glow: #ffffff80;
@@ -32,17 +29,15 @@ html {
   --day-surface-start: #1f0540;
   --day-surface-end: #570257;
   --day-grid-color: #05f3fe;
-
   --night-surface-overlay: #0d437171;
   --night-surface-start: #243048;
   --night-surface-end: #080707;
   --night-grid-color: #d6d2d2;
 
   /* Console Frame Colors */
-  --day-console-border: #232121;
-  --day-console-shadow: #85807e80;
-  --day-console-inner-glow: #ffffff4d;
-
+  --day-console-border: #060606;
+  --day-console-shadow: #605d5b80;
+  --day-console-inner-glow: #1818184d;
   --night-console-border: #96cff5;
   --night-console-shadow: #cbe7f980;
   --night-console-inner-glow: #3939394d;
@@ -114,6 +109,7 @@ body {
 /* =================================
    Celestial Bodies
    ================================= */
+
 /* Shared styles for sun and moon */
 .sun,
 .moon {
@@ -240,8 +236,69 @@ body {
   0% {
     background-position: 0 0;
   }
+
   100% {
     background-position: 0 100%;
+  }
+}
+
+/* =================================
+   Game Console Canvas
+   ================================= */
+#game-canvas {
+  border-width: 60px 100px;
+  border-style: solid;
+  border-color: var(--day-console-border);
+  border-radius: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  animation: show-up 1s ease-in 1s forwards;
+  opacity: 0;
+  box-shadow:
+    0 0 60px 10px var(--day-console-shadow),
+    inset 0 0 40px var(--day-console-inner-glow),
+    inset 0 0 0 8px #0000004d;
+  background: #000;
+  transition:
+    border-color var(--transition-duration) var(--transition-timing),
+    box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+/* Canvas fade-in animation */
+@keyframes show-up {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* =================================
+   Responsive Adjustments
+   ================================= */
+@media screen and (max-width: 1920px) {
+  #game-canvas {
+    transform: translate(-50%, -50%) scale(0.75);
+    border-width: 50px 80px;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  #game-canvas {
+    transform: translate(-50%, -50%) scale(0.65);
+    border-width: 40px 70px;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  #game-canvas {
+    transform: translate(-50%, -50%) scale(0.5);
+    border-width: 35px 60px;
   }
 }
 
@@ -291,7 +348,7 @@ body {
     opacity: 0;
   }
 
-  #myCanvas {
+  #game-canvas {
     border-color: var(--night-console-border);
     box-shadow:
       0 0 60px 10px var(--night-console-shadow),
@@ -329,64 +386,5 @@ body {
   .surface-grid::before,
   .surface-grid::after {
     transition: opacity var(--transition-duration) var(--transition-timing);
-  }
-}
-
-/* =================================
-   Game Console Canvas
-   ================================= */
-#myCanvas {
-  border-width: 60px 100px;
-  border-style: solid;
-  border-color: var(--day-console-border);
-  border-radius: 10px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  animation: show-up 1s ease-in 1s forwards;
-  opacity: 0;
-  box-shadow:
-    0 0 60px 10px var(--day-console-shadow),
-    inset 0 0 40px var(--day-console-inner-glow),
-    inset 0 0 0 8px #0000004d;
-  background: #000;
-  transition:
-    border-color var(--transition-duration) var(--transition-timing),
-    box-shadow var(--transition-duration) var(--transition-timing);
-}
-
-/* Canvas fade-in animation */
-@keyframes show-up {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* =================================
-   Responsive Adjustments
-   ================================= */
-@media screen and (max-width: 1920px) {
-  #myCanvas {
-    transform: translate(-50%, -50%) scale(0.75);
-    border-width: 50px 80px;
-  }
-}
-
-@media screen and (max-width: 1440px) {
-  #myCanvas {
-    transform: translate(-50%, -50%) scale(0.65);
-    border-width: 40px 70px;
-  }
-}
-
-@media screen and (max-width: 1280px) {
-  #myCanvas {
-    transform: translate(-50%, -50%) scale(0.5);
-    border-width: 35px 60px;
   }
 }
