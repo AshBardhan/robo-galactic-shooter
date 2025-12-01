@@ -8,86 +8,216 @@ body {
   overflow: hidden;
 }
 
-.scenery {
+.scenary {
   height: 100vh;
-  width: 100vw;
-  overflow: hidden;
   position: relative;
 }
 
 .horizon {
-  background: linear-gradient(to bottom, #26007d 0%, #3503a8 50%, #b30699 74%, #ff179a 84%, #ffff05 100%);
   height: 50vh;
   left: 0;
   position: absolute;
   right: 0;
   top: 0;
+  overflow: hidden;
+}
+
+.horizon::before,
+.horizon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.theme-transition .horizon::before,
+.theme-transition .horizon::after {
+  transition: opacity 1.2s ease;
+}
+
+.horizon::before {
+  background: linear-gradient(to bottom, #26007d 0%, #3503a8 50%, #b30699 74%, #ff179a 84%, #ffff05 100%);
+  opacity: 1;
+}
+
+.horizon::after {
+  background: linear-gradient(to bottom, #040508 0%, #243048 50%, #0d4371 74%, #0264a1 84%, #0468a6 100%);
+  opacity: 0;
+}
+
+html.night .horizon::before {
+  opacity: 0;
+}
+
+html.night .horizon::after {
+  opacity: 1;
+}
+
+.sun,
+.moon {
+  z-index: 1;
+  width: 25vw;
+  height: 25vw;
+  border-radius: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, 40%);
+}
+
+.theme-transition .sun,
+.theme-transition .moon {
+  transition:
+    opacity 1.2s ease,
+    transform 1.2s ease;
+}
+
+.sun {
+  bottom: 5vh;
+  background-image: linear-gradient(to bottom, #ffff05 0%, #ff4700 50%);
+  box-shadow: 0 0 70px 30px rgba(255, 71, 0, 0.5);
+  opacity: 1;
+  transform: translate(-50%, 40%) translateY(0);
+}
+
+.moon {
+  bottom: 5vh;
+  background: linear-gradient(to bottom, #f4f3bd 0%, #edf0c3 50%);
+  box-shadow: 0 0 70px 30px rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transform: translate(-50%, 40%) translateY(40vh);
+}
+
+html.night .sun {
+  opacity: 0;
+  transform: translate(-50%, 40%) translateY(40vh);
+}
+
+html.night .moon {
+  opacity: 1;
+  transform: translate(-50%, 40%) translateY(0);
 }
 
 .surface {
-  background: linear-gradient(to bottom, rgba(179, 6, 153, 0.34) 0%, transparent 100%), linear-gradient(to right, #1f0540 0%, #570257 100%);
   bottom: 0;
   height: 50vh;
   left: 0;
-  -webkit-perspective: 60vh;
   perspective: 60vh;
   position: absolute;
   right: 0;
 }
 
-.surface-overlay {
-  background: linear-gradient(to bottom, #05f3fe 0%, #05f3fe 2%, transparent 14%);
-  bottom: 0;
-  left: 0;
+.surface::before,
+.surface::after {
+  content: '';
   position: absolute;
-  right: 0;
-  top: 0;
+  inset: 0;
+}
+
+.theme-transition .surface::before,
+.theme-transition .surface::after {
+  transition: opacity 1.2s ease;
+}
+
+.surface::before {
+  background: linear-gradient(to bottom, rgba(179, 6, 153, 0.34) 0%, transparent 100%), linear-gradient(to right, #1f0540 0%, #570257 100%);
+  opacity: 1;
+}
+
+.surface::after {
+  background: linear-gradient(to bottom, rgba(13, 67, 113, 0.34) 0%, transparent 100%), linear-gradient(to right, #243048 0%, #080707 100%);
+  opacity: 0;
+}
+
+html.night .surface::before {
+  opacity: 0;
+}
+
+html.night .surface::after {
+  opacity: 1;
+}
+
+.surface-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.surface-overlay::before,
+.surface-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.theme-transition .surface-overlay::before,
+.theme-transition .surface-overlay::after {
+  transition: opacity 1.2s ease;
+}
+
+.surface-overlay::before {
+  background: linear-gradient(to bottom, #05f3fe 0%, #05f3fe 2%, transparent 6%);
+  opacity: 1;
+}
+
+.surface-overlay::after {
+  background: linear-gradient(to bottom, #d6d2d2 0%, #d6d2d2 2%, transparent 6%);
+  opacity: 0;
+}
+
+html.night .surface-overlay::before {
+  opacity: 0;
+}
+
+html.night .surface-overlay::after {
+  opacity: 1;
 }
 
 .surface-lines {
-  height: 100vh;
-  left: 0;
   position: absolute;
-  top: 0;
-  width: 100%;
-  background: linear-gradient(to bottom, transparent, transparent 40px, #05f3fe 40px, #05f3fe 42px), linear-gradient(to right, transparent, transparent 40px, #05f3fe 40px, #05f3fe 42px);
-  -webkit-transform-origin: 50% 0;
+  inset: 0;
   transform-origin: 50% 0;
-  -webkit-transform: rotateX(60deg);
-  transform: rotateX(60deg);
-  background-size: 42px 42px;
-  -webkit-animation: move-up 25s linear infinite;
-  animation: move-up 25s linear infinite;
+  transform: rotateX(65deg);
+  z-index: 2;
 }
 
-.sun {
-  background: linear-gradient(to bottom, #ffff05 0%, #ff4700 50%);
-  border-radius: 50%;
-  box-shadow: 0 0 26px 20px rgba(255, 71, 0, 0.5);
-  height: 30vw;
-  left: 50%;
-  bottom: 0;
+.surface-lines::before,
+.surface-lines::after {
+  content: '';
   position: absolute;
-  -webkit-transform: translate(-50%, 40%);
-  transform: translate(-50%, 40%);
-  width: 30vw;
+  inset: 0;
+  z-index: 1;
+  background-size: 2.1vw 2.1vw;
+  height: 100vh;
+  animation: surface-move 16s linear infinite;
 }
 
-@-webkit-keyframes move-up {
+.theme-transition .surface-lines::before,
+.theme-transition .surface-lines::after {
+  transition: opacity 1.2s ease;
+}
+
+.surface-lines::after {
+  background-image: linear-gradient(to bottom, transparent, transparent 2vw, #05f3fe 2vw, #05f3fe 2.1vw), linear-gradient(to right, transparent, transparent 2vw, #05f3fe 2vw, #05f3fe 2.1vw);
+  opacity: 1;
+}
+
+.surface-lines::before {
+  background-image: linear-gradient(to bottom, transparent, transparent 2vw, #d6d2d2 2vw, #d6d2d2 2.1vw), linear-gradient(to right, transparent, transparent 2vw, #d6d2d2 2vw, #d6d2d2 2.1vw);
+  opacity: 0;
+}
+
+html.night .surface-lines::before {
+  opacity: 1;
+}
+html.night .surface-lines::after {
+  opacity: 0;
+}
+
+@keyframes surface-move {
   0% {
     background-position: 0 0;
   }
   100% {
-    background-position: 0 -100%;
-  }
-}
-
-@keyframes move-up {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 -100%;
+    background-position: 0 100%;
   }
 }
 
@@ -98,21 +228,10 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  z-index: 1;
-  -webkit-animation: show-up 1s ease-in 1s forwards;
+  z-index: 2;
   animation: show-up 1s ease-in 1s forwards;
   opacity: 0;
-}
-
-@-webkit-keyframes show-up {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 @keyframes show-up {
@@ -127,20 +246,17 @@ body {
 @media screen and (max-width: 1920px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.75);
-    -webkit-transform: translate(-50%, -50%) scale(0.75);
   }
 }
 
 @media screen and (max-width: 1440px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.65);
-    -webkit-transform: translate(-50%, -50%) scale(0.65);
   }
 }
 
 @media screen and (max-width: 1280px) {
   #myCanvas {
     transform: translate(-50%, -50%) scale(0.5);
-    -webkit-transform: translate(-50%, -50%) scale(0.5);
   }
 }

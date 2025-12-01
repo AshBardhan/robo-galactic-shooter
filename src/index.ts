@@ -3,6 +3,7 @@ import {levels, maxLevel, maxScoreToFlip, maxTargetToFlip, gameScreen} from './c
 import {renderBackground, renderTexts} from './render';
 import {roundInteger} from './utils/number';
 import {playSoundEffect} from './utils/sound';
+import {initTheme} from './utils/theme';
 import {createAsteroidSprite, createBatterySprite, createPlayerSprite, createStarSprite, getBullets, removeBullet} from './sprites';
 import type {AsteroidSprite, BatterySprite, PlayerSprite, StarSprite} from './types/sprites';
 
@@ -11,6 +12,9 @@ const FRAME_RATE = 60;
 const {canvas, context} = init();
 
 initKeys();
+
+// Initialize theme on page load
+initTheme();
 
 let gameInterval: ReturnType<typeof setInterval> | null = null;
 
