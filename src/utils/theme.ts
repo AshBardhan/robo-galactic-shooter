@@ -17,9 +17,9 @@ function applyTheme(theme: Theme, withTransition = false): void {
   const htmlElement = document.documentElement;
 
   if (theme === 'night') {
-    htmlElement.classList.add('night');
+    htmlElement.classList.add('night-mode');
   } else {
-    htmlElement.classList.remove('night');
+    htmlElement.classList.remove('night-mode');
   }
 
   if (withTransition) {

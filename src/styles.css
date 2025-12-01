@@ -1,5 +1,44 @@
 html {
   height: 100vh;
+
+  /* Day & Night Theme Colors */
+  --day-horizon-start: #26007d;
+  --day-horizon-mid: #3503a8;
+  --day-horizon-accent: #b30699;
+  --day-horizon-bright: #ff179a;
+  --day-horizon-end: #ffff05;
+
+  --night-horizon-start: #040508;
+  --night-horizon-mid: #243048;
+  --night-horizon-accent: #0d4371;
+  --night-horizon-bright: #0264a1;
+  --night-horizon-end: #0468a6;
+
+  --sun-start: #ffff05;
+  --sun-end: #ff4700;
+  --sun-glow: rgba(255, 71, 0, 0.5);
+
+  --moon-start: #f4f3bd;
+  --moon-end: #edf0c3;
+  --moon-glow: rgba(255, 255, 255, 0.5);
+
+  --day-surface-overlay: rgba(179, 6, 153, 0.34);
+  --day-surface-start: #1f0540;
+  --day-surface-end: #570257;
+  --day-grid-color: #05f3fe;
+
+  --night-surface-overlay: rgba(13, 67, 113, 0.34);
+  --night-surface-start: #243048;
+  --night-surface-end: #080707;
+  --night-grid-color: #d6d2d2;
+
+  /* Theme Transition Settings */
+  --transition-duration: 1.2s;
+  --transition-timing: ease;
+
+  /* Surface Grid Settings */
+  --grid-angle: 63deg;
+  --grid-animation-duration: 20s;
 }
 
 body {
@@ -20,36 +59,30 @@ body {
   right: 0;
   top: 0;
   overflow: hidden;
-}
 
-.horizon::before,
-.horizon::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-}
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
 
-.theme-transition .horizon::before,
-.theme-transition .horizon::after {
-  transition: opacity 1.2s ease;
-}
+  &::before {
+    background: linear-gradient(to bottom, var(--day-horizon-start) 0%, var(--day-horizon-mid) 50%, var(--day-horizon-accent) 74%, var(--day-horizon-bright) 84%, var(--day-horizon-end) 100%);
+    opacity: 1;
+  }
 
-.horizon::before {
-  background: linear-gradient(to bottom, #26007d 0%, #3503a8 50%, #b30699 74%, #ff179a 84%, #ffff05 100%);
-  opacity: 1;
-}
-
-.horizon::after {
-  background: linear-gradient(to bottom, #040508 0%, #243048 50%, #0d4371 74%, #0264a1 84%, #0468a6 100%);
-  opacity: 0;
-}
-
-html.night .horizon::before {
-  opacity: 0;
-}
-
-html.night .horizon::after {
-  opacity: 1;
+  &::after {
+    background: linear-gradient(
+      to bottom,
+      var(--night-horizon-start) 0%,
+      var(--night-horizon-mid) 50%,
+      var(--night-horizon-accent) 74%,
+      var(--night-horizon-bright) 84%,
+      var(--night-horizon-end) 100%
+    );
+    opacity: 0;
+  }
 }
 
 .sun,
@@ -63,37 +96,20 @@ html.night .horizon::after {
   transform: translate(-50%, 40%);
 }
 
-.theme-transition .sun,
-.theme-transition .moon {
-  transition:
-    opacity 1.2s ease,
-    transform 1.2s ease;
-}
-
 .sun {
   bottom: 5vh;
-  background-image: linear-gradient(to bottom, #ffff05 0%, #ff4700 50%);
-  box-shadow: 0 0 70px 30px rgba(255, 71, 0, 0.5);
+  background-image: linear-gradient(to bottom, var(--sun-start) 0%, var(--sun-end) 50%);
+  box-shadow: 0 0 70px 30px var(--sun-glow);
   opacity: 1;
   transform: translate(-50%, 40%) translateY(0);
 }
 
 .moon {
   bottom: 5vh;
-  background: linear-gradient(to bottom, #f4f3bd 0%, #edf0c3 50%);
-  box-shadow: 0 0 70px 30px rgba(255, 255, 255, 0.5);
+  background: linear-gradient(to bottom, var(--moon-start) 0%, var(--moon-end) 50%);
+  box-shadow: 0 0 70px 30px var(--moon-glow);
   opacity: 0;
   transform: translate(-50%, 40%) translateY(40vh);
-}
-
-html.night .sun {
-  opacity: 0;
-  transform: translate(-50%, 40%) translateY(40vh);
-}
-
-html.night .moon {
-  opacity: 1;
-  transform: translate(-50%, 40%) translateY(0);
 }
 
 .surface {
@@ -103,113 +119,79 @@ html.night .moon {
   perspective: 60vh;
   position: absolute;
   right: 0;
-}
 
-.surface::before,
-.surface::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-}
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
 
-.theme-transition .surface::before,
-.theme-transition .surface::after {
-  transition: opacity 1.2s ease;
-}
+  &::before {
+    background: linear-gradient(to bottom, var(--day-surface-overlay) 0%, transparent 100%), linear-gradient(to right, var(--day-surface-start) 0%, var(--day-surface-end) 100%);
+    opacity: 1;
+  }
 
-.surface::before {
-  background: linear-gradient(to bottom, rgba(179, 6, 153, 0.34) 0%, transparent 100%), linear-gradient(to right, #1f0540 0%, #570257 100%);
-  opacity: 1;
-}
-
-.surface::after {
-  background: linear-gradient(to bottom, rgba(13, 67, 113, 0.34) 0%, transparent 100%), linear-gradient(to right, #243048 0%, #080707 100%);
-  opacity: 0;
-}
-
-html.night .surface::before {
-  opacity: 0;
-}
-
-html.night .surface::after {
-  opacity: 1;
+  &::after {
+    background: linear-gradient(to bottom, var(--night-surface-overlay) 0%, transparent 100%), linear-gradient(to right, var(--night-surface-start) 0%, var(--night-surface-end) 100%);
+    opacity: 0;
+  }
 }
 
 .surface-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &::before {
+    background: linear-gradient(to bottom, var(--day-grid-color) 0%, var(--day-grid-color) 2%, transparent 6%);
+    opacity: 1;
+  }
+
+  &::after {
+    background: linear-gradient(to bottom, var(--night-grid-color) 0%, var(--night-grid-color) 2%, transparent 6%);
+    opacity: 0;
+  }
 }
 
-.surface-overlay::before,
-.surface-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-}
-
-.theme-transition .surface-overlay::before,
-.theme-transition .surface-overlay::after {
-  transition: opacity 1.2s ease;
-}
-
-.surface-overlay::before {
-  background: linear-gradient(to bottom, #05f3fe 0%, #05f3fe 2%, transparent 6%);
-  opacity: 1;
-}
-
-.surface-overlay::after {
-  background: linear-gradient(to bottom, #d6d2d2 0%, #d6d2d2 2%, transparent 6%);
-  opacity: 0;
-}
-
-html.night .surface-overlay::before {
-  opacity: 0;
-}
-
-html.night .surface-overlay::after {
-  opacity: 1;
-}
-
-.surface-lines {
+.surface-grid {
   position: absolute;
   inset: 0;
   transform-origin: 50% 0;
-  transform: rotateX(65deg);
+  transform: rotateX(var(--grid-angle));
   z-index: 2;
-}
 
-.surface-lines::before,
-.surface-lines::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-size: 2.1vw 2.1vw;
-  height: 100vh;
-  animation: surface-move 16s linear infinite;
-}
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-size: 2.1vw 2.1vw;
+    height: 70vh;
+    animation: surface-move var(--grid-animation-duration) linear infinite;
+  }
 
-.theme-transition .surface-lines::before,
-.theme-transition .surface-lines::after {
-  transition: opacity 1.2s ease;
-}
+  &::after {
+    background-image:
+      linear-gradient(to bottom, transparent, transparent 2vw, var(--day-grid-color) 2vw, var(--day-grid-color) 2.1vw),
+      linear-gradient(to right, transparent, transparent 2vw, var(--day-grid-color) 2vw, var(--day-grid-color) 2.1vw);
+    opacity: 1;
+  }
 
-.surface-lines::after {
-  background-image: linear-gradient(to bottom, transparent, transparent 2vw, #05f3fe 2vw, #05f3fe 2.1vw), linear-gradient(to right, transparent, transparent 2vw, #05f3fe 2vw, #05f3fe 2.1vw);
-  opacity: 1;
-}
-
-.surface-lines::before {
-  background-image: linear-gradient(to bottom, transparent, transparent 2vw, #d6d2d2 2vw, #d6d2d2 2.1vw), linear-gradient(to right, transparent, transparent 2vw, #d6d2d2 2vw, #d6d2d2 2.1vw);
-  opacity: 0;
-}
-
-html.night .surface-lines::before {
-  opacity: 1;
-}
-html.night .surface-lines::after {
-  opacity: 0;
+  &::before {
+    background-image:
+      linear-gradient(to bottom, transparent, transparent 2vw, var(--night-grid-color) 2vw, var(--night-grid-color) 2.1vw),
+      linear-gradient(to right, transparent, transparent 2vw, var(--night-grid-color) 2vw, var(--night-grid-color) 2.1vw);
+    opacity: 0;
+  }
 }
 
 @keyframes surface-move {
@@ -218,6 +200,85 @@ html.night .surface-lines::after {
   }
   100% {
     background-position: 0 100%;
+  }
+}
+
+/* =================================
+   Night Mode Theme Overrides
+   ================================= */
+.night-mode {
+  .horizon::before {
+    opacity: 0;
+  }
+
+  .horizon::after {
+    opacity: 1;
+  }
+
+  .sun {
+    opacity: 0;
+    transform: translate(-50%, 40%) translateY(40vh);
+  }
+
+  .moon {
+    opacity: 1;
+    transform: translate(-50%, 40%) translateY(0);
+  }
+
+  .surface::before {
+    opacity: 0;
+  }
+
+  .surface::after {
+    opacity: 1;
+  }
+
+  .surface-overlay::before {
+    opacity: 0;
+  }
+
+  .surface-overlay::after {
+    opacity: 1;
+  }
+
+  .surface-grid::before {
+    opacity: 1;
+  }
+
+  .surface-grid::after {
+    opacity: 0;
+  }
+}
+
+/* =================================
+   Theme Transitions
+   ================================= */
+.theme-transition {
+  .horizon::before,
+  .horizon::after {
+    transition: opacity var(--transition-duration) var(--transition-timing);
+  }
+
+  .sun,
+  .moon {
+    transition:
+      opacity var(--transition-duration) var(--transition-timing),
+      transform var(--transition-duration) var(--transition-timing);
+  }
+
+  .surface::before,
+  .surface::after {
+    transition: opacity var(--transition-duration) var(--transition-timing);
+  }
+
+  .surface-overlay::before,
+  .surface-overlay::after {
+    transition: opacity var(--transition-duration) var(--transition-timing);
+  }
+
+  .surface-grid::before,
+  .surface-grid::after {
+    transition: opacity var(--transition-duration) var(--transition-timing);
   }
 }
 
