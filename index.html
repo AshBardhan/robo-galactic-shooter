@@ -2,20 +2,53 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robo Galactic Shooter - Retro Space Shooter Game | Play Now</title>
+    <meta name="description" content="Play Robo Galactic Shooter, a retro arcade space shooter game. Destroy asteroids, survive as long as you can, and collect power-ups. Built with Kontra.js for JS13k Challenge." />
+    <meta name="keywords" content="robo galactic shooter, space shooter game, retro arcade game, JS13k, browser game, HTML5 game, asteroid shooter, free online game" />
+    <meta name="author" content="Ashish Bardhan" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://robo-galactic-shooter.netlify.app/" />
+    <meta property="og:title" content="Robo Galactic Shooter - Retro Space Shooter Game" />
+    <meta property="og:description" content="Play Robo Galactic Shooter, a retro arcade space shooter game. Destroy asteroids, survive as long as you can, and collect power-ups." />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://robo-galactic-shooter.netlify.app/" />
+    <meta property="twitter:title" content="Robo Galactic Shooter - Retro Space Shooter Game" />
+    <meta property="twitter:description" content="Play Robo Galactic Shooter, a retro arcade space shooter game. Destroy asteroids, survive as long as you can, and collect power-ups." />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/robot-icon.svg" />
+    <link rel="apple-touch-icon" href="/robot-icon.svg" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://robo-galactic-shooter.netlify.app/" />
+    
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="src/styles.css" />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#4a90e2" />
   </head>
   <body>
-    <canvas id="game-canvas" width="1000" height="700"></canvas>
-    <div class="scenery">
-      <div class="horizon">
-        <div class="sun"></div>
-        <div class="moon"></div>
+    <main>
+      <h1 class="visually-hidden">Robo Galactic Shooter - Space Arcade Game</h1>
+      <canvas id="game-canvas" width="1000" height="700" aria-label="Game canvas for Robo Galactic Shooter"></canvas>
+      <div class="scenery" aria-hidden="true">
+        <div class="horizon">
+          <div class="sun"></div>
+          <div class="moon"></div>
+        </div>
+        <div class="surface">
+          <div class="surface-grid"></div>
+          <div class="surface-overlay"></div>
+        </div>
       </div>
-      <div class="surface">
-        <div class="surface-grid"></div>
-        <div class="surface-overlay"></div>
-      </div>
-    </div>
+    </main>
     <script type="module" src="src/index.ts"></script>
   </body>
 </html>

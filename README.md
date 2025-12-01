@@ -1,6 +1,6 @@
 # Robo Galactic Shooter
 
-Retro Video Game developed in Kontra and sfxr JS libraries, as a part of JS13k Challenge 2018.
+Retro Video Game developed in `Kontra` and `sfxr` JS libraries, as a part of JS13k Challenge 2018.
 
 **First Release:** v1.0.0 - [Demo](https://js13kgames.com/games/robo-galactic-shooter/index.html) and [Codebase](https://github.com/AshBardhan/robo-galactic-shooter/tree/js-13k-games-2018)
 
@@ -12,16 +12,14 @@ This is not just another space robot shooter game. Your planet is under threat a
 
 Survive until you go fully offline!
 
-## Tech Stack
+## Features
 
-- **TypeScript** - Type-safe JavaScript development
-- **Vite** - Fast build tool and development server
-- **Kontra** - Lightweight 2D game engine for HTML5 Canvas
-- **sfxr** - Sound effect generation library
-- **ESLint** - Code linting and quality assurance
-- **Prettier** - Code formatting
-- **Husky** - Git hooks for pre-commit automation
-- **Netlify** - Deployment and hosting platform
+- Classic arcade-style gameplay with modern synthwave aesthetics
+- Automatic day/night theme switching based on local time
+- Procedurally generated sound effects using `sfxr`
+- Smooth animations and particle effects
+- Responsive design with adaptive scaling
+- Progressive difficulty as you survive longer
 
 ## Controls
 
@@ -35,6 +33,54 @@ Survive until you go fully offline!
 ## Screenshots
 
 ![screen-1](/docs/screen-1.png) ![screen-2](/docs/screen-2.png)
+
+## Tech Stack
+
+- **TypeScript** - Type-safe JavaScript development
+- **Vite** - Fast build tool and development server
+- **Kontra** - Lightweight 2D game engine for HTML5 Canvas
+- **sfxr** - Sound effect generation library
+- **ESLint** - Code linting and quality assurance
+- **Stylelint** - CSS linting and formatting
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for pre-commit automation
+- **Netlify** - Deployment and hosting platform
+
+## Project Structure
+
+```plaintext
+robo-galactic-shooter/
+├── src/
+│   ├── index.ts              # Main game entry point
+│   ├── render.ts             # Rendering utilities
+│   ├── sprites.ts            # Game sprite definitions
+│   ├── styles.css            # Synthwave theme styles with day/night mode
+│   ├── constants/
+│   │   ├── game.ts           # Game configuration constants
+│   │   ├── pixel.ts          # Pixel art constants
+│   │   └── sound.ts          # Sound effect constants
+│   ├── lib/
+│   │   ├── riffwave.js       # WAVE audio file generator
+│   │   └── sfxr.js           # Sound effect synthesizer
+│   ├── types/
+│   │   ├── riffwave.d.ts     # Type definitions for riffwave
+│   │   ├── sfxr.d.ts         # Type definitions for sfxr
+│   │   └── sprites.ts        # Type definitions for sprites
+│   └── utils/
+│       ├── number.ts         # Number utility functions
+│       ├── sound.ts          # Sound generation utilities
+│       └── theme.ts          # Day/night theme management
+├── public/
+│   ├── robot-icon.svg        # Favicon and app icon
+│   └── assets/               # Static game assets
+├── docs/                     # Documentation and screenshots
+├── .stylelintrc.json         # Stylelint configuration
+├── eslint.config.mjs         # ESLint configuration
+├── tsconfig.json             # TypeScript configuration
+├── vite.config.js            # Vite build configuration
+├── update-version.js         # Version update script
+└── package.json              # Project dependencies and scripts
+```
 
 ## Contribution
 
@@ -78,7 +124,8 @@ Survive until you go fully offline!
 - **One commit per issue** - Keep commits focused on a single change for easier cherry-picking
 - **Sync before submitting** - Merge the latest changes from upstream `main` into your branch to avoid conflicts: `git merge origin/main`
 - **Test thoroughly** - Ensure your changes work as expected and don't break existing functionality
-- **Follow code style** - The project uses ESLint, Prettier, and Husky for code quality
+- **Follow code style** - The project uses ESLint, Stylelint, Prettier, and Husky for code quality
+- **Run linters** - Use `npm run lint:fix` and `npm run lint:css:fix` before committing
 
 ### Submitting Request for Change
 
