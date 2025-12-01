@@ -1,6 +1,6 @@
 {
   "name": "robo-galactic-shooter",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Retro Video Game developed in Kontra and sfxr JS libraries",
   "main": "src/index.ts",
   "author": "AshBardhan <ashbardhan@gmail.com>",
