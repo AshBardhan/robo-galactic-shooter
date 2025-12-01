@@ -2,13 +2,11 @@
    Root Element & CSS Variables
    ================================= */
 html {
-  height: 100vh;
-
   /* Day & Night Theme Colors */
   --day-horizon-start: #26007d;
   --day-horizon-mid: #3503a8;
   --day-horizon-accent: #b30699;
-  --day-horizon-bright: #ff179a;
+  --day-horizon-bright: #ed2295;
   --day-horizon-end: #ffff05;
   --night-horizon-start: #040508;
   --night-horizon-mid: #243048;
@@ -38,7 +36,7 @@ html {
   --day-console-border: #060606;
   --day-console-shadow: #605d5b80;
   --day-console-inner-glow: #1818184d;
-  --night-console-border: #96cff5;
+  --night-console-border: #2699dc;
   --night-console-shadow: #cbe7f980;
   --night-console-inner-glow: #3939394d;
 
@@ -59,6 +57,8 @@ body {
   min-width: 320px;
   margin: 0;
   overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
 }
 
 /* Visually hidden but accessible to screen readers */
@@ -291,6 +291,57 @@ body {
   }
 }
 
+/* =========================================
+   CTA Button linking to GitHub repository
+   ========================================= */
+.cta-button {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  font-size: 18px;
+  background: linear-gradient(135deg, var(--day-horizon-accent), var(--day-horizon-bright));
+  border: 2px solid var(--day-grid-color);
+  border-radius: 50px;
+  color: #000;
+  text-decoration: none;
+  box-shadow:
+    0 4px 20px #ff1a9c66,
+    inset 0 1px 0 #fff3;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  /* Hover effect - lifts button up with enhanced glow */
+  &:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow:
+      0 6px 30px #ff179a99,
+      inset 0 1px 0 #ffffff4d;
+  }
+}
+
+/* Developer emoji icon */
+.cta-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Author name text */
+.cta-text {
+  font-weight: 500;
+}
+
+/* Source code link text */
+.cta-link {
+  font-weight: 600;
+  opacity: 0.6;
+}
+
 /* =================================
    Responsive Adjustments
    ================================= */
@@ -312,6 +363,40 @@ body {
   #game-canvas {
     transform: translate(-50%, -50%) scale(0.5);
     border-width: 35px 60px;
+  }
+
+  .cta-button {
+    font-size: 14px;
+    gap: 10px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #game-canvas {
+    transform: translate(-50%, -50%) scale(0.4);
+    border-width: 30px 50px;
+  }
+
+  .cta-button {
+    padding: 10px 20px;
+    font-size: 12px;
+    gap: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #game-canvas {
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+
+  .cta-button {
+    font-size: 10px;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cta-icon {
+    display: none;
   }
 }
 
@@ -367,6 +452,21 @@ body {
       0 0 60px 10px var(--night-console-shadow),
       inset 0 0 40px var(--night-console-inner-glow),
       inset 0 0 0 8px #0000004d;
+  }
+
+  .cta-button {
+    color: #fff;
+    background: linear-gradient(135deg, var(--night-horizon-accent), var(--night-horizon-bright));
+    border-color: var(--night-grid-color);
+    box-shadow:
+      0 4px 20px #0468a666,
+      inset 0 1px 0 #fff3;
+
+    &:hover {
+      box-shadow:
+        0 6px 30px #0468a699,
+        inset 0 1px 0 #ffffff4d;
+    }
   }
 }
 
